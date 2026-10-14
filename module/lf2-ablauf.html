@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lernorientierung: den eigenen Arbeitsablauf von Störungen und Zeitdieben trennen.">
+  <title>Arbeitsablauf und Störungen trennen · Lernfeld 2</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .ablauf-liste { margin:1.25rem 0; padding:0; max-width:48rem; list-style:none; display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; }
+    .ablauf-eintrag { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:.85rem 1rem; background:var(--flaeche,#fff); overflow-wrap:anywhere; }
+    .ablauf-eintrag p { margin:0; }
+    .ablauf-art { display:inline-block; margin-right:.4rem; padding:.05rem .5rem; border:2px solid currentColor; border-radius:.4rem; font-weight:700; }
+    .ablauf-frage { margin:1rem 0; }
+    .ablauf-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .ablauf-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .ablauf-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .ablauf-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .ablauf-option:hover { border-color:var(--primaer,#0754a6); }
+    .ablauf-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .ablauf-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf2-ablauf" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 2</p>
+      <h1>Arbeitsablauf und Störungen trennen</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="true">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="ablauf">2 · Vormittag</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Im Büro kommt vieles gleichzeitig. Du lernst, deine eigene Arbeit von dem zu trennen, was sie unterbricht oder Zeit kostet. Danach wählst du eine nächste Handlung, die Ordnung schafft.</p>
+      <ul>
+        <li>Erkennen, was zum eigenen Arbeitsablauf gehört.</li>
+        <li>Eine Störung und einen Zeitdieb unterscheiden.</li>
+        <li>Eine nächste Handlung wählen, statt alles gleichzeitig zu machen.</li>
+      </ul>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Ein Lernbeispiel, keine Betriebsregel</p>
+        <p><strong>Das Beispielunternehmen Nordlicht Büroservice und der Vormittag von Mira sind frei erfunden.</strong> Jeder Betrieb regelt seine Abläufe anders. Diese Lektion ist eine Lernorientierung und behandelt nur einen kleinen Ausschnitt von Lernfeld 2.</p>
+      </aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Das vollständige Glossar findest du unter „Wörter &amp; Begriffe“.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="ablauf">Weiter: Miras Vormittag</button></div>
+    </section>
+    <section id="ablauf" class="abschnitt" aria-labelledby="ablauf-titel" hidden>
+      <h2 id="ablauf-titel">Miras Vormittag</h2>
+      <p>Im fiktiven Nordlicht Büroservice arbeitet Mira in der Auftragsbearbeitung. Heute hat sie einen festen Termin: Um 11:00 Uhr beginnt eine Besprechung. Dafür braucht sie fertige Unterlagen. Das ist ihr <strong>Arbeitsablauf</strong> für den Vormittag. Dazwischen passiert Folgendes:</p>
+      <ol class="ablauf-liste" aria-label="Miras Vormittag in der Reihenfolge der Uhrzeiten">
+        <li class="ablauf-eintrag"><p><span class="ablauf-art">Aufgabe</span><strong>8:30 Uhr:</strong> Mira legt 20 Rechnungen ab. Das dauert etwa 30 Minuten.</p></li>
+        <li class="ablauf-eintrag"><p><span class="ablauf-art">Zeitdieb</span><strong>8:50 Uhr:</strong> Mira sucht einen Stift und räumt dabei ihren Tisch um. Danach weiß sie nicht mehr, wo sie in der Ablage stand.</p></li>
+        <li class="ablauf-eintrag"><p><span class="ablauf-art">Störung</span><strong>9:15 Uhr:</strong> Ein Kunde ruft an. Er will eine Auskunft, die nicht eilig ist.</p></li>
+        <li class="ablauf-eintrag"><p><span class="ablauf-art">Aufgabe</span><strong>9:30 Uhr:</strong> Mira soll die Unterlagen für den Termin um 11:00 Uhr fertigmachen.</p></li>
+        <li class="ablauf-eintrag"><p><span class="ablauf-art">Termin</span><strong>11:00 Uhr:</strong> Besprechung. Dieser Zeitpunkt steht fest.</p></li>
+      </ol>
+      <p>Die Wörter Aufgabe, Zeitdieb, Störung und Termin stehen vor jedem Eintrag. Du erkennst sie also am Text und nicht an einer Farbe.</p>
+      <h3>Störung oder Zeitdieb?</h3>
+      <p>Eine Störung kommt von außen und unterbricht dich. Ein Zeitdieb kostet Zeit, ohne dass er etwas bringt. Oft kommt er aus der eigenen Arbeitsweise. Beides gehört nicht zur eigentlichen Aufgabe.</p>
+      <h3>Was Ordnung schafft</h3>
+      <p>Schreib auf, was bis zum Termin fertig sein muss. Eine <strong>Checkliste</strong> hilft dabei: Du hakst Schritt für Schritt ab und siehst, was noch fehlt. Dann beginnst du mit dem, was zuerst fertig sein muss. Alles gleichzeitig anzufangen ist selten schneller.</p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Was ist die nächste Handlung?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="ablauf-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="ablauf-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="ablauf">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Dein Arbeitsablauf ist die Reihenfolge deiner Aufgaben. Ein fester Termin gibt dir das Ziel vor.</li>
+        <li>Eine Störung kommt von außen. Ein Zeitdieb kostet Zeit ohne Nutzen.</li>
+        <li>Eine Checkliste macht sichtbar, was noch fehlt.</li>
+        <li>Erst ordnen, dann arbeiten: eine Sache nach der anderen, nicht alles gleichzeitig.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 2 · Lernorientierung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf2-ablauf.js"></script>
+</body>
+</html>

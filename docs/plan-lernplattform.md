@@ -1,6 +1,6 @@
 # Plan: Lernplattform Kaufmann für Büromanagement / Kauffrau für Büromanagement
 
-Stand: 14.10.2026, aktualisiert nach dem Startauftrag. Dennis hat gesagt: „Bis ich mit der Prüfung fertig bin gilt IT-Ausbildung Lehrjahr 1 als abgeschlossen. Jetzt kann es hier los gehen.“
+Stand: 14.10.2026, aktualisiert nach dem Startauftrag und Dennis' Freigabe für den etappenweisen Bau. Dennis hat gesagt: „Bis ich mit der Prüfung fertig bin gilt IT-Ausbildung Lehrjahr 1 als abgeschlossen. Jetzt kann es hier los gehen.“ Er hat außerdem festgelegt: „du kannst die Lernfelder wieder Etappenweise angehen. Also ein Lernfeld ist eine Etappe.“ Der etappenweise Bau gilt ab jetzt.
 
 ## Ziel
 
@@ -52,9 +52,15 @@ Nicht kopiert wird der Fachinhalt. Computergrundlagen, Netzwerke und die Lernfel
 1. Erledigt am 14.10.2026: Rahmen der IT-Ausbildung gelesen. Übernommen sind Stil, Startseite, Navigation, leeres Glossar und das Fortschrittsgerüst. Nicht übernommen sind Fachinhalt, Werkzeuge und Speicher-Schlüssel der IT-Ausbildung.
 2. Die Quelle bleibt der Rahmenlehrplan in `docs/ausbildungsplan.md`. Ohne diese Datei wird kein Lernfeld erfunden.
 3. Erledigt am 14.10.2026, nachdem Dennis den Plan gelesen hat: die erste kleine Lektion in Lernfeld 1, „Deine Rolle im Betrieb“. Inhalt aus der Leitkompetenz von Lernfeld 1, nicht aus einer Erinnerung. Die übrigen Lernfelder bleiben „In Kürze“.
-4. Nützliche Werkzeuge prüfen. Ein Werkzeug wird nur eingebaut, wenn es eine konkrete Übungsaufgabe dieses Berufs besser macht und die Barrierefreiheit nicht verschlechtert.
-5. GLADOS prüft die sichtbare Seite. C3PO schreibt die Abnahme. JARVIS korrigiert nur, was Rick danach vergibt.
-6. So weiter, eine kleine Lektion nach der anderen, bis das erste Ausbildungsjahr dieser Plattform fertig ist.
+4. Die nächste Etappe ist Lernfeld 2: darin entsteht eine kleine Lektion, nicht das ganze Lernfeld. Danach geht es etappenweise weiter; ein Lernfeld ist jeweils eine Etappe.
+5. Nützliche Werkzeuge prüfen. Ein Werkzeug wird nur eingebaut, wenn es eine konkrete Übungsaufgabe dieses Berufs besser macht und die Barrierefreiheit nicht verschlechtert.
+6. GLADOS prüft die sichtbare Seite. C3PO schreibt die Abnahme. JARVIS korrigiert nur, was Rick danach vergibt.
+7. So weiter, eine kleine Lektion nach der anderen, bis das erste Ausbildungsjahr dieser Plattform fertig ist.
+
+## Agenda
+
+- Offen: Die Abstände der Fachwörter zu den Pfeilen sind in diesem Projekt korrigiert. Die gleiche Darstellung soll noch in der IT-Ausbildung geprüft werden. Der Prüfpunkt steht in `docs/agenda.md` des IT-Ausbildungsprojekts; dort wird in diesem Auftrag nichts gebaut.
+- Für den Bau gilt der Arbeitsbranch `dev`. `main` wird nicht überschrieben. Rick pusht den Branch.
 
 ## Werkzeuge
 

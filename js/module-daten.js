@@ -39,9 +39,19 @@
           id: "lf2",
           lernfeld: "Lernfeld 2",
           titel: "Büroprozesse gestalten und Arbeitsvorgänge organisieren",
-          status: "kommt-bald",
+          status: "verfuegbar",
           stunden: 80,
-          unterthemen: []
+          unterthemen: [
+            {
+              id: "lf2-ablauf",
+              typ: "lektion",
+              titel: "Arbeitsablauf und Störungen trennen",
+              beschreibung: "An einem erfundenen Büroablauf Störung und Zeitdieb erkennen und eine ordnende nächste Handlung wählen.",
+              page: "lf2-ablauf",
+              status: "verfuegbar",
+              datei: "module/lf2-ablauf.html"
+            }
+          ]
         },
         {
           id: "lf3",

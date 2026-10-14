@@ -1,7 +1,7 @@
 /* Zentrale Versionsangabe: nur bei einem bewusst veröffentlichten Stand ändern. */
 (function (global) {
   "use strict";
-  global.APP_VERSION = "0.1.1-alpha.1";
+  global.APP_VERSION = "0.1.2-alpha.1";
 
   function anzeigen() {
     document.querySelectorAll("[data-version]").forEach(function (element) {

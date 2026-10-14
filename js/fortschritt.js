@@ -4,7 +4,12 @@
 (function (global) {
   "use strict";
   var SCHLUESSEL = {
-    "lf1-rolle": "verwaltung-ausbildung.lf1-rolle.v1"
+    "lf1-rolle": "verwaltung-ausbildung.lf1-rolle.v1",
+    "lf2-ablauf": "verwaltung-ausbildung.lf2-ablauf.v1"
+  };
+  var LOESUNGEN = {
+    "lf1-rolle": { q1: "azubi", q2: "abstimmen", q3: "ausbilder" },
+    "lf2-ablauf": { q1: "zeitdieb", q2: "ordnen", q3: "rueckruf" }
   };
 
   function abgeschlossen(id) {
@@ -15,10 +20,9 @@
       if (!raw) return false;
       var state = JSON.parse(raw);
       var answers = state && state.answers ? state.answers : {};
+      var loesung = LOESUNGEN[id];
       return state.finish === true
-        && answers.q1 === "azubi"
-        && answers.q2 === "abstimmen"
-        && answers.q3 === "ausbilder";
+        && Object.keys(loesung).every(function (frage) { return answers[frage] === loesung[frage]; });
     } catch (e) {
       return false;
     }
