@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lernorientierung: die eigene Rolle als Auszubildende oder Auszubildender im Betrieb einordnen.">
+  <title>Deine Rolle im Betrieb · Lernfeld 1</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .rollen-karten { display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; margin:1.25rem 0; max-width:48rem; }
+    .rollen-karte { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:1rem; background:var(--flaeche,#fff); }
+    .rollen-karte h3 { margin-top:0; }
+    .rollen-pfeil { display:grid; justify-items:center; gap:.15rem; color:var(--text); text-align:center; font-weight:700; }
+    .rollen-pfeil .pfeil { font-size:1.35rem; line-height:1; }
+    .rollen-karte p:last-child { margin-bottom:0; }
+    .rollen-frage { margin:1rem 0; }
+    .rollen-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .rollen-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .rollen-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .rollen-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .rollen-option:hover { border-color:var(--primaer,#0754a6); }
+    .rollen-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .rollen-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf1-rolle" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 1</p>
+      <h1>Deine Rolle im Betrieb</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="true">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="rollen">2 · Rollen</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Du ordnest deine Rolle im Betrieb ein. Du bist Auszubildende oder Auszubildender und zugleich zukünftige Arbeitnehmerin oder zukünftiger Arbeitnehmer. Diese beiden Rollen haben nicht dieselbe rechtliche Grundlage.</p>
+      <ul>
+        <li>Ausbildungsverhältnis und späteres Arbeitsverhältnis unterscheiden.</li>
+        <li>Den eigenen Verantwortungsbereich von Aufgaben trennen, die du abstimmen solltest.</li>
+        <li>Wissen, wen du bei Unsicherheit zuerst fragst.</li>
+      </ul>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Ein Lernbeispiel, keine Betriebsregel</p>
+        <p><strong>Das Beispielunternehmen Nordlicht Büroservice ist frei erfunden.</strong> Betriebe unterscheiden sich. Diese Lektion ist eine Lernorientierung und kein verbindlicher Ausbildungsplan für deinen Betrieb.</p>
+      </aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Das vollständige Glossar findest du unter „Wörter &amp; Begriffe“.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="rollen">Weiter: Rollen im Beispiel</button></div>
+    </section>
+    <section id="rollen" class="abschnitt" aria-labelledby="rollen-titel" hidden>
+      <h2 id="rollen-titel">Zwei Rollen, eine Person</h2>
+      <p>Im fiktiven Unternehmen Nordlicht Büroservice lernt Mira in der Auftragsbearbeitung. Sie ist Auszubildende. Nach der Ausbildung kann sie dort Arbeitnehmerin werden. Das ist eine andere Rolle, mit einem anderen Vertrag.</p>
+      <figure aria-labelledby="diagramm-caption">
+        <div class="rollen-karten" role="img" aria-label="Schaubild von oben nach unten: Betrieb Nordlicht Büroservice. In diesem Beispiel gehört zum Betrieb die Abteilung Auftragsbearbeitung. In dieser Abteilung lernt Mira als Auszubildende. Ein späteres Arbeitsverhältnis wäre eine andere Rolle, kein zusätzlicher Betrieb.">
+          <div class="rollen-karte"><h3>Betrieb</h3><p><strong>Nordlicht Büroservice</strong></p><p>Fiktives Unternehmen. Es bietet Bürodienstleistungen an.</p></div>
+          <div class="rollen-pfeil"><span class="pfeil" aria-hidden="true">↓</span><span>In diesem Beispiel gehört zum Betrieb …</span></div>
+          <div class="rollen-karte"><h3>Abteilung</h3><p><strong>Auftragsbearbeitung</strong></p><p>Ein möglicher Bereich. Andere Betriebe gliedern sich anders.</p></div>
+          <div class="rollen-pfeil"><span class="pfeil" aria-hidden="true">↓</span><span>In dieser Abteilung lernt …</span></div>
+          <div class="rollen-karte"><h3>Rolle jetzt</h3><p><strong>Mira, Auszubildende</strong></p><p>Sie lernt im Rahmen des Ausbildungsvertrags. Sie ist keine zusätzliche Organisationsebene.</p></div>
+          <div class="rollen-pfeil"><span class="pfeil" aria-hidden="true">↓</span><span>Später, mit einem anderen Vertrag, könnte sie sein …</span></div>
+          <div class="rollen-karte"><h3>Rolle später</h3><p><strong>Arbeitnehmerin</strong></p><p>Ein Arbeitsvertrag regelt dann Rechte und Pflichten. Das ist nicht derselbe Vertrag wie der Ausbildungsvertrag.</p></div>
+        </div>
+        <figcaption id="diagramm-caption">Mögliche Struktur im ausdrücklich fiktiven Beispielbetrieb. Dein Betrieb kann anders aufgebaut sein.</figcaption>
+      </figure>
+      <h3>Was zu deiner jetzigen Rolle gehört</h3>
+      <p>Als Auszubildende oder Auszubildender klärst du, welche Aufgaben in deinem Verantwortungsbereich liegen. Eine klar beschriebene Übungsaufgabe kannst du im vereinbarten Rahmen selbst erledigen. Verträge, Preise und Zusagen nach außen stimmst du vorher mit einer verantwortlichen Person ab.</p>
+      <aside class="hinweis-box" aria-labelledby="ansprechpersonen-titel">
+        <h3 id="ansprechpersonen-titel">Wen du zuerst fragst</h3>
+        <p>Bei einer Ausbildungsaufgabe fragst du deine Ausbilderin oder deinen Ausbilder. Die Jugend- und Auszubildendenvertretung ist die Interessenvertretung der jungen Beschäftigten und der Auszubildenden, nicht deine Ausbilderin. Wenn du nicht weißt, wer zuständig ist, fragst du zuerst deine Ausbilderin oder deinen Ausbilder.</p>
+      </aside>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Was passt zur Situation?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="rollen-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="rollen-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="rollen">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Auszubildende und Arbeitnehmerin sind zwei Rollen. Sie stehen auf unterschiedlichen rechtlichen Grundlagen.</li>
+        <li>Dein Verantwortungsbereich ist das, was im vereinbarten Rahmen zu deiner Ausbildung gehört.</li>
+        <li>Zusagen nach außen, Preise und Verträge stimmst du vorher ab.</li>
+        <li>Bei Unsicherheit fragst du zuerst deine Ausbilderin oder deinen Ausbilder.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 1 · Lernorientierung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf1-rolle.js"></script>
+</body>
+</html>

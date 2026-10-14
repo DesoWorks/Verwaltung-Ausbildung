@@ -1,0 +1,8 @@
+<svg width="708" height="114" xmlns="http://www.w3.org/2000/svg" viewBox="3 21 708 114" role="img" aria-labelledby="title desc"><title id="title">DesoWorks — Orbital Werkstatt</title><desc id="desc">Kräftige, elegante Wortmarke in einem offenen, kompakten Orbitrahmen; das O ist ein markanter, cyanfarbener Kernring.</desc>
+<!-- open chassis, deliberately one visual gesture rather than scattered detailing -->
+<path d="M23 27H672L706 60V96L672 129H23L9 115V41Z" fill="none" stroke="#142B44" stroke-width="9" stroke-linejoin="bevel"/><path d="M23 27H164M572 129H672" fill="none" stroke="#F29A38" stroke-width="7" stroke-linecap="square"/>
+<g fill="#142B44"><path d="M36 49h36l13 13v31l-13 13H36zm13 13v31h18l6-6V68l-6-6z"/><path d="M96 49h49v13h-36v8h32v13h-32v10h36v13H96z"/><path d="M201 53l-10-4h-31l-11 10v13l11 10h30l6 4v5l-6 3h-41v12h44l16-11V82l-14-10h-30l-4-4v-3l4-4h35z"/>
+<!-- O has a single bold orbital notch, balanced by a solid inner nucleus -->
+<path d="M220 63L234 49H260L276 65V90L261 106H235L220 91Z" fill="none" stroke="#142B44" stroke-width="12" stroke-linejoin="bevel"/><path d="M261 49L276 64" fill="none" stroke="#20B9D8" stroke-width="12" stroke-linecap="square"/><circle cx="248" cy="77" r="5" fill="#20B9D8"/>
+<path d="M293 49h14l9 42 13-30h10l14 30 8-42h14l-13 57h-14l-14-29-13 29h-13z"/><path d="M389 63L403 49H429L444 64V91L429 106H403L389 91Z"/><path d="M459 106V49H497L512 64V76L499 88L516 106H499L482 89H472V106zm13-44v15h20l7-6v-3l-6-6z"/><path d="M527 49h14v23l25-23h18l-29 27 31 30h-18l-27-24v24h-14z"/><path d="M659 53l-10-4h-32l-11 10v13l11 10h31l6 4v5l-6 3h-42v12h45l16-11V82l-14-10h-31l-4-4v-3l4-4h37z"/></g>
+<path d="M705 60V96" stroke="#20B9D8" stroke-width="7" stroke-linecap="square"/></svg>

@@ -1,0 +1,115 @@
+/* Zusatzgestaltung der Startseite; nutzt die Variablen aus styles.css. */
+/* main stellt bereits den Inhaltsabstand bereit; keine zweite zentrierte
+   Maximalbreite innerhalb von main (sonst rücken Titel und Karten ein). */
+.startseite { max-width: none; margin: 0; padding: 1rem 0; }
+
+.jahr { margin: 2rem 0; }
+.jahr h2 { margin-bottom: 0.75rem; }
+
+.modul-liste {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+.modul { border-radius: var(--radius); }
+.modul-inhalt {
+  display: flex; flex-direction: column; gap: 0.3rem;
+  height: 100%; box-sizing: border-box;
+  padding: 1rem; border-radius: var(--radius);
+  border: 2px solid var(--farbe-rahmen);
+  background: var(--farbe-flaeche);
+  box-shadow: var(--schatten);
+  color: var(--farbe-text); text-decoration: none;
+}
+.modul-lernfeld { font-size: 0.85rem; font-weight: 600; color: var(--farbe-text-leise); }
+.modul-titel { font-weight: 700; }
+.modul-beschreibung { font-size: 0.95rem; color: var(--farbe-text-leise); }
+.modul-status { margin-top: auto; font-size: 0.9rem; font-weight: 600; }
+
+.modul-verfuegbar .modul-inhalt { border-color: var(--farbe-akzent); }
+.modul-verfuegbar .modul-status { color: var(--farbe-akzent-dunkel); }
+.modul-verfuegbar a.modul-inhalt:hover { background: var(--farbe-hover-flaeche); }
+.modul-verfuegbar a.modul-inhalt:focus-visible {
+  outline: 3px solid var(--farbe-akzent-dunkel); outline-offset: 2px;
+}
+
+/* Gesperrt: grau, nicht anklickbar, Bedeutung zusätzlich über Text und Symbol */
+.modul-gesperrt .modul-inhalt {
+  background: var(--farbe-geplant-flaeche); border-style: dashed; box-shadow: none;
+  color: var(--farbe-geplant-tekst); cursor: not-allowed;
+}
+.modul-gesperrt .modul-status, .modul-gesperrt .modul-lernfeld { color: var(--farbe-geplant-tekst); }
+
+/* Geplante Unterthemen unter einer Lernfeld-Karte (grau, nicht anklickbar) */
+.unterthemen {
+  list-style: none; margin: 0.25rem 0; padding: 0;
+  display: grid; gap: 0.4rem;
+}
+.unterthema {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 0.75rem;
+  padding: 0.5rem 0.75rem; border-radius: var(--radius);
+  border: 2px dashed var(--farbe-rahmen);
+  background: var(--farbe-geplant-flaeche); color: var(--farbe-geplant-tekst); cursor: not-allowed;
+}
+.unterthema-titel { font-weight: 600; }
+.unterthema .modul-status { margin-top: 0; color: var(--farbe-geplant-tekst); }
+
+@media (max-width: 560px) {
+  .modul-liste { grid-template-columns: 1fr; }
+}
+.leseoptionen { max-width: 896px; }
+
+/* Verfügbares Unterthema (z. B. IPv4) innerhalb einer Lernfeld-Karte */
+.modul-teilweise .modul-inhalt { border-style: solid; border-color: var(--farbe-rahmen); }
+.unterthema-verfuegbar {
+  padding: 0; border: 2px solid var(--farbe-akzent);
+  background: var(--farbe-flaeche); color: var(--farbe-text); cursor: auto;
+}
+.unterthema-link {
+  display: flex; flex-direction: column; gap: 0.2rem; width: 100%;
+  padding: 0.5rem 0.75rem; min-height: 44px; box-sizing: border-box;
+  color: var(--farbe-text); text-decoration: none; border-radius: var(--radius);
+}
+.unterthema-link:hover { background: var(--farbe-hover-flaeche); }
+.unterthema-link:focus-visible { outline: 3px solid var(--farbe-akzent-dunkel); outline-offset: 2px; }
+.unterthema-verfuegbar .modul-status { color: var(--farbe-akzent-dunkel); }
+
+/* Kompakte, unabhängig aufklappbare Jahre und Lernfelder. */
+.overview-entry { margin: 1rem 0 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--farbe-rahmen); }
+.overview-year { margin: 1rem 0; border: 1px solid var(--farbe-rahmen); border-radius: var(--radius); background: var(--farbe-flaeche); }
+.overview-year > summary, .overview-field-summary {
+  display: flex; align-items: flex-start; flex-wrap: wrap; gap: .35rem .8rem;
+  min-height: 3rem; padding: .75rem 1rem; cursor: pointer; color: var(--farbe-text);
+  font-weight: 700; list-style: none;
+}
+.overview-year > summary::-webkit-details-marker, .overview-field-summary::-webkit-details-marker { display: none; }
+.overview-year > summary::before, .overview-field-summary::before { content: "▸"; flex: 0 0 1em; }
+.overview-year[open] > summary::before, .overview-field[open] > summary::before { content: "▾"; }
+.overview-year > summary:focus-visible, .overview-field-summary:focus-visible { outline: 3px solid var(--farbe-akzent); outline-offset: 2px; border-radius: 6px; }
+.overview-fields { padding: 0 .9rem .9rem; }
+.overview-field { margin: .55rem 0; border: 1px solid var(--farbe-rahmen); border-radius: calc(var(--radius) * .75); }
+.overview-field-summary { min-height: 2.75rem; font-size: .96em; }
+.overview-field-title { flex: 1 1 18rem; min-width: 0; overflow-wrap: break-word; hyphens: manual; }
+.overview-field-count { flex: 1 1 12rem; color: var(--farbe-text-leise); font-size: .86em; font-weight: 500; }
+.overview-lessons { list-style: none; display: grid; gap: .45rem; margin: 0; padding: .2rem .75rem .75rem 2.15rem; }
+.overview-lesson { min-width: 0; border-radius: .55rem; }
+.overview-lesson-link, .overview-lesson.planned {
+  display: flex; flex-direction: column; gap: .2rem; min-height: 44px; padding: .55rem .75rem;
+  border: 1px solid var(--farbe-rahmen); border-radius: .55rem; color: var(--farbe-text);
+  background: var(--farbe-flaeche); text-decoration: none; overflow-wrap: anywhere;
+}
+.overview-lesson-link:hover { background: var(--farbe-hover-flaeche); }
+.overview-lesson-link:focus-visible { outline: 3px solid var(--farbe-akzent); outline-offset: 2px; }
+.overview-lesson.available .modul-status { color: var(--farbe-akzent-dunkel); }
+.overview-lesson.planned { border-style: dashed; color: var(--farbe-geplant-tekst); background: var(--farbe-geplant-flaeche); }
+.overview-lesson.planned .modul-status { margin-top: 0; color: var(--farbe-geplant-tekst); }
+.overview-planned { margin: 0; padding: 0 1rem 1rem 2.6rem; color: var(--farbe-geplant-tekst); }
+#jahre { display: block; }
+#jahre > .overview-year { height: auto; align-self: start; }
+@media (max-width: 560px) {
+  .startseite { padding-inline: 1rem; }
+  .overview-fields { padding-inline: .55rem; }
+  .overview-lessons { padding-left: 1.35rem; }
+  .overview-field-count { flex-basis: 100%; padding-left: 1.4rem; }
+}
