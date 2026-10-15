@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Die Lieferung kommt zu spät oder mit Mängeln. Du lernst, beide Störungen zu unterscheiden, den Mangel sachlich zu beschreiben, einen Lösungsvorschlag zu nennen und den Vertragspartner zu informieren.">
+  <title>Eine Lieferstörung sachlich melden · Lernfeld 4</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .rollen-karten { display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; margin:1.25rem 0; max-width:48rem; }
+    .rollen-karte { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:1rem; background:var(--flaeche,#fff); }
+    .rollen-karte h3 { margin-top:0; }
+    .rollen-karte p:last-child { margin-bottom:0; }
+    .rollen-frage { margin:1rem 0; }
+    .rollen-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .rollen-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .rollen-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .rollen-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .rollen-option:hover { border-color:var(--primaer,#0754a6); }
+    .rollen-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .rollen-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf4-stoerung" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 4</p>
+      <h1>Eine Lieferstörung sachlich melden</h1>
+      <p class="kopf-dauer">Beschaffung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="step">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Beispiel</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Die Lieferung kommt zu spät oder mit Mängeln. Du lernst, beide Störungen zu unterscheiden, den Mangel sachlich zu beschreiben, einen Lösungsvorschlag zu nennen und den Vertragspartner zu informieren.</p>
+      <ul>
+        <li>Nicht-Rechtzeitig-Lieferung von Schlechtleistung unterscheiden.</li>
+        <li>Den Mangel sachlich beschreiben.</li>
+        <li>Einen Lösungsvorschlag nennen und den Vertragspartner informieren.</li>
+      </ul>
+      <aside class="hinweis-box"><p class="hinweis-titel">Ein erfundenes Lernbeispiel</p><p>Der Betrieb Seeblick Schreibwaren, der Lieferant Nordstern Papierwerk und alle Personen und Vorgänge im Beispiel sind frei erfunden. Die Lektion zeigt einen kleinen Ausschnitt des Lernfeldes und ersetzt keine betrieblichen Vorgaben.</p></aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Die Erklärungen stehen direkt in dieser Lektion bereit.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Beispiel</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Tim meldet eine Lieferstörung</h2>
+      <p>Im erfundenen Betrieb Seeblick Schreibwaren hat Tim eine Lieferung des erfundenen Lieferanten Nordstern Papierwerk angenommen: zehn Kartons Papier. Beim Auspacken sind drei Kartons nass und das Papier ist unbrauchbar. Das sind erfundene Übungsdaten, keine Vorgaben für deinen Betrieb.</p>
+      <div class="rollen-karten">
+        <div class="rollen-karte"><h3>1. Die Störung unterscheiden</h3><p>Bei einer <strong>Nicht-Rechtzeitig-Lieferung</strong> kommt die Ware nicht zum vereinbarten Termin. Bei einer <strong>Schlechtleistung</strong> kommt die Ware, aber mangelhaft, zum Beispiel beschädigt oder falsch. Tims Ware kam an, aber drei Kartons sind nass. Das ist eine Schlechtleistung.</p></div>
+        <div class="rollen-karte"><h3>2. Den Mangel sachlich beschreiben</h3><p>Tim schreibt auf, was genau los ist: wie viele Kartons betroffen sind, was beschädigt ist und wann er es gemerkt hat. Er bleibt ruhig und nennt die Lieferung eindeutig, zum Beispiel über den Lieferschein. Vorwürfe und Wertungen lässt er weg.</p></div>
+        <div class="rollen-karte"><h3>3. Lösung vorschlagen und informieren</h3><p>Tim überlegt, gern mit dem Team, einen <strong>Lösungsvorschlag</strong>, zum Beispiel einen Ersatz für die drei Kartons. Diesen Vorschlag teilt er dem Lieferanten zusammen mit der Beschreibung mit. So weiß der Vertragspartner, was Tim erwartet.</p></div>
+      </div>
+      <aside class="hinweis-box"><p class="hinweis-titel">Wichtig</p><p>Diese Lektion übt nur, die beiden Störungen zu unterscheiden, den Mangel sachlich zu beschreiben und einen Lösungsvorschlag zu nennen. Welche Rechte ein Betrieb bei Störungen hat, welche Fristen gelten und was in den Geschäftsbedingungen steht, wird hier nicht festgelegt.</p></aside>
+      <details class="fachwort-hinweis"><summary>Grundlage im Rahmenlehrplan</summary><p>Wörtlicher Planausschnitt:</p><blockquote>Sie entwickeln, auch im Team, Lösungsvorschläge bei identifizierten Vertragsstörungen (Nicht-Rechtzeitig-Lieferung und Schlechtleistung) und kommunizieren bei deren Umsetzung sach- und normgerecht mit den Vertragspartnerinnen und Vertragspartnern.</blockquote><p><a href="../quellen/kmk-rahmenlehrplan-bueromanagement.pdf#page=13">KMK-Rahmenlehrplan · Dokumentseite 13 · Lernfeld 4</a></p></details>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Was ist passiert und was tut Tim?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="lektion-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="lektion-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Nicht-Rechtzeitig-Lieferung heißt zu spät, Schlechtleistung heißt mangelhafte Ware.</li>
+        <li>Beschreibe den Mangel konkret und ohne Vorwurf.</li>
+        <li>Nenne einen Lösungsvorschlag, gern nach Absprache im Team.</li>
+        <li>Informiere den Vertragspartner und nenne die Lieferung eindeutig.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 4 · Beschaffung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf4-stoerung.js"></script>
+</body>
+</html>

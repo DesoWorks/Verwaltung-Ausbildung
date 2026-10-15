@@ -1,0 +1,27 @@
+{
+  "lf1-praesentation": {
+    "q1": "form-kurz-bildschirm",
+    "q2": "schutz-namen-quelle",
+    "q3": "katalog-kriterien-liste"
+  },
+  "lf2-protokoll": {
+    "q1": "protokoll-ergebnis",
+    "q2": "festhalten-beschluss-offen",
+    "q3": "weitergabe-teilnehmende"
+  },
+  "lf3-vervielfaeltigen": {
+    "q1": "aufgabe-scannen",
+    "q2": "format-pdf-lesen",
+    "q3": "sparen-seiten-beidseitig"
+  },
+  "lf4-anfrage": {
+    "q1": "angaben-vier",
+    "q2": "satz-angebot-bitte",
+    "q3": "wirkung-unverbindlich"
+  },
+  "lf4-stoerung": {
+    "q1": "stoerung-schlechtleistung",
+    "q2": "meldung-konkret",
+    "q3": "schritt-vorschlag-info"
+  }
+}

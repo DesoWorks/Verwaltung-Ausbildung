@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Textbaustein- und Formularübung: Vorlage, austauschbare Bausteine, sichtbare Normfelder. Kein Word-Klon.">
+  <title>Textbausteine und Formular · Werkzeug</title>
+  <link rel="icon" href="../../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <style>
+    .werkzeug { max-width: 48rem; }
+    .normfeld { display: grid; grid-template-columns: 11rem 1fr; gap: .35rem .7rem; align-items: center; margin: .45rem 0; }
+    .normfeld span { font-weight: 650; }
+    .werkzeug input, .werkzeug select, .werkzeug textarea { font: inherit; min-height: 44px; width: 100%; box-sizing: border-box; padding: .4rem .55rem; border: 2px solid var(--rahmen,#bdcde3); border-radius: .45rem; }
+    .werkzeug textarea { min-height: 7rem; }
+    .brief { border: 2px solid var(--rahmen,#bdcde3); border-radius: .8rem; padding: 1rem; background: var(--flaeche,#fff); white-space: pre-wrap; }
+    .baustein-wahl { display: grid; gap: .45rem; margin: .8rem 0; }
+  </style>
+</head>
+<body data-page="werkzeug-textbausteine" data-base="../../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Werkzeug</p>
+      <h1>Textbausteine und Formular</h1>
+    </div>
+  </header>
+  <main id="hauptinhalt" class="werkzeug" tabindex="-1">
+    <p>Eine Vorlage, austauschbare Bausteine und sichtbare Normfelder. Kein Textprogramm. Das Werkzeug ersetzt nicht die kleinen Lektionen <a href="../lf3-textbausteine.html">Textbausteine passend einsetzen</a> und <a href="../lf4-anfrage.html">Eine Anfrage an den Lieferanten schreiben</a>.</p>
+    <h2>Normfelder</h2>
+    <div class="normfeld"><span>Absender</span><input id="absender" value="Elbblick Verwaltungsservice" aria-label="Absender"></div>
+    <div class="normfeld"><span>Empfänger</span><input id="empfaenger" value="Nordpapier GmbH" aria-label="Empfänger"></div>
+    <div class="normfeld"><span>Betreff</span><input id="betreff" value="Anfrage Ordner" aria-label="Betreff"></div>
+    <div class="normfeld"><span>Artikel</span><input id="artikel" value="blaue A4-Ordner" aria-label="Artikel"></div>
+    <div class="normfeld"><span>Menge</span><input id="menge" value="20" aria-label="Menge"></div>
+    <div class="normfeld"><span>Termin</span><input id="termin" value="Freitag" aria-label="Termin"></div>
+    <div class="normfeld"><span>Lieferort</span><input id="ort" value="Hamburg" aria-label="Lieferort"></div>
+    <h2>Baustein</h2>
+    <div class="baustein-wahl" role="radiogroup" aria-label="Textbaustein">
+      <label><input type="radio" name="baustein" value="anfrage" checked> Anfrage: bitte um ein Angebot</label>
+      <label><input type="radio" name="baustein" value="dank"> Dank und Bitte um kurze Rückmeldung</label>
+      <label><input type="radio" name="baustein" value="leer"> Ohne Baustein</label>
+    </div>
+    <div class="knopf-reihe">
+      <button type="button" class="knopf knopf-haupt" id="zusammensetzen">Text zusammensetzen</button>
+    </div>
+    <h2>Vorschau</h2>
+    <div id="vorschau" class="brief" tabindex="0" aria-live="polite">Noch kein Text. Fülle die Felder und setze den Text zusammen.</div>
+    <p class="klein">Die Felder bleiben sichtbar. Der feste Text des Bausteins wird nicht überschrieben, nur eingesetzt. Übungsdaten, kein echter Brief.</p>
+  </main>
+  <script src="../../js/module-daten.js"></script>
+  <script src="../../js/fortschritt.js"></script>
+  <script src="../../js/navigation.js"></script>
+  <script src="../../js/version.js"></script>
+  <script src="../../js/werkzeug-textbausteine.js"></script>
+</body>
+</html>

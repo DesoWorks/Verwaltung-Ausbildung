@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Nutzwerttabelle: Kriterien, Gewichte, Punkte und Summe. Kein Office-Programm.">
+  <title>Nutzwerttabelle · Werkzeug</title>
+  <link rel="icon" href="../../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <style>
+    .werkzeug { max-width: 52rem; }
+    table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+    th, td { border: 2px solid var(--rahmen,#bdcde3); padding: .4rem; text-align: left; }
+    th { background: var(--hinweis-flaeche,#eef4fb); }
+    input { font: inherit; width: 5.5rem; min-height: 40px; border: 2px solid var(--rahmen,#bdcde3); border-radius: .35rem; padding: .2rem .35rem; }
+    input:focus { outline: 3px solid var(--fokus,#0754a6); outline-offset: 1px; }
+    .ergebnis { background: var(--hinweis-flaeche,#eef4fb); border-left: 4px solid var(--primaer,#0754a6); padding: .8rem 1rem; }
+  </style>
+</head>
+<body data-page="werkzeug-nutzwert" data-base="../../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Werkzeug</p>
+      <h1>Nutzwerttabelle</h1>
+    </div>
+  </header>
+  <main id="hauptinhalt" class="werkzeug" tabindex="-1">
+    <p>Kriterien, Gewichte und Punkte. Die Summe ist Gewicht mal Punkte. Das Werkzeug ersetzt nicht die kleine Lektion <a href="../lf4-vergleich.html">Angebote vergleichen</a>. Es nutzt dieselbe Tabellenidee wie die <a href="tabelle.html">kleine Tabelle</a>.</p>
+    <table>
+      <caption>Zwei Angebote, drei Kriterien. Punkte von 1 bis 5.</caption>
+      <thead>
+        <tr>
+          <th scope="col">Kriterium</th>
+          <th scope="col">Gewicht</th>
+          <th scope="col">Punkte Angebot 1</th>
+          <th scope="col">Punkte Angebot 2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Preis</th>
+          <td><input id="g-preis" aria-label="Gewicht Preis" inputmode="decimal" value="3"></td>
+          <td><input id="a1-preis" aria-label="Punkte Angebot 1 Preis" inputmode="decimal" value="4"></td>
+          <td><input id="a2-preis" aria-label="Punkte Angebot 2 Preis" inputmode="decimal" value="2"></td>
+        </tr>
+        <tr>
+          <th scope="row">Lieferzeit</th>
+          <td><input id="g-zeit" aria-label="Gewicht Lieferzeit" inputmode="decimal" value="2"></td>
+          <td><input id="a1-zeit" aria-label="Punkte Angebot 1 Lieferzeit" inputmode="decimal" value="2"></td>
+          <td><input id="a2-zeit" aria-label="Punkte Angebot 2 Lieferzeit" inputmode="decimal" value="5"></td>
+        </tr>
+        <tr>
+          <th scope="row">Nachhaltigkeit</th>
+          <td><input id="g-nachhalt" aria-label="Gewicht Nachhaltigkeit" inputmode="decimal" value="1"></td>
+          <td><input id="a1-nachhalt" aria-label="Punkte Angebot 1 Nachhaltigkeit" inputmode="decimal" value="3"></td>
+          <td><input id="a2-nachhalt" aria-label="Punkte Angebot 2 Nachhaltigkeit" inputmode="decimal" value="4"></td>
+        </tr>
+      </tbody>
+    </table>
+    <p id="summen" class="ergebnis" aria-live="polite"></p>
+    <p class="klein">Ein höheres Gewicht zählt stärker. Die Tabelle entscheidet nicht allein. Sie macht den Vergleich nachvollziehbar. Übungszahlen.</p>
+  </main>
+  <script src="../../js/module-daten.js"></script>
+  <script src="../../js/fortschritt.js"></script>
+  <script src="../../js/navigation.js"></script>
+  <script src="../../js/version.js"></script>
+  <script src="../../js/werkzeug-nutzwert.js"></script>
+</body>
+</html>

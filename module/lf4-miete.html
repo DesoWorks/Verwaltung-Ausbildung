@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lernorientierung: Eine Miete von einem Kauf unterscheiden und Nutzen und Risiko der zeitweisen Nutzung einordnen.">
+  <title>Mieten statt kaufen · Lernfeld 4</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .rollen-karten { display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; margin:1.25rem 0; max-width:48rem; }
+    .rollen-karte { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:1rem; background:var(--flaeche,#fff); }
+    .rollen-karte h3 { margin-top:0; }
+    .rollen-karte p:last-child { margin-bottom:0; }
+    .rollen-frage { margin:1rem 0; }
+    .rollen-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .rollen-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .rollen-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .rollen-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .rollen-option:hover { border-color:var(--primaer,#0754a6); }
+    .rollen-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .rollen-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf4-miete" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 4</p>
+      <h1>Mieten statt kaufen</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="true">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Beispiel</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <p class="lernfeld-kicker">Lernfeld 4 · Sachgüter und Dienstleistungen beschaffen und Verträge schließen</p>
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Worum es geht</h2>
+      <p>Beim Beschaffen wird nicht immer etwas gekauft. Manchmal nutzt der Betrieb eine Sache nur für eine Zeit und gibt sie zurück. Das ist eine Miete. Diese kleine Lektion übt genau diese Unterscheidung. Zahlen und Fristen sind erfunden.</p>
+      <div class="fortschritt" aria-hidden="true"><div id="fortschritt-balken" class="fortschritt-balken"></div></div>
+      <p id="fortschritt-text" class="klein">Fortschritt: 0 %</p>
+      <div class="knopf-reihe">
+        <button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Zum Beispiel</button>
+      </div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Kopierer für drei Monate</h2>
+      <p>Mira unterstützt bei Elbblick Verwaltungsservice die Beschaffung. Für ein zeitlich begrenztes Projekt braucht die Abteilung einen Kopierer. Im Schrank steht keiner. Zwei Angebote liegen auf dem Tisch. Die Beträge sind erfunden.</p>
+      <div class="rollen-karten">
+        <div class="rollen-karte"><h3>1. Kaufen</h3><p>Ein Händler bietet den Kopierer für 1.800 Euro zum Kauf an. Danach gehört das Gerät dem Betrieb. Pflege, Lagerplatz und der spätere Weiterverkauf bleiben beim Betrieb.</p></div>
+        <div class="rollen-karte"><h3>2. Mieten</h3><p>Ein anderer Anbieter überlässt denselben Kopierertyp für drei Monate gegen 180 Euro im Monat. Danach geht das Gerät zurück. Das ist ein <strong>Mietvertrag</strong>: Nutzung auf Zeit gegen Entgelt, ohne dass die Sache in das Eigentum des Betriebs übergeht.</p></div>
+        <div class="rollen-karte"><h3>3. Nutzen und Risiko</h3><p>Die Miete passt, weil der Bedarf nur drei Monate dauert. Das Risiko: Die monatliche Summe kann über die Zeit höher sein als ein Kauf, und das Gerät muss unbeschädigt zurück. Ein Kauf wäre sinnvoller, wenn der Betrieb den Kopierer dauerhaft braucht.</p></div>
+      </div>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Wichtig</p>
+        <p>Diese Lektion nennt keine Paragraphen. Sie übt nur, eine Miete von einem Kauf zu unterscheiden und Nutzen und Risiko der zeitweisen Nutzung zu sehen.</p>
+      </aside>
+      <details class="fachwort-hinweis"><summary>Grundlage im Rahmenlehrplan</summary><p>Wörtlicher Planausschnitt:</p><blockquote>Sie bestellen auch online Sachgüter und Dienstleistungen bei ausgewählten Lieferanten und schließen Verträge (Kaufvertrag, Mietvertrag, Werkvertrag, Dienstvertrag) unter Beachtung von Nutzen und Risiken ab.</blockquote><p><a href="../quellen/kmk-rahmenlehrplan-bueromanagement.pdf#page=13">KMK-Rahmenlehrplan · Dokumentseite 13 · Lernfeld 4</a></p></details>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Mieten oder kaufen?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="uebung-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button>
+      <section id="uebung-ergebnis" class="ergebnis-box" hidden></section>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Abschluss</h2>
+      <p id="abschluss-status">Prüfe zuerst die Übung.</p>
+      <p>Wenn alle drei Antworten stimmen, hast du eine Miete von einem Kauf unterschieden und Nutzen und Risiko der zeitweisen Nutzung eingeordnet.</p>
+      <div class="knopf-reihe">
+        <button type="button" class="knopf" data-weiter="uebung">Zurück zur Übung</button>
+        <button type="button" class="knopf" id="reset-alles">Lernstand dieser Lektion zurücksetzen</button>
+        <a class="knopf knopf-haupt" href="../index.html">Zur Themenübersicht</a>
+      </div>
+    </section>
+  </main>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf4-miete.js"></script>
+</body>
+</html>

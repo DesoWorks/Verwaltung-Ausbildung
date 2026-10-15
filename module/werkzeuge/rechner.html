@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Kaufmännischer Rechner: Dreisatz, Prozent und Skonto mit Eingabe, Zwischenschritt und Ergebnis. Ohne Konto, ohne Kosten.">
+  <title>Kaufmännischer Rechner · Werkzeug</title>
+  <link rel="icon" href="../../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <style>
+    .werkzeug { max-width: 46rem; }
+    .werkzeug fieldset { border: 2px solid var(--rahmen,#bdcde3); border-radius: .8rem; margin: 1rem 0; padding: 1rem; }
+    .werkzeug label { display: block; margin: .7rem 0 .25rem; font-weight: 650; }
+    .werkzeug input, .werkzeug select { font: inherit; min-height: 44px; width: min(100%, 18rem); padding: .4rem .6rem; border: 2px solid var(--rahmen,#bdcde3); border-radius: .5rem; }
+    .werkzeug input:focus, .werkzeug select:focus { outline: 3px solid var(--fokus,#0754a6); outline-offset: 2px; }
+    .weg { background: var(--hinweis-flaeche,#eef4fb); border-left: 4px solid var(--primaer,#0754a6); padding: .8rem 1rem; margin: .8rem 0; }
+    .weg p { margin: .35rem 0; }
+    .hinweis-fehler { color: #8a1f11; }
+  </style>
+</head>
+<body data-page="werkzeug-rechner" data-base="../../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Werkzeug</p>
+      <h1>Kaufmännischer Rechner</h1>
+    </div>
+  </header>
+  <main id="hauptinhalt" class="werkzeug" tabindex="-1">
+    <p>Dreisatz, Prozent und Skonto. Du gibst die Zahlen ein, siehst den Zwischenschritt und das Ergebnis. Das Werkzeug speichert nichts und braucht kein Konto. Es ersetzt nicht die kleine Lektion <a href="../lf3-preis.html">Preisrechnung vor dem Angebot</a>.</p>
+    <form id="rechner-form">
+      <fieldset>
+        <legend>Rechenart</legend>
+        <label for="art">Was willst du rechnen?</label>
+        <select id="art" name="art">
+          <option value="dreisatz">Dreisatz</option>
+          <option value="prozent">Prozent</option>
+          <option value="skonto">Skonto</option>
+        </select>
+      </fieldset>
+      <fieldset id="felder-dreisatz">
+        <legend>Dreisatz</legend>
+        <label for="ds-menge-bekannt">Bekannte Menge</label>
+        <input id="ds-menge-bekannt" inputmode="decimal" autocomplete="off">
+        <label for="ds-preis-bekannt">Preis dieser Menge in Euro</label>
+        <input id="ds-preis-bekannt" inputmode="decimal" autocomplete="off">
+        <label for="ds-menge-neu">Gesuchte Menge</label>
+        <input id="ds-menge-neu" inputmode="decimal" autocomplete="off">
+      </fieldset>
+      <fieldset id="felder-prozent" hidden>
+        <legend>Prozent</legend>
+        <label for="pr-grund">Grundwert in Euro</label>
+        <input id="pr-grund" inputmode="decimal" autocomplete="off">
+        <label for="pr-satz">Prozentsatz</label>
+        <input id="pr-satz" inputmode="decimal" autocomplete="off">
+        <label for="pr-richtung">Was passiert mit dem Grundwert?</label>
+        <select id="pr-richtung">
+          <option value="abzug">Abzug, zum Beispiel Rabatt</option>
+          <option value="nur">Nur den Prozentbetrag zeigen</option>
+          <option value="aufschlag">Aufschlag</option>
+        </select>
+      </fieldset>
+      <fieldset id="felder-skonto" hidden>
+        <legend>Skonto</legend>
+        <label for="sk-betrag">Rechnungsbetrag in Euro</label>
+        <input id="sk-betrag" inputmode="decimal" autocomplete="off">
+        <label for="sk-satz">Skontosatz in Prozent</label>
+        <input id="sk-satz" inputmode="decimal" autocomplete="off">
+        <label for="sk-frist">Ist die Zahlungsfrist eingehalten?</label>
+        <select id="sk-frist">
+          <option value="ja">Ja</option>
+          <option value="nein">Nein</option>
+        </select>
+      </fieldset>
+      <div class="knopf-reihe">
+        <button type="submit" class="knopf knopf-haupt" id="rechnen">Rechnen</button>
+        <button type="button" class="knopf" id="leeren">Felder leeren</button>
+      </div>
+    </form>
+    <div id="weg" class="weg" hidden></div>
+    <p class="klein">Übungsrechner für die Lernplattform. Keine Steuerberatung, keine echten Beträge deines Betriebs.</p>
+  </main>
+  <script src="../../js/module-daten.js"></script>
+  <script src="../../js/fortschritt.js"></script>
+  <script src="../../js/navigation.js"></script>
+  <script src="../../js/version.js"></script>
+  <script src="../../js/werkzeug-rechner.js"></script>
+</body>
+</html>

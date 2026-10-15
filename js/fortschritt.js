@@ -29,7 +29,13 @@
     "lf3-formulare": "verwaltung-ausbildung.lf3-formulare.v1",
     "lf1-fortbildung": "verwaltung-ausbildung.lf1-fortbildung.v1",
     "lf4-lager": "verwaltung-ausbildung.lf4-lager.v1",
-    "lf4-rechnung": "verwaltung-ausbildung.lf4-rechnung.v1"
+    "lf4-rechnung": "verwaltung-ausbildung.lf4-rechnung.v1",
+    "lf1-praesentation": "verwaltung-ausbildung.lf1-praesentation.v1",
+    "lf2-protokoll": "verwaltung-ausbildung.lf2-protokoll.v1",
+    "lf3-vervielfaeltigen": "verwaltung-ausbildung.lf3-vervielfaeltigen.v1",
+    "lf4-anfrage": "verwaltung-ausbildung.lf4-anfrage.v1",
+    "lf4-stoerung": "verwaltung-ausbildung.lf4-stoerung.v1",
+    "lf4-miete": "verwaltung-ausbildung.lf4-miete.v1"
   };
   var LOESUNGEN = {
     "lf1-rolle": { q1: "azubi", q2: "abstimmen", q3: "ausbilder" },
@@ -57,7 +63,13 @@
     "lf3-formulare": { q1: "nur-felder-ausfuellen", q2: "festtext-schuetzen", q3: "felder-vor-versand-pruefen" },
     "lf1-fortbildung": { q1: "pruefen-passt", q2: "ziel-konkret", q3: "gelerntes-nutzen" },
     "lf4-lager": { q1: "griffnah-regal", q2: "abschliessbar", q3: "trocken-regal" },
-    "lf4-rechnung": { q1: "abweichung-melden", q2: "skonto-nutzen", q3: "ueberweisung-bank" }
+    "lf4-rechnung": { q1: "abweichung-melden", q2: "skonto-nutzen", q3: "ueberweisung-bank" },
+    "lf1-praesentation": { q1: "form-kurz-bildschirm", q2: "schutz-namen-quelle", q3: "katalog-kriterien-liste" },
+    "lf2-protokoll": { q1: "protokoll-ergebnis", q2: "festhalten-beschluss-offen", q3: "weitergabe-teilnehmende" },
+    "lf3-vervielfaeltigen": { q1: "aufgabe-scannen", q2: "format-pdf-lesen", q3: "sparen-seiten-beidseitig" },
+    "lf4-anfrage": { q1: "angaben-vier", q2: "satz-angebot-bitte", q3: "wirkung-unverbindlich" },
+    "lf4-stoerung": { q1: "stoerung-schlechtleistung", q2: "meldung-konkret", q3: "schritt-vorschlag-info" },
+    "lf4-miete": { q1: "miete", q2: "kauf-dauer", q3: "nutzen-risiko" }
   };
 
   function abgeschlossen(id) {

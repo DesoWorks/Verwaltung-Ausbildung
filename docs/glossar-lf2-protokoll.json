@@ -1,0 +1,14 @@
+[
+  {
+    "begriff": "Ergebnisprotokoll",
+    "erklaerung": "Ein Protokoll, das festhält, was beschlossen wurde und wer welche Aufgabe übernimmt. Der Gesprächsverlauf steht nur kurz oder gar nicht darin."
+  },
+  {
+    "begriff": "Verlaufsprotokoll",
+    "erklaerung": "Ein Protokoll, das den Ablauf der Besprechung mit den einzelnen Beiträgen wiedergibt. Es ist ausführlicher als ein Ergebnisprotokoll."
+  },
+  {
+    "begriff": "Offener Punkt",
+    "erklaerung": "Ein Thema aus der Besprechung, das noch nicht entschieden oder erledigt ist. Es steht getrennt im Protokoll, damit es nicht vergessen wird."
+  }
+]

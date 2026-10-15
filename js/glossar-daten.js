@@ -309,4 +309,62 @@ window.GLOSSAR = [
     begriff: "Bezahlsystem",
     erklaerung: "Der Weg, auf dem eine Rechnung bezahlt wird, zum Beispiel per Überweisung. Welcher Weg passt, hängt von der Situation und den Vorgaben des Betriebs ab."
   }
+,
+  {
+    begriff: "Präsentationsform",
+    erklaerung: "Die Art, wie Ergebnisse gezeigt werden, zum Beispiel digital am Bildschirm, am Plakat oder mündlich. Sie richtet sich nach Zeit, Raum, Technik und Zuhörenden."
+  },
+  {
+    begriff: "Datenschutz und Urheberrecht",
+    erklaerung: "Angaben zu einzelnen Personen gehören nur in eine Präsentation, wenn das erlaubt und nötig ist. Fremde Bilder oder Texte nutzt man nur, wenn es erlaubt ist, und nennt die Quelle."
+  },
+  {
+    begriff: "Kriterienkatalog",
+    erklaerung: "Eine Liste von Punkten, nach denen man etwas bewertet, zum Beispiel eine Präsentation. So wird die Bewertung nachvollziehbar."
+  },
+  {
+    begriff: "Verlaufsprotokoll",
+    erklaerung: "Ein Protokoll, das den Ablauf der Besprechung mit den einzelnen Beiträgen wiedergibt. Es ist ausführlicher als ein Ergebnisprotokoll."
+  },
+  {
+    begriff: "Offener Punkt",
+    erklaerung: "Ein Thema, das in der Sitzung noch nicht entschieden wurde. Es gehört ins Protokoll, damit es nicht verloren geht."
+  },
+  {
+    begriff: "Kopieren, Drucken, Scannen",
+    erklaerung: "Kopieren macht aus Papier wieder Papier. Drucken bringt eine Datei auf Papier. Scannen macht aus Papier eine Datei."
+  },
+  {
+    begriff: "Dateiformat",
+    erklaerung: "Die Art, wie eine Datei gespeichert wird. PDF eignet sich, wenn ein Schriftstück nur gelesen und nicht verändert werden soll."
+  },
+  {
+    begriff: "Nachhaltig vervielfältigen",
+    erklaerung: "Beim Kopieren und Drucken nur so viele Seiten erzeugen, wie gebraucht werden, zum Beispiel beidseitig und ohne unnötige Kopien."
+  },
+  {
+    begriff: "Norm- und sachgerecht schreiben",
+    erklaerung: "Ein Schreiben so aufbauen, dass die nötigen Angaben vollständig und in einer üblichen Briefordnung stehen."
+  },
+  {
+    begriff: "Nicht-Rechtzeitig-Lieferung",
+    erklaerung: "Die Ware kommt nicht zum vereinbarten Termin, sondern später."
+  },
+  {
+    begriff: "Schlechtleistung",
+    erklaerung: "Die Ware kommt, ist aber mangelhaft, zum Beispiel beschädigt oder nicht wie vereinbart."
+  },
+  {
+    begriff: "Sachlich melden",
+    erklaerung: "Genau sagen, was los ist, ohne Vorwürfe, und einen konkreten nächsten Schritt nennen."
+  }
+,
+  {
+    begriff: "Mietvertrag",
+    erklaerung: "Ein Vertrag über die Nutzung einer Sache auf Zeit gegen Entgelt. Die Sache geht nicht in das Eigentum über und wird zurückgegeben."
+  },
+  {
+    begriff: "Nutzen und Risiko",
+    erklaerung: "Was die Entscheidung bringt und was schiefgehen kann. Bei der Miete ist der Nutzen die zeitweise Nutzung, das Risiko sind Rückgabe, Pflege und die Summe über die Zeit."
+  },
 ];

@@ -8,7 +8,40 @@
 (function (global) {
   "use strict";
 
-  global.MODULE_TOOLS = [];
+  global.MODULE_TOOLS = [
+    {
+      id: "werkzeug-rechner",
+      page: "werkzeug-rechner",
+      titel: "Kaufmännischer Rechner",
+      beschreibung: "Dreisatz, Prozent und Skonto mit Eingabe, Zwischenschritt und Ergebnis.",
+      datei: "module/werkzeuge/rechner.html",
+      lektion: "module/lf3-preis.html"
+    },
+    {
+      id: "werkzeug-tabelle",
+      page: "werkzeug-tabelle",
+      titel: "Kleine Tabelle",
+      beschreibung: "Summe, Prozent, WENN, SVERWEIS und ein einfaches Diagramm.",
+      datei: "module/werkzeuge/tabelle.html",
+      lektion: "module/lf4-menge.html"
+    },
+    {
+      id: "werkzeug-textbausteine",
+      page: "werkzeug-textbausteine",
+      titel: "Textbausteine und Formular",
+      beschreibung: "Vorlage, austauschbare Bausteine und sichtbare Normfelder.",
+      datei: "module/werkzeuge/textbausteine.html",
+      lektion: "module/lf3-textbausteine.html"
+    },
+    {
+      id: "werkzeug-nutzwert",
+      page: "werkzeug-nutzwert",
+      titel: "Nutzwerttabelle",
+      beschreibung: "Kriterien, Gewichte, Punkte und Summe.",
+      datei: "module/werkzeuge/nutzwert.html",
+      lektion: "module/lf4-vergleich.html"
+    }
+  ];
 
   global.MODULE_EINSTIEG = [];
 
@@ -77,6 +110,15 @@
               page: "lf1-fortbildung",
               status: "verfuegbar",
               datei: "module/lf1-fortbildung.html"
+            },
+            {
+              id: "lf1-praesentation",
+              typ: "lektion",
+              titel: "Eine Präsentation vorbereiten und bewerten",
+              beschreibung: "Die Präsentationsform an die Rahmenbedingungen anpassen, Datenschutz und Urheberrecht beachten und einen Kriterienkatalog zur Bewertung nutzen.",
+              page: "lf1-praesentation",
+              status: "verfuegbar",
+              datei: "module/lf1-praesentation.html"
             }
           ]
         },
@@ -140,6 +182,15 @@
               page: "lf2-team",
               status: "verfuegbar",
               datei: "module/lf2-team.html"
+            },
+            {
+              id: "lf2-protokoll",
+              typ: "lektion",
+              titel: "Eine Sitzung protokollieren",
+              beschreibung: "Ein Ergebnisprotokoll von einem Verlaufsprotokoll unterscheiden, Beschlüsse und offene Punkte festhalten und es an die Teilnehmenden geben.",
+              page: "lf2-protokoll",
+              status: "verfuegbar",
+              datei: "module/lf2-protokoll.html"
             }
           ]
         },
@@ -203,6 +254,15 @@
               page: "lf3-formulare",
               status: "verfuegbar",
               datei: "module/lf3-formulare.html"
+            },
+            {
+              id: "lf3-vervielfaeltigen",
+              typ: "lektion",
+              titel: "Schriftstücke vervielfältigen",
+              beschreibung: "Kopieren, Drucken und Scannen der Aufgabe zuordnen, ein passendes Dateiformat wählen und beim Vervielfältigen Papier sparen.",
+              page: "lf3-vervielfaeltigen",
+              status: "verfuegbar",
+              datei: "module/lf3-vervielfaeltigen.html"
             }
           ]
         },
@@ -259,6 +319,15 @@
               datei: "module/lf4-vertrag.html"
             },
             {
+              id: "lf4-miete",
+              typ: "lektion",
+              titel: "Mieten statt kaufen",
+              beschreibung: "Eine Miete von einem Kauf unterscheiden und Nutzen und Risiko der zeitweisen Nutzung einordnen.",
+              page: "lf4-miete",
+              status: "verfuegbar",
+              datei: "module/lf4-miete.html"
+            },
+            {
               id: "lf4-wareneingang",
               typ: "lektion",
               titel: "Wareneingang prüfen und einlagern",
@@ -284,6 +353,24 @@
               page: "lf4-rechnung",
               status: "verfuegbar",
               datei: "module/lf4-rechnung.html"
+            },
+            {
+              id: "lf4-anfrage",
+              typ: "lektion",
+              titel: "Eine Anfrage an den Lieferanten schreiben",
+              beschreibung: "Eine Anfrage mit den nötigen Angaben normgerecht schreiben, ohne schon zu bestellen.",
+              page: "lf4-anfrage",
+              status: "verfuegbar",
+              datei: "module/lf4-anfrage.html"
+            },
+            {
+              id: "lf4-stoerung",
+              typ: "lektion",
+              titel: "Eine Lieferstörung sachlich melden",
+              beschreibung: "Nicht-Rechtzeitig-Lieferung und Schlechtleistung unterscheiden und einen konkreten Lösungsvorschlag sachlich mitteilen.",
+              page: "lf4-stoerung",
+              status: "verfuegbar",
+              datei: "module/lf4-stoerung.html"
             }
           ]
         }

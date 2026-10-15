@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Kleine Tabelle: Summe, Prozent, WENN, SVERWEIS und ein einfaches Diagramm. Kein Office-Programm.">
+  <title>Kleine Tabelle · Werkzeug</title>
+  <link rel="icon" href="../../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <style>
+    .werkzeug { max-width: 52rem; }
+    .blatt { border-collapse: collapse; margin: 1rem 0; }
+    .blatt th, .blatt td { border: 2px solid var(--rahmen,#bdcde3); padding: .35rem .45rem; min-width: 7.5rem; }
+    .blatt th { background: var(--hinweis-flaeche,#eef4fb); text-align: left; }
+    .blatt input { font: inherit; width: 8.5rem; min-height: 40px; border: 2px solid transparent; border-radius: .35rem; padding: .2rem .35rem; }
+    .blatt input:focus { outline: 3px solid var(--fokus,#0754a6); outline-offset: 1px; border-color: var(--primaer,#0754a6); }
+    .formel { font-family: ui-monospace, monospace; }
+    .weg { background: var(--hinweis-flaeche,#eef4fb); border-left: 4px solid var(--primaer,#0754a6); padding: .8rem 1rem; }
+    .balken-zeile { display: grid; grid-template-columns: 8rem 1fr 5rem; gap: .5rem; align-items: center; margin: .35rem 0; }
+    .balken { height: 1.1rem; background: var(--primaer,#0754a6); min-width: 2px; }
+    .suche { display: flex; flex-wrap: wrap; gap: .6rem; align-items: end; margin: 1rem 0; }
+    .suche label { font-weight: 650; }
+    .suche input, .suche select { font: inherit; min-height: 44px; padding: .35rem .5rem; border: 2px solid var(--rahmen,#bdcde3); border-radius: .45rem; }
+  </style>
+</head>
+<body data-page="werkzeug-tabelle" data-base="../../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Werkzeug</p>
+      <h1>Kleine Tabelle</h1>
+    </div>
+  </header>
+  <main id="hauptinhalt" class="werkzeug" tabindex="-1">
+    <p>Wenige Zellen, keine Office-Installation. Du übst Summe, Prozent, WENN, SVERWEIS und ein einfaches Diagramm. Die Tabelle ersetzt nicht die kleine Lektion <a href="../lf4-menge.html">Bestellmenge und Lieferzeitpunkt</a>.</p>
+    <table class="blatt">
+      <caption class="sr-only">Vier Positionen mit Menge, Einzelpreis, Zeilensumme und Hinweis</caption>
+      <thead>
+        <tr><th scope="col">Zelle</th><th scope="col">Position</th><th scope="col">Menge</th><th scope="col">Einzelpreis</th><th scope="col">Summe</th><th scope="col">WENN</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">2</th>
+          <td><input id="name-2" aria-label="Position Zeile 2" value="Ordner"></td>
+          <td><input id="menge-2" aria-label="Menge Zeile 2" inputmode="decimal" value="10"></td>
+          <td><input id="preis-2" aria-label="Einzelpreis Zeile 2" inputmode="decimal" value="2,50"></td>
+          <td class="formel" id="summe-2">=B2*C2</td>
+          <td class="formel" id="wenn-2"></td>
+        </tr>
+        <tr>
+          <th scope="row">3</th>
+          <td><input id="name-3" aria-label="Position Zeile 3" value="Papier"></td>
+          <td><input id="menge-3" aria-label="Menge Zeile 3" inputmode="decimal" value="4"></td>
+          <td><input id="preis-3" aria-label="Einzelpreis Zeile 3" inputmode="decimal" value="3,20"></td>
+          <td class="formel" id="summe-3"></td>
+          <td class="formel" id="wenn-3"></td>
+        </tr>
+        <tr>
+          <th scope="row">4</th>
+          <td><input id="name-4" aria-label="Position Zeile 4" value="Stifte"></td>
+          <td><input id="menge-4" aria-label="Menge Zeile 4" inputmode="decimal" value="20"></td>
+          <td><input id="preis-4" aria-label="Einzelpreis Zeile 4" inputmode="decimal" value="0,80"></td>
+          <td class="formel" id="summe-4"></td>
+          <td class="formel" id="wenn-4"></td>
+        </tr>
+      </tbody>
+    </table>
+    <p id="summe-text" class="weg"></p>
+    <div class="suche">
+      <div>
+        <label for="suchname">SVERWEIS: Positionsname</label>
+        <input id="suchname" value="Papier">
+      </div>
+      <button type="button" class="knopf" id="suchen">Nachschlagen</button>
+    </div>
+    <p id="suchergebnis" class="weg" hidden></p>
+    <h2>Einfaches Diagramm der Zeilensummen</h2>
+    <div id="diagramm" role="img" aria-label="Balkendiagramm der Zeilensummen"></div>
+    <p class="klein">WENN prüft hier: Liegt die Zeilensumme bei 20 Euro oder darüber, steht „prüfen“, sonst „ok“. Das sind Übungszahlen.</p>
+  </main>
+  <script src="../../js/module-daten.js"></script>
+  <script src="../../js/fortschritt.js"></script>
+  <script src="../../js/navigation.js"></script>
+  <script src="../../js/version.js"></script>
+  <script src="../../js/werkzeug-tabelle.js"></script>
+</body>
+</html>

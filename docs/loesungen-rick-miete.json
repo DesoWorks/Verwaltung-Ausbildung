@@ -1,0 +1,10 @@
+{
+  "lf4-miete": {
+    "q1": "miete",
+    "q2": "kauf-dauer",
+    "q3": "nutzen-risiko"
+  },
+  "beleg": "Sie bestellen auch online Sachgüter und Dienstleistungen bei ausgewählten Lieferanten und schließen Verträge (Kaufvertrag, Mietvertrag, Werkvertrag, Dienstvertrag) unter Beachtung von Nutzen und Risiken ab.",
+  "seite": 13,
+  "warum": "Kauf, Werk und Dienst werden in lf4-vertrag abgefragt. Der Mietvertrag steht im selben Satz und wurde dort nur als Beispiel genannt, nicht geprüft."
+}
