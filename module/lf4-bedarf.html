@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lernorientierung: Bedarf, Wunsch und voreilige Bestellung unterscheiden und zuerst den Bedarf klären.">
+  <title>Bedarf vor der Bestellung · Lernfeld 4</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .bedarf-liste { margin:1.25rem 0; padding:0; max-width:48rem; list-style:none; display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; }
+    .bedarf-eintrag { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:.85rem 1rem; background:var(--flaeche,#fff); overflow-wrap:anywhere; }
+    .bedarf-eintrag p { margin:0; }
+    .bedarf-art { display:inline-block; margin-right:.4rem; padding:.05rem .5rem; border:2px solid currentColor; border-radius:.4rem; font-weight:700; }
+    .bedarf-frage { margin:1rem 0; }
+    .bedarf-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .bedarf-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .bedarf-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .bedarf-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .bedarf-option:hover { border-color:var(--primaer,#0754a6); }
+    .bedarf-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .bedarf-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf4-bedarf" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 4</p>
+      <h1>Bedarf vor der Bestellung</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="true">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Der Schrank</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Im Büro wird etwas knapp. Dann ist es verlockend, sofort zu bestellen. Du lernst, was du vorher klärst: Brauchst du es wirklich? Wie viel ist noch da? Bis wann wird es gebraucht?</p>
+      <ul>
+        <li>Bedarf, Wunsch und voreilige Bestellung unterscheiden.</li>
+        <li>Vor einer Bestellung zuerst den Bedarf klären.</li>
+        <li>Erkennen, warum das Sparsamkeit und Umwelt schont.</li>
+      </ul>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Ein Lernbeispiel, keine Betriebsregel</p>
+        <p><strong>Das Beispielunternehmen Nordlicht Büroservice und die Person Jonas sind frei erfunden.</strong> Jeder Betrieb regelt die Beschaffung anders. Diese Lektion behandelt nur einen kleinen Ausschnitt von Lernfeld 4. Sie ist keine Rechtsberatung.</p>
+      </aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Das vollständige Glossar findest du unter „Wörter &amp; Begriffe“.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Jonas und der Schrank</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Jonas und der Schrank</h2>
+      <p>Jonas arbeitet im erfundenen Nordlicht Büroservice. Beim Aufräumen sieht er, dass der Ordner-Vorrat klein wirkt. Eine Kollegin ruft: „Bestell einfach gleich einen großen Karton!“ Jonas bestellt noch nicht. Er klärt zuerst den Bedarf.</p>
+      <ol class="bedarf-liste" aria-label="Was Jonas vor der Bestellung klärt">
+        <li class="bedarf-eintrag"><p><span class="bedarf-art">1 · Bestand</span>Jonas schaut in den Schrank. Er zählt, was noch da ist.</p></li>
+        <li class="bedarf-eintrag"><p><span class="bedarf-art">2 · Verbrauch</span>Er fragt das Team, wofür die Ordner gebraucht werden und wie schnell sie weniger werden.</p></li>
+        <li class="bedarf-eintrag"><p><span class="bedarf-art">3 · Zeitpunkt</span>Er klärt, bis wann Nachschub nötig ist, damit die Arbeit nicht stockt.</p></li>
+        <li class="bedarf-eintrag"><p><span class="bedarf-art">4 · Ergebnis</span>Erst jetzt weiß Jonas, ob und was er besorgen muss. Dann erst kümmert er sich um die Beschaffung.</p></li>
+      </ol>
+      <h3>Bedarf, Wunsch oder voreilige Bestellung?</h3>
+      <p>Ein <strong>Bedarf</strong> ist das, was der Betrieb für seine Arbeit wirklich braucht und nicht mehr vorrätig hat. Ohne Ordner kann das Team keine Unterlagen ablegen.</p>
+      <p>Ein <strong>Wunsch</strong> wäre schön oder bequem, aber die Arbeit läuft auch ohne. Zwölf bunte Stifte sind ein Wunsch, wenn schwarze und blaue noch reichen.</p>
+      <p>Eine <strong>voreilige Bestellung</strong> passiert, wenn jemand bestellt, bevor Bestand, Verbrauch und Zeitpunkt geklärt sind. Dann liegt später zu viel oder das Falsche im Schrank.</p>
+      <h3>Warum das wichtig ist</h3>
+      <p>Das <strong>ökonomische Prinzip</strong> heißt: Der Betrieb geht mit seinen Mitteln sparsam um. Wer zuerst den Bedarf klärt, kauft nichts Unnötiges. Das ist auch ein Beitrag zum nachhaltigen Wirtschaften, weil weniger überflüssiges Material übrig bleibt.</p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Was klärst du zuerst?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="bedarf-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="bedarf-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Ein Bedarf ist nötig für die Arbeit. Ein Wunsch wäre nur schön.</li>
+        <li>Bestelle nicht voreilig: Prüfe zuerst Bestand, Verbrauch und Zeitpunkt.</li>
+        <li>Wer den Bedarf klärt, handelt nach dem ökonomischen Prinzip und schont Umwelt und Geld.</li>
+        <li>Die Beschaffung beginnt mit der Frage „Was brauchen wir wirklich?“.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 4 · Lernorientierung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf4-bedarf.js"></script>
+</body>
+</html>

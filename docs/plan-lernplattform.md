@@ -51,8 +51,8 @@ Nicht kopiert wird der Fachinhalt. Computergrundlagen, Netzwerke und die Lernfel
 
 1. Erledigt am 14.10.2026: Rahmen der IT-Ausbildung gelesen. Übernommen sind Stil, Startseite, Navigation, leeres Glossar und das Fortschrittsgerüst. Nicht übernommen sind Fachinhalt, Werkzeuge und Speicher-Schlüssel der IT-Ausbildung.
 2. Die Quelle bleibt der Rahmenlehrplan in `docs/ausbildungsplan.md`. Ohne diese Datei wird kein Lernfeld erfunden.
-3. Erledigt am 14.10.2026, nachdem Dennis den Plan gelesen hat: die erste kleine Lektion in Lernfeld 1, „Deine Rolle im Betrieb“. Inhalt aus der Leitkompetenz von Lernfeld 1, nicht aus einer Erinnerung. Die übrigen Lernfelder bleiben „In Kürze“.
-4. Die nächste Etappe ist Lernfeld 2: darin entsteht eine kleine Lektion, nicht das ganze Lernfeld. Danach geht es etappenweise weiter; ein Lernfeld ist jeweils eine Etappe.
+3. Erledigt am 14.10.2026, nachdem Dennis den Plan gelesen hat: die erste kleine Lektion in Lernfeld 1, „Deine Rolle im Betrieb“. Inhalt aus der Leitkompetenz von Lernfeld 1, nicht aus einer Erinnerung.
+4. Erledigt am 14.10.2026: je eine kleine Lektion in Lernfeld 2 („Arbeitsablauf und Störungen trennen“) und Lernfeld 3 („Von der Anfrage zum Auftrag“), nicht die ganzen Lernfelder. Die nächste Etappe ist Lernfeld 4: wieder eine kleine Lektion. Erledigt am 15.10.2026: „Bedarf vor der Bestellung“. Ein Lernfeld ist jeweils eine Etappe.
 5. Nützliche Werkzeuge prüfen. Ein Werkzeug wird nur eingebaut, wenn es eine konkrete Übungsaufgabe dieses Berufs besser macht und die Barrierefreiheit nicht verschlechtert.
 6. GLADOS prüft die sichtbare Seite. C3PO schreibt die Abnahme. JARVIS korrigiert nur, was Rick danach vergibt.
 7. So weiter, eine kleine Lektion nach der anderen, bis das erste Ausbildungsjahr dieser Plattform fertig ist.
@@ -75,6 +75,8 @@ Ein Werkzeug kommt nur hinein, wenn alle drei Punkte stimmen:
 Kein Einbau in diesem Auftrag.
 
 ## Nicht in diesem Auftrag
+
+Diese Grenzen beschreiben den ursprünglichen Planungsauftrag, nicht die später freigegebenen Bauaufträge.
 
 - keine Lektion, kein HTML, kein Stylesheet, kein Skript für die Lernplattform
 - keine Änderung an `/home/starnet/projects/IT-Ausbildung`
@@ -102,3 +104,13 @@ Am 14.10.2026 steht die Themenübersicht. `index.html` zeigt die 13 Lernfelder a
 Das Glossar unter `glossar.html` ist leer. Ein Begriff kommt erst hinein, wenn eine Lektion ihn benutzt. Die lokale Vorschau startet mit `start.sh` auf `http://127.0.0.1:8107`. Version `0.1.0-alpha.1`.
 
 Geprüft mit Headless-Chrome gegen die laufende lokale Seite: die vier Titel von Jahr 1 sind sichtbar, kein Link auf eine Lektion, die Version steht in der Fußzeile, das Glossar sagt, dass es leer ist. Das Menü „Tools & Nachschlagen“ erscheint nicht, solange kein Werkzeug existiert.
+
+## Lernfeld 3 begonnen
+
+Am 14.10.2026 ist „Von der Anfrage zum Auftrag“ als eine kleine Lektion verfügbar. Lernfeld 1, 2 und 3 haben jetzt je eine kleine Lektion. Lernfeld 4 ist nicht begonnen. Version: `0.1.3-alpha.1`. Beleg und Grenzen: [`lektion-lf3-auftrag-2026-10-14.md`](lektion-lf3-auftrag-2026-10-14.md).
+
+TERMINUS baut diese Lektion selbst über ChatGPT. JARVIS und Claude werden wegen des leeren Kontingents bis 23 Uhr für diesen Auftrag nicht benutzt. Die Fachwort-Pfeile bleiben unverändert. Lernfeld 3 ist damit begonnen, nicht vollständig fertig.
+
+## Lernfeld 4 begonnen
+
+Am 15.10.2026 ist „Bedarf vor der Bestellung“ als eine kleine Lektion verfügbar. Lernfeld 1 bis 4 haben jetzt je eine kleine Lektion. Lernfeld 5 bis 13 bleiben „In Kürze“. Version: `0.1.4-alpha.1`. Beleg und Grenzen: [`lektion-lf4-bedarf-2026-10-15.md`](lektion-lf4-bedarf-2026-10-15.md). Lernfeld 4 ist damit begonnen, nicht vollständig fertig.

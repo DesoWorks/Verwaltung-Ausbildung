@@ -32,5 +32,33 @@ window.GLOSSAR = [
   {
     begriff: "Checkliste",
     erklaerung: "Eine Liste mit Schritten zum Abhaken. Sie zeigt dir, was schon erledigt ist und was noch fehlt."
+  },
+  {
+    begriff: "Anfrage",
+    erklaerung: "Eine Frage einer Kundin oder eines Kunden, zum Beispiel nach Preis oder Lieferzeit. Sie ist noch kein Auftrag."
+  },
+  {
+    begriff: "Angebot",
+    erklaerung: "Die Antwort des Betriebs auf eine Anfrage, mit Artikel, Menge, Preis und Lieferzeit. Es wird erst ein Auftrag, wenn die andere Seite annimmt."
+  },
+  {
+    begriff: "Auftrag",
+    erklaerung: "Die angenommene Bestellung. Erst dann darf der Betrieb liefern und abrechnen."
+  },
+  {
+    begriff: "Auftragsbestätigung",
+    erklaerung: "Das Schreiben, mit dem der Betrieb die Annahme des Auftrags festhält."
+  },
+  {
+    begriff: "Bedarf",
+    erklaerung: "Das, was der Betrieb für seine Arbeit wirklich braucht und nicht mehr vorrätig hat. Ein bloßer Wunsch ist noch kein Bedarf."
+  },
+  {
+    begriff: "ökonomisches Prinzip",
+    erklaerung: "Der Grundsatz, mit den vorhandenen Mitteln sparsam und überlegt umzugehen. Wer vor dem Kauf den Bedarf klärt, kauft nichts Unnötiges."
+  },
+  {
+    begriff: "Beschaffung",
+    erklaerung: "Alle Schritte, mit denen ein Betrieb das besorgt, was er braucht. Sie beginnt nicht mit der Bestellung, sondern mit der Klärung des Bedarfs."
   }
 ];

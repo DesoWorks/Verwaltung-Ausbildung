@@ -57,17 +57,37 @@
           id: "lf3",
           lernfeld: "Lernfeld 3",
           titel: "Aufträge bearbeiten",
-          status: "kommt-bald",
+          status: "verfuegbar",
           stunden: 80,
-          unterthemen: []
+          unterthemen: [
+            {
+              id: "lf3-auftrag",
+              typ: "lektion",
+              titel: "Von der Anfrage zum Auftrag",
+              beschreibung: "Anfrage, Angebot und Auftrag unterscheiden und den Auftrag vollständig weitergeben.",
+              page: "lf3-auftrag",
+              status: "verfuegbar",
+              datei: "module/lf3-auftrag.html"
+            }
+          ]
         },
         {
           id: "lf4",
           lernfeld: "Lernfeld 4",
           titel: "Sachgüter und Dienstleistungen beschaffen und Verträge schließen",
-          status: "kommt-bald",
+          status: "verfuegbar",
           stunden: 120,
-          unterthemen: []
+          unterthemen: [
+            {
+              id: "lf4-bedarf",
+              typ: "lektion",
+              titel: "Bedarf vor der Bestellung",
+              beschreibung: "An einem erfundenen Büroalltag Bedarf, Wunsch und voreilige Bestellung unterscheiden und zuerst den Bedarf klären.",
+              page: "lf4-bedarf",
+              status: "verfuegbar",
+              datei: "module/lf4-bedarf.html"
+            }
+          ]
         }
       ]
     },

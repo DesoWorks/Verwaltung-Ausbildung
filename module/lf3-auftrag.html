@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lernorientierung: Anfrage, Angebot und Auftrag unterscheiden und einen Auftrag vollständig weitergeben.">
+  <title>Von der Anfrage zum Auftrag · Lernfeld 3</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .auftrag-liste { margin:1.25rem 0; padding:0; max-width:48rem; list-style:none; display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; }
+    .auftrag-eintrag { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:.85rem 1rem; background:var(--flaeche,#fff); overflow-wrap:anywhere; }
+    .auftrag-eintrag p { margin:0; }
+    .auftrag-art { display:inline-block; margin-right:.4rem; padding:.05rem .5rem; border:2px solid currentColor; border-radius:.4rem; font-weight:700; }
+    .auftrag-frage { margin:1rem 0; }
+    .auftrag-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .auftrag-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .auftrag-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .auftrag-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .auftrag-option:hover { border-color:var(--primaer,#0754a6); }
+    .auftrag-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .auftrag-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf3-auftrag" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 3</p>
+      <h1>Von der Anfrage zum Auftrag</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="true">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Vormittag</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Eine Kundin fragt nach einem Artikel. Das ist eine <strong>Anfrage</strong>: Sie möchte etwas wissen und hat noch nichts bestellt. Du lernst, wie daraus im Beispiel ein Auftrag wird und was du danach weitergibst.</p>
+      <ul>
+        <li>Anfrage, Angebot und Auftrag unterscheiden und in die richtige Reihenfolge bringen.</li>
+        <li>Vor einer Zusage prüfen, ob du sie machen darfst.</li>
+        <li>Einen angenommenen Auftrag vollständig an die nächste Person weitergeben.</li>
+      </ul>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Ein Lernbeispiel, keine Betriebsregel</p>
+        <p><strong>Das Beispielunternehmen Nordlicht Büroservice und die Person Leo sind frei erfunden.</strong> Jeder Betrieb regelt seine Abläufe anders. Diese Lektion behandelt nur einen kleinen Ausschnitt von Lernfeld 3. Sie ist keine Rechtsberatung.</p>
+      </aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Das vollständige Glossar findest du unter „Wörter &amp; Begriffe“.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Leos Vormittag</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Leos Vormittag</h2>
+      <p>Leo arbeitet im erfundenen Nordlicht Büroservice. Eine Kundin fragt nach 20 Ordnern. Leo macht nicht sofort eine Zusage. Er prüft zuerst mit seiner Kollegin, ob er ein Angebot erstellen darf und welche Angaben dafür feststehen.</p>
+      <ol class="auftrag-liste" aria-label="Von der Anfrage zum Auftrag in der richtigen Reihenfolge">
+        <li class="auftrag-eintrag"><p><span class="auftrag-art">1 · Anfrage</span>Die Kundin fragt: „Was kosten 20 Ordner?“ Leo klärt, welchen Artikel sie meint und wann sie die Ordner braucht.</p></li>
+        <li class="auftrag-eintrag"><p><span class="auftrag-art">2 · Angebot</span>Nach der Prüfung schreibt Leo ein Angebot. Darin stehen Artikel, Menge, Preis und Lieferzeit. In dieser Lektion rechnen wir keinen Preis aus.</p></li>
+        <li class="auftrag-eintrag"><p><span class="auftrag-art">3 · Auftrag</span>Die Kundin nimmt das Angebot an. Erst jetzt behandelt Leo die Bestellung im Beispiel als Auftrag.</p></li>
+        <li class="auftrag-eintrag"><p><span class="auftrag-art">4 · Weitergabe</span>Leo hält die Annahme schriftlich fest. Er gibt Artikel, Menge und vereinbarten Liefertermin vollständig an die Kollegin in der Auslieferung weiter.</p></li>
+      </ol>
+      <h3>Anfrage, Angebot oder Auftrag?</h3>
+      <p>Eine <strong>Anfrage</strong> ist eine Frage, etwa nach Preis oder Lieferzeit. Sie ist noch kein Auftrag. Leo antwortet erst, nachdem er die nötigen Angaben geprüft hat.</p>
+      <p>Ein <strong>Angebot</strong> ist die Antwort des Betriebs mit Artikel, Menge, Preis und Lieferzeit. Im Beispiel wartet Leo danach auf die Annahme durch die Kundin. Er liefert noch nichts aus.</p>
+      <p>Ein <strong>Auftrag</strong> ist hier die angenommene Bestellung. Die Kundin hat dem Angebot zugestimmt. Jetzt kann Leo die weitere Bearbeitung veranlassen.</p>
+      <h3>Die Annahme festhalten und vollständig weitergeben</h3>
+      <p>Eine <strong>Auftragsbestätigung</strong> ist das Schreiben, mit dem der Betrieb die Annahme des Auftrags schriftlich festhält. Sie ersetzt keine fehlenden Angaben.</p>
+      <p>Damit die Kollegin ohne Rückfragen weiterarbeiten kann, gibt Leo Menge, Artikel und Liefertermin vollständig weiter. Fehlt eine Angabe, klärt er sie zuerst. Er verspricht nichts, was er noch nicht geprüft hat.</p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Was ist die nächste Handlung?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="auftrag-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="auftrag-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Eine Anfrage ist eine Frage und noch kein Auftrag.</li>
+        <li>Prüfe vor dem Angebot, ob du es erstellen darfst und ob die Angaben feststehen.</li>
+        <li>Im Beispiel folgt der Auftrag erst auf die Annahme des Angebots; die Auftragsbestätigung hält die Annahme schriftlich fest.</li>
+        <li>Gib Artikel, Menge und Liefertermin vollständig weiter, statt eine ungeprüfte Zusage zu machen.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 3 · Lernorientierung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf3-auftrag.js"></script>
+</body>
+</html>

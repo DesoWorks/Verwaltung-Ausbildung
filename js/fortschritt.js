@@ -1,15 +1,19 @@
-/* Gemeinsame Abschlussableitung. Noch keine Lektion speichert einen Zustand.
+/* Gemeinsame Abschlussableitung aus den gespeicherten Antworten und dem Abschluss der Lektionen.
  * Es wird kein eigener Abschlusswert gespeichert. Schlüssel gehören nur
  * zu dieser Plattform, nicht zur IT-Ausbildung. */
 (function (global) {
   "use strict";
   var SCHLUESSEL = {
     "lf1-rolle": "verwaltung-ausbildung.lf1-rolle.v1",
-    "lf2-ablauf": "verwaltung-ausbildung.lf2-ablauf.v1"
+    "lf2-ablauf": "verwaltung-ausbildung.lf2-ablauf.v1",
+    "lf3-auftrag": "verwaltung-ausbildung.lf3-auftrag.v1",
+    "lf4-bedarf": "verwaltung-ausbildung.lf4-bedarf.v1"
   };
   var LOESUNGEN = {
     "lf1-rolle": { q1: "azubi", q2: "abstimmen", q3: "ausbilder" },
-    "lf2-ablauf": { q1: "zeitdieb", q2: "ordnen", q3: "rueckruf" }
+    "lf2-ablauf": { q1: "zeitdieb", q2: "ordnen", q3: "rueckruf" },
+    "lf3-auftrag": { q1: "anfrage", q2: "warten", q3: "weitergeben" },
+    "lf4-bedarf": { q1: "wunsch", q2: "voreilig", q3: "klaeren" }
   };
 
   function abgeschlossen(id) {
