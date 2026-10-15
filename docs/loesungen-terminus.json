@@ -1,0 +1,5 @@
+{
+  "lf2-termine": { "q1": "termin", "q2": "vorbereiten", "q3": "protokoll" },
+  "lf2-post": { "q1": "weitergeben", "q2": "versand", "q3": "ablage" },
+  "lf3-dokumente": { "q1": "bestaetigung", "q2": "lieferschein", "q3": "rechnung" }
+}

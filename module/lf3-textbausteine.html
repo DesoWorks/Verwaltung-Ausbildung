@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Wiederkehrende Formulierungen können die Arbeit erleichtern. Du lernst, einen passenden Textbaustein auszuwählen, an den einzelnen Kundenfall anzupassen und vor dem Versand zu prüfen.">
+  <title>Textbausteine passend einsetzen · Lernfeld 3</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .rollen-karten { display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; margin:1.25rem 0; max-width:48rem; }
+    .rollen-karte { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:1rem; background:var(--flaeche,#fff); }
+    .rollen-karte h3 { margin-top:0; }
+    .rollen-karte p:last-child { margin-bottom:0; }
+    .rollen-frage { margin:1rem 0; }
+    .rollen-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .rollen-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .rollen-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .rollen-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .rollen-option:hover { border-color:var(--primaer,#0754a6); }
+    .rollen-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .rollen-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf3-textbausteine" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 3</p>
+      <h1>Textbausteine passend einsetzen</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="step">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Beispiel</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Wiederkehrende Formulierungen können die Arbeit erleichtern. Du lernst, einen passenden Textbaustein auszuwählen, an den einzelnen Kundenfall anzupassen und vor dem Versand zu prüfen.</p>
+      <ul>
+        <li>Einen Textbaustein als wiederverwendbaren Textteil erkennen.</li>
+        <li>Platzhalter mit geprüften Angaben zum konkreten Fall ersetzen.</li>
+        <li>Den vollständigen Kundentext vor dem Versand auf passende Inhalte prüfen.</li>
+      </ul>
+      <aside class="hinweis-box"><p class="hinweis-titel">Ein erfundenes Lernbeispiel</p><p>Der Betrieb Uferblick Büroservice und alle Personen und Vorgänge im Beispiel sind frei erfunden. Die Lektion zeigt einen kleinen Ausschnitt des Lernfeldes und ersetzt keine betrieblichen Vorgaben.</p></aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Die Erklärungen stehen direkt in dieser Lektion bereit.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Beispiel</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Lea passt einen vorbereiteten Text an</h2>
+      <p>Im erfundenen Betrieb Uferblick Büroservice beantwortet Lea eine Frage zum Bearbeitungsstand eines Auftrags. Die zuständige Kollegin hat geprüft: Der Auftrag ist erfasst, der Versand ist noch nicht bestätigt. Lea nutzt im Textverarbeitungsprogramm einen betrieblich vorbereiteten Textbaustein.</p>
+      <div class="rollen-karten">
+        <div class="rollen-karte"><h3>1. Den passenden Textteil wählen</h3><p>Ein <strong>Textbaustein</strong> ist ein gespeicherter Textteil, den man wiederverwenden kann. Lea wählt den Baustein zum Bearbeitungsstand. Ein Text über eine bereits versandte Lieferung würde hier nicht passen.</p></div>
+        <div class="rollen-karte"><h3>2. Platzhalter ersetzen</h3><p>Der vorbereitete Text lautet: „Guten Tag [Name], Ihr Auftrag [Auftragsnummer] ist erfasst. Zum Versand liegt uns noch keine bestätigte Angabe vor.“ Die eckigen Klammern kennzeichnen hier <strong>Platzhalter</strong>. Lea ersetzt sie mit dem geprüften Namen Frau Yilmaz und der Auftragsnummer U-42.</p></div>
+        <div class="rollen-karte"><h3>3. Den ganzen Text prüfen</h3><p>Lea liest: „Guten Tag Frau Yilmaz, Ihr Auftrag U-42 ist erfasst. Zum Versand liegt uns noch keine bestätigte Angabe vor.“ Sie prüft Name, Auftragsnummer und Aussage gegen den aktuellen Vorgang. Sie übernimmt keine Daten aus einem früheren Kundenfall und ergänzt keinen ungeprüften Liefertermin.</p></div>
+      </div>
+      <aside class="hinweis-box"><p class="hinweis-titel">Wichtig</p><p>Der Text ist ein erfundenes Lernbeispiel, kein verbindliches Briefmuster. Ein Textbaustein ersetzt nicht die Prüfung des Kundenfalls. Hier geht es nur um Textbausteine; Formulare und das Einbinden von Objekten bleiben weitere Inhalte des Planausschnitts.</p></aside>
+      <details class="fachwort-hinweis"><summary>Grundlage im Rahmenlehrplan</summary><p>Wörtlicher Planausschnitt:</p><blockquote>Bei der Kommunikation mit Kunden setzen sie die Leistungskomponenten von Textverarbeitungsprogrammen zum bedarfsgerechten und effizienten Entwickeln und Gestalten von Formularen, Verwenden von Textbausteinen und Einbinden von Objekten ein.</blockquote><p><a href="../quellen/kmk-rahmenlehrplan-bueromanagement.pdf#page=12">KMK-Rahmenlehrplan · Dokumentseite 12 · Lernfeld 3</a></p></details>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Was passt zur Situation?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="lektion-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="lektion-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Ein Textbaustein ist ein wiederverwendbarer Textteil, kein ungeprüfter fertiger Kundentext.</li>
+        <li>Wähle den Baustein nach dem tatsächlichen Anliegen aus.</li>
+        <li>Ersetze Platzhalter mit geprüften Angaben zum aktuellen Vorgang.</li>
+        <li>Lies den ganzen Text vor dem Versand. Versprich nichts, was nicht bestätigt ist.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 3 · Lernorientierung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf3-textbausteine.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Zeitdiebe und Zeitfallen erkennen und Aufgaben nach Wichtigkeit und Dringlichkeit ordnen.">
+  <title>Zeitdiebe und Prioritäten · Lernfeld 2</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .lern-karten, .lern-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; margin:1rem 0; }
+    .lern-karte, .ergebnis-box { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:1rem; background:var(--flaeche,#fff); }
+    .lern-karte h3 { margin-top:0; }
+    .lern-frage { min-width:0; margin:1rem 0; }
+    .lern-option { display:flex; align-items:flex-start; gap:.7rem; min-width:0; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); cursor:pointer; overflow-wrap:anywhere; }
+    .lern-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .lern-option:has(input:checked), .lern-option:hover { border-color:var(--primaer,#0754a6); }
+    .lern-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .lern-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf2-zeit" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt"><p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 2</p><h1>Zeitdiebe und Prioritäten</h1><p class="kopf-dauer">Ungefähr 10 Minuten · kein Zeitdruck</p></div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="step">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Beispiel</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Viel zu tun heißt nicht, dass jede Tätigkeit gleich wichtig ist. Du erkennst unnötigen Zeitverbrauch und entscheidest bewusst, was zuerst dran ist.</p>
+      <ul><li>Zeitdiebe erkennen, ohne eine geplante Pause damit zu verwechseln.</li><li>Eigene Zeitfallen wie „nur kurz“ bemerken.</li><li>Wichtiges und Dringendes mit dem Eisenhower-Prinzip sortieren und die ABC-Analyse einordnen.</li></ul>
+      <aside class="hinweis-box"><p class="hinweis-titel">Ein vereinfachtes Lernbeispiel</p><p>Mira und ihr Arbeitstag sind erfunden. Die Unterscheidung der Beispiele hilft beim Lernen: Zeitfallen können selbst zu Zeitdieben werden; die Begriffe sind keine starren gesetzlichen Kategorien.</p></aside>
+      <h3>Fachwörter</h3><p class="klein">Öffne einen Begriff für eine kurze Erklärung.</p><div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Beispiel</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Mira ordnet ihre Aufgaben</h2>
+      <div class="lern-karten">
+        <div class="lern-karte"><h3>1. Den Zeitdieb erkennen</h3><p>Mira schaut während einer Aufgabe immer wieder auf private Nachrichten. Das gehört nicht zur Aufgabe und verbraucht Arbeitszeit: ein Zeitdieb. Sie schaltet die privaten Benachrichtigungen für die Arbeitsphase aus. Eine bewusst geplante Pause ist dagegen Erholung und kein Zeitdieb.</p></div>
+        <div class="lern-karte"><h3>2. Nicht in die eigene Falle laufen</h3><p>„Ich ändere nur kurz noch die Farbe der Überschrift“, denkt Mira. Sie probiert immer weitere Varianten, obwohl die Unterlage schon gut lesbar ist. Aus „nur kurz“ wird eine halbe Stunde. Diese selbst ausgelöste Zeitfalle begrenzt sie: erst den nötigen Inhalt fertigstellen, dann nur bei echtem Nutzen weiter verfeinern.</p></div>
+        <div class="lern-karte"><h3>3. Wichtig und dringend getrennt prüfen</h3><p><strong>Wichtig</strong> ist eine Aufgabe wegen ihres Beitrags zum Ziel oder ihrer Folgen. <strong>Dringend</strong> ist sie, wenn zeitnah gehandelt werden muss. Nach dem Eisenhower-Prinzip ergeben sich vier Gruppen:</p><ul><li>Wichtig und dringend: jetzt bearbeiten.</li><li>Wichtig, nicht dringend: bewusst Zeit dafür einplanen.</li><li>Dringend, nicht wichtig: prüfen, ob eine passende Person sie übernehmen kann; nicht ungefragt abschieben.</li><li>Weder wichtig noch dringend: weglassen oder zurückstellen.</li></ul><p>Mira bearbeitet zuerst eine heute benötigte, entscheidende Auswertung. Eine wichtige Verbesserung ohne akuten Zeitdruck plant sie ein. Die zuletzt eingegangene Bitte um eine dekorative Änderung hat nicht automatisch Vorrang.</p></div>
+        <div class="lern-karte"><h3>4. ABC als andere Sicht auf Prioritäten</h3><p>Die ABC-Analyse ordnet Aufgaben nach ihrer Bedeutung: A steht für besonders wichtig, B für mittel und C für weniger wichtig. Sie ist nicht dasselbe wie die vier Gruppen des Eisenhower-Prinzips. Eine A-Aufgabe muss nicht sofort dringend sein; Dringlichkeit prüfst du zusätzlich.</p></div>
+      </div>
+      <aside class="hinweis-box"><p class="hinweis-titel">Merksatz</p><p>Nicht „Was kam zuletzt?“, sondern „Was ist wichtig und was ist dringend?“ entscheidet über die Reihenfolge. Geplante Pausen bleiben Teil einer vernünftigen Arbeitsplanung.</p></aside>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Zeit bewusst einsetzen</h2>
+      <p>Wähle je Frage eine Antwort und drücke „Antworten prüfen“. Fehlende oder falsche Antworten kannst du ohne Zeitdruck ergänzen und verbessern.</p>
+      <div id="lektion-fragen"></div><button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="lektion-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul><li>Ein Zeitdieb verbraucht Arbeitszeit, ohne zur Aufgabe beizutragen. Eine geplante Pause ist keiner.</li><li>In Zeitfallen wie „nur kurz“ oder unnötige Perfektion kann man selbst hineinlaufen.</li><li>Das Eisenhower-Prinzip trennt wichtig und dringend.</li><li>Die ABC-Analyse ordnet nach Bedeutung; die Reihenfolge des Eingangs entscheidet nicht allein.</li></ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <p class="klein">Quelle für den Lerngegenstand: <a href="../quellen/kmk-rahmenlehrplan-bueromanagement.pdf#page=10">Lokale Arbeitskopie des KMK-Rahmenlehrplans, Dokumentseite 10</a>: Zeitdiebe, Zeitfallen sowie ABC-Analyse und Eisenhower-Prinzip.</p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 2 · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf2-zeit.js"></script>
+</body>
+</html>

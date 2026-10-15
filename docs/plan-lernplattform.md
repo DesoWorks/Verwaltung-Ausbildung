@@ -114,3 +114,7 @@ TERMINUS baut diese Lektion selbst über ChatGPT. JARVIS und Claude werden wegen
 ## Lernfeld 4 begonnen
 
 Am 15.10.2026 ist „Bedarf vor der Bestellung“ als eine kleine Lektion verfügbar. Lernfeld 1 bis 4 haben jetzt je eine kleine Lektion. Lernfeld 5 bis 13 bleiben „In Kürze“. Version: `0.1.4-alpha.1`. Beleg und Grenzen: [`lektion-lf4-bedarf-2026-10-15.md`](lektion-lf4-bedarf-2026-10-15.md). Lernfeld 4 ist damit begonnen, nicht vollständig fertig.
+
+## Lernfeld 4: Bezugsquellen nach dem Bedarf
+
+Am 15.10.2026 hat TERMINUS auf ausdrücklichen Auftrag von Rick genau eine weitere kleine Lektion gebaut: „Bezugsquellen nach dem Bedarf“. Lernfeld 4 hat damit zwei kleine Lektionen und ist weiterhin nicht vollständig fertig. Grundlage sind nur die Recherche von Bezugsquellen über verschiedene Kommunikationswege und Datenquellen sowie die Inhalte von Angeboten auf Dokumentseite 13 der lokalen KMK-Arbeitskopie. Version: `0.1.5-alpha.1`. Im echten lokalen Chrome geprüft: neuer Startseitenlink, Lernfeld 5 ohne Lektionslink, leere Prüfung, konkreter Fehlerhinweis ohne Fortschritt, gespeicherte Auswahl nach echter Aktualisierung, vollständiger Fortschritt und mitgezählter Abschluss. Beleg und Prüfgrenzen: [`lektion-lf4-bezugsquellen-2026-10-15.md`](lektion-lf4-bezugsquellen-2026-10-15.md). Die erste LF4-Lektion und ihr Speicher-Schlüssel bleiben unverändert; Lernfeld 5 bis 13 bleiben „In Kürze“. Kein Commit, Push oder Merge.

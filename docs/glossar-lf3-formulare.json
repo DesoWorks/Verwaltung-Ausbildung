@@ -1,0 +1,14 @@
+[
+  {
+    "begriff": "Formular",
+    "erklaerung": "Eine Vorlage mit festem Text und Stellen zum Ausfüllen. Beim Ausfüllen soll nur an den vorgesehenen Stellen etwas eingetragen werden."
+  },
+  {
+    "begriff": "Formularfeld",
+    "erklaerung": "Eine Stelle im Formular, die ausgefüllt werden soll, zum Beispiel für einen Namen oder eine Telefonnummer."
+  },
+  {
+    "begriff": "Schreibschutz",
+    "erklaerung": "Ein Schutz, der verhindert, dass geschützter Text versehentlich geändert wird. Bei einem Formular bleibt der feste Text unverändert, während die Felder ausgefüllt werden können."
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "begriff": "Rechnungskontrolle",
+    "erklaerung": "Die Prüfung, ob Rechnung, Bestellung und Lieferung zusammenpassen, zum Beispiel bei Menge und Ware."
+  },
+  {
+    "begriff": "Skonto",
+    "erklaerung": "Ein Preisnachlass, wenn innerhalb einer genannten Frist bezahlt wird. Er gilt nur, wenn die Bedingung genannt ist und die Frist eingehalten wird."
+  },
+  {
+    "begriff": "Bezahlsystem",
+    "erklaerung": "Der Weg, auf dem eine Rechnung bezahlt wird, zum Beispiel per Überweisung. Welcher Weg passt, hängt von der Situation ab."
+  }
+]

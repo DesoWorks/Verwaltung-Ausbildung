@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lernorientierung: Auftragsbestätigung, Lieferschein und Rechnung nach ihrem Zweck unterscheiden.">
+  <title>Dokumente zum Auftrag · Lernfeld 3</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .rollen-karten { display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; margin:1.25rem 0; max-width:48rem; }
+    .rollen-karte { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:1rem; background:var(--flaeche,#fff); }
+    .rollen-karte h3 { margin-top:0; }
+    .rollen-karte p:last-child { margin-bottom:0; }
+    .rollen-frage { margin:1rem 0; }
+    .rollen-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .rollen-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .rollen-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .rollen-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .rollen-option:hover { border-color:var(--primaer,#0754a6); }
+    .rollen-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .rollen-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf3-dokumente" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 3</p>
+      <h1>Dokumente zum Auftrag</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="true">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Beispiel</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Ein Auftrag ist angenommen. Jetzt wird er ausgeführt. Das heißt <strong>Auftragsabwicklung</strong>. Dazu gehören passende Dokumente für die Bestätigung, die Lieferung und die Abrechnung. Du lernst, diese Dokumente nach ihrem Zweck zu unterscheiden.</p>
+      <ul>
+        <li>Das Schreiben erkennen, das den angenommenen Auftrag bestätigt.</li>
+        <li>Das passende Dokument einer konkreten Lieferung zuordnen.</li>
+        <li>Das Dokument für die Abrechnung erkennen.</li>
+      </ul>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Ein erfundenes Lernbeispiel</p>
+        <p><strong>Der Beispielbetrieb Hafenfaden Bürobedarf und Lea sind frei erfunden.</strong> Du übst eine kleine Aufgabe aus der Ausbildung zum Kaufmann für Büromanagement und zur Kauffrau für Büromanagement. Du ordnest Dokumente ein. Du berechnest keine Preise und prüfst keine rechtlichen Einzelheiten.</p>
+      </aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Die Wörter werden auch im Text erklärt.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Beispiel</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Lea ordnet drei Dokumente zu</h2>
+      <p>Im erfundenen Betrieb Hafenfaden Bürobedarf ist ein Auftrag für Ordnungsmappen angenommen. Lea soll die Dokumente zu diesem Auftrag auseinanderhalten. Sie fragt jeweils: Was soll dieses Dokument zeigen?</p>
+      <div class="rollen-karten">
+        <div class="rollen-karte"><h3>1. Auftragsbestätigung: Was wurde angenommen?</h3><p>Eine <strong>Auftragsbestätigung</strong> ist das Schreiben, mit dem der Betrieb die Annahme des Auftrags festhält. Im Beispiel bestätigt der Betrieb den Auftrag für die vereinbarten Ordnungsmappen. Das Schreiben zeigt noch nicht, was tatsächlich angekommen ist.</p></div>
+        <div class="rollen-karte"><h3>2. Lieferschein: Was gehört zur Lieferung?</h3><p>Ein <strong>Lieferschein</strong> beschreibt die Artikel und Mengen einer Lieferung. Die Kundin kann die angekommenen Mappen damit vergleichen. Wenn etwas nicht zusammenpasst, gibt Lea die Abweichung zur Klärung weiter. Der Lieferschein ist nicht die Rechnung und bestätigt keine Zahlung.</p></div>
+        <div class="rollen-karte"><h3>3. Rechnung: Was wird abgerechnet?</h3><p>Eine <strong>Rechnung</strong> ist das Dokument, mit dem der Betrieb eine Lieferung oder ausgeführte Arbeit abrechnet. Im Beispiel dient sie zur Abrechnung der Mappen. Eine Rechnung ist nicht automatisch ein Nachweis, dass bereits bezahlt wurde.</p></div>
+      </div>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Drei unterschiedliche Zwecke</p>
+        <p><strong>Auftragsbestätigung:</strong> angenommener Auftrag. <strong>Lieferschein:</strong> zugehörige Lieferung. <strong>Rechnung:</strong> Abrechnung. Lea ordnet alle drei demselben Auftrag zu. Sie verwechselt ihre Aufgaben nicht.</p>
+      </aside>
+      <p class="klein">Grundlage: lokaler <a href="../quellen/kmk-rahmenlehrplan-bueromanagement.pdf#page=12">KMK-Rahmenlehrplan, Seite 12, Lernfeld 3</a>.</p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Welches Dokument passt?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="dokumente-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="dokumente-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Die Auftragsbestätigung hält den angenommenen Auftrag fest.</li>
+        <li>Der Lieferschein beschreibt die Artikel und Mengen einer Lieferung.</li>
+        <li>Die Rechnung dient zur Abrechnung. Sie beweist nicht automatisch eine Zahlung.</li>
+        <li>Die Dokumente können zum selben Auftrag gehören. Sie haben verschiedene Aufgaben.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 3 · Lernorientierung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf3-dokumente.js"></script>
+</body>
+</html>

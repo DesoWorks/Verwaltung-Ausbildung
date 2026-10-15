@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lernorientierung: Zwei Angebote nach Preis und einem qualitativen Kriterium vergleichen.">
+  <title>Angebote vergleichen · Lernfeld 4</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .rollen-karten { display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; margin:1.25rem 0; max-width:48rem; }
+    .rollen-karte { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:1rem; background:var(--flaeche,#fff); }
+    .rollen-karte h3 { margin-top:0; }
+    .rollen-karte p:last-child { margin-bottom:0; }
+    .rollen-frage { margin:1rem 0; }
+    .rollen-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .rollen-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .rollen-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .rollen-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .rollen-option:hover { border-color:var(--primaer,#0754a6); }
+    .rollen-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .rollen-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf4-vergleich" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 4</p>
+      <h1>Angebote vergleichen</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="true">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Beispiel</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Zwei Angebote liegen auf dem Tisch. Welches ist besser? Das entscheidest du nicht nach Bauchgefühl. Du vergleichst sie Punkt für Punkt.</p>
+      <ul>
+        <li>Zwei Angebote nach denselben Kriterien nebeneinanderlegen.</li>
+        <li>Den Preis und ein Merkmal vergleichen, das du nicht zählen kannst.</li>
+        <li>Begründen, warum der Preis allein nicht reicht.</li>
+      </ul>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Ein Lernbeispiel mit erfundenen Angeboten</p>
+        <p><strong>Der Beispielbetrieb Hafenlicht Bürodienst, die Kollegin Mara und beide Anbieter sind frei erfunden.</strong> Alle Preise sind erfunden. Bestellt wird in dieser Lektion nichts. Bestellung und Zahlung kommen in anderen Lektionen vor.</p>
+      </aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Das vollständige Glossar findest du unter „Wörter &amp; Begriffe“.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Beispiel</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Mara vergleicht zwei Angebote</h2>
+      <p>Mara arbeitet im fiktiven Betrieb Hafenlicht Bürodienst. Sie soll Kopierpapier besorgen. Zwei Angebote liegen vor, jeweils für fünf Pakete.</p>
+      <div class="rollen-karten">
+        <div class="rollen-karte"><h3>Angebot 1: Bürobedarf Möwe</h3><p>Preis: 42,00 Euro. Lieferung in 10 Tagen. Das Papier ist normales Papier, kein Recyclingpapier.</p></div>
+        <div class="rollen-karte"><h3>Angebot 2: Papier und Co. Hafen</h3><p>Preis: 46,00 Euro. Lieferung in 2 Tagen. Das Papier ist Recyclingpapier.</p></div>
+        <div class="rollen-karte"><h3>1. Gleiche Kriterien</h3><p>Mara legt beide Angebote nebeneinander. Sie vergleicht beide mit demselben Maßstab. Der Preis lässt sich zählen. Ob das Papier Recyclingpapier ist, lässt sich nicht zählen. Das ist ein qualitatives Kriterium.</p></div>
+        <div class="rollen-karte"><h3>2. Abwägen</h3><p>Angebot 1 ist 4,00 Euro billiger. Angebot 2 ist recycelt und kommt schneller. Mara fragt: Was ist dem Betrieb wichtiger? Sie schreibt ihre Begründung auf.</p></div>
+      </div>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Wichtig</p>
+        <p>Du brauchst dafür keine Tabellenfunktion. Ein Blatt mit zwei Spalten reicht. Welche Kriterien in deinem Betrieb gelten, sagt dir deine Ausbilderin oder dein Ausbilder.</p>
+      </aside>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Was tut Mara?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="vergleich-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="vergleich-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Du vergleichst Angebote nebeneinander und nach denselben Kriterien.</li>
+        <li>Der Preis ist ein Kriterium, das du zählen kannst. Ein qualitatives Kriterium beschreibst du in Worten.</li>
+        <li>Der niedrigste Preis ist nicht automatisch das beste Angebot. Du wägst ab und begründest.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 4 · Lernorientierung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf4-vergleich.js"></script>
+</body>
+</html>

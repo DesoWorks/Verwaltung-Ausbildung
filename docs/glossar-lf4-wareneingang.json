@@ -1,0 +1,14 @@
+[
+  {
+    "begriff": "Wareneingang",
+    "erklaerung": "Das Eintreffen bestellter Waren im Betrieb. Dabei wird geprüft, ob die tatsächliche Lieferung zu den vereinbarten Angaben passt."
+  },
+  {
+    "begriff": "Abweichung beim Wareneingang",
+    "erklaerung": "Ein festgestellter Unterschied zwischen vereinbarter und tatsächlich eingetroffener Lieferung, zum Beispiel eine Fehlmenge oder eine sichtbare Beschädigung."
+  },
+  {
+    "begriff": "Sachgerechte Lagerung",
+    "erklaerung": "Waren so aufzubewahren, dass ihr Zustand und ihre Nutzbarkeit erhalten bleiben. Der Lagerplatz muss zu den Eigenschaften der Ware und den betrieblichen Vorgaben passen."
+  }
+]

@@ -32,6 +32,51 @@
               page: "lf1-rolle",
               status: "verfuegbar",
               datei: "module/lf1-rolle.html"
+            },
+            {
+              id: "lf1-rechte",
+              typ: "lektion",
+              titel: "Rechte und Pflichten im Ausbildungsverhältnis",
+              beschreibung: "Eigene Rechte und Pflichten im Ausbildungsverhältnis einordnen und wissen, wen du bei einem Problem zuerst fragst.",
+              page: "lf1-rechte",
+              status: "verfuegbar",
+              datei: "module/lf1-rechte.html"
+            },
+            {
+              id: "lf1-betrieb",
+              typ: "lektion",
+              titel: "Den Betrieb verständlich zeigen",
+              beschreibung: "Informationen zum Betrieb prüfen, das Leistungsspektrum einordnen und Datenschutz bei einer Präsentation beachten.",
+              page: "lf1-betrieb",
+              status: "verfuegbar",
+              datei: "module/lf1-betrieb.html"
+            },
+            {
+              id: "lf1-ziele",
+              typ: "lektion",
+              titel: "Ziele und Wirtschaftskreislauf",
+              beschreibung: "Betriebsziele, Arbeitsteilung und den erweiterten Wirtschaftskreislauf an einem einfachen Beispiel verstehen.",
+              page: "lf1-ziele",
+              status: "verfuegbar",
+              datei: "module/lf1-ziele.html"
+            },
+            {
+              id: "lf1-aufbau",
+              typ: "lektion",
+              titel: "Aufbau und Handlungsrahmen",
+              beschreibung: "Die Stellung im Aufbau des Betriebs, wesentliche Arbeits- und Geschäftsprozesse und den eigenen Handlungsrahmen einordnen.",
+              page: "lf1-aufbau",
+              status: "verfuegbar",
+              datei: "module/lf1-aufbau.html"
+            },
+            {
+              id: "lf1-fortbildung",
+              typ: "lektion",
+              titel: "Fortbildung und lebenslanges Lernen",
+              beschreibung: "Eine angebotene Fortbildung prüfen, ein realistisches Ziel von einem Wunsch unterscheiden und das Gelernte für die eigene Aufgabe nutzen.",
+              page: "lf1-fortbildung",
+              status: "verfuegbar",
+              datei: "module/lf1-fortbildung.html"
             }
           ]
         },
@@ -50,6 +95,51 @@
               page: "lf2-ablauf",
               status: "verfuegbar",
               datei: "module/lf2-ablauf.html"
+            },
+            {
+              id: "lf2-arbeitsplatz",
+              typ: "lektion",
+              titel: "Arbeitsplatz und Gesundheit",
+              beschreibung: "Ergonomie, Belastung und den Weg bei einem schweren Konflikt am Arbeitsplatz unterscheiden.",
+              page: "lf2-arbeitsplatz",
+              status: "verfuegbar",
+              datei: "module/lf2-arbeitsplatz.html"
+            },
+            {
+              id: "lf2-termine",
+              typ: "lektion",
+              titel: "Termine und Sitzungen",
+              beschreibung: "Termine unterscheiden, eine Sitzung vorbereiten und ein einfaches Protokoll als Ergebnis einordnen.",
+              page: "lf2-termine",
+              status: "verfuegbar",
+              datei: "module/lf2-termine.html"
+            },
+            {
+              id: "lf2-post",
+              typ: "lektion",
+              titel: "Post, Ablage und Datenschutz",
+              beschreibung: "Eingehende Information weitergeben, eine Versandart wählen und Schriftstücke geordnet aufbewahren.",
+              page: "lf2-post",
+              status: "verfuegbar",
+              datei: "module/lf2-post.html"
+            },
+            {
+              id: "lf2-zeit",
+              typ: "lektion",
+              titel: "Zeitdiebe und Prioritäten",
+              beschreibung: "Zeitdiebe und Zeitfallen erkennen und Aufgaben nach Wichtigkeit und Dringlichkeit ordnen.",
+              page: "lf2-zeit",
+              status: "verfuegbar",
+              datei: "module/lf2-zeit.html"
+            },
+            {
+              id: "lf2-team",
+              typ: "lektion",
+              titel: "Im Team einen Kompromiss finden",
+              beschreibung: "Im Team Gründe austauschen, einen Kompromiss finden und die eigene Meinung sachlich vertreten.",
+              page: "lf2-team",
+              status: "verfuegbar",
+              datei: "module/lf2-team.html"
             }
           ]
         },
@@ -68,6 +158,51 @@
               page: "lf3-auftrag",
               status: "verfuegbar",
               datei: "module/lf3-auftrag.html"
+            },
+            {
+              id: "lf3-preis",
+              typ: "lektion",
+              titel: "Preisrechnung vor dem Angebot",
+              beschreibung: "Eine einfache Preisrechnung mit Dreisatz und Prozent prüfen, bevor ein Angebot rausgeht.",
+              page: "lf3-preis",
+              status: "verfuegbar",
+              datei: "module/lf3-preis.html"
+            },
+            {
+              id: "lf3-dokumente",
+              typ: "lektion",
+              titel: "Dokumente zum Auftrag",
+              beschreibung: "Auftragsbestätigung, Lieferschein und Rechnung als drei verschiedene Dokumente einordnen.",
+              page: "lf3-dokumente",
+              status: "verfuegbar",
+              datei: "module/lf3-dokumente.html"
+            },
+            {
+              id: "lf3-angebot",
+              typ: "lektion",
+              titel: "Verlangtes und unverlangtes Angebot",
+              beschreibung: "Verlangte und unverlangte Angebote unterscheiden und einen Angebotstext als normgerechtes Schreiben einordnen.",
+              page: "lf3-angebot",
+              status: "verfuegbar",
+              datei: "module/lf3-angebot.html"
+            },
+            {
+              id: "lf3-textbausteine",
+              typ: "lektion",
+              titel: "Textbausteine passend einsetzen",
+              beschreibung: "Einen vorbereiteten Textbaustein mit geprüften Angaben füllen und den ganzen Kundentext vor dem Versand prüfen.",
+              page: "lf3-textbausteine",
+              status: "verfuegbar",
+              datei: "module/lf3-textbausteine.html"
+            },
+            {
+              id: "lf3-formulare",
+              typ: "lektion",
+              titel: "Formulare im Textverarbeitungsprogramm",
+              beschreibung: "Ein Formular so anlegen, dass nur die vorgesehenen Felder ausgefüllt werden und der feste Text geschützt bleibt.",
+              page: "lf3-formulare",
+              status: "verfuegbar",
+              datei: "module/lf3-formulare.html"
             }
           ]
         },
@@ -86,6 +221,69 @@
               page: "lf4-bedarf",
               status: "verfuegbar",
               datei: "module/lf4-bedarf.html"
+            },
+            {
+              id: "lf4-bezugsquellen",
+              typ: "lektion",
+              titel: "Bezugsquellen nach dem Bedarf",
+              beschreibung: "Nach geklärtem Bedarf gezielt anfragen und fehlende Angaben zu Preis oder Lieferzeit im Angebot erkennen.",
+              page: "lf4-bezugsquellen",
+              status: "verfuegbar",
+              datei: "module/lf4-bezugsquellen.html"
+            },
+            {
+              id: "lf4-vergleich",
+              typ: "lektion",
+              titel: "Angebote vergleichen",
+              beschreibung: "Zwei Angebote nach Preis und einem qualitativen Kriterium vergleichen, nicht nur nach dem niedrigsten Preis.",
+              page: "lf4-vergleich",
+              status: "verfuegbar",
+              datei: "module/lf4-vergleich.html"
+            },
+            {
+              id: "lf4-menge",
+              typ: "lektion",
+              titel: "Bestellmenge und Lieferzeitpunkt",
+              beschreibung: "Bestellmenge und Lieferzeitpunkt zusammen betrachten und ein Diagramm als Entscheidungshilfe nutzen.",
+              page: "lf4-menge",
+              status: "verfuegbar",
+              datei: "module/lf4-menge.html"
+            },
+            {
+              id: "lf4-vertrag",
+              typ: "lektion",
+              titel: "Vertragsarten beim Beschaffen",
+              beschreibung: "Kaufvertrag, Mietvertrag, Werkvertrag und Dienstvertrag beim Beschaffen unterscheiden.",
+              page: "lf4-vertrag",
+              status: "verfuegbar",
+              datei: "module/lf4-vertrag.html"
+            },
+            {
+              id: "lf4-wareneingang",
+              typ: "lektion",
+              titel: "Wareneingang prüfen und einlagern",
+              beschreibung: "Die Lieferung mit der Bestellung abgleichen, Abweichungen festhalten und freigegebene Ware am passenden Platz einlagern.",
+              page: "lf4-wareneingang",
+              status: "verfuegbar",
+              datei: "module/lf4-wareneingang.html"
+            },
+            {
+              id: "lf4-lager",
+              typ: "lektion",
+              titel: "Lagerung passend wählen",
+              beschreibung: "Die Lagerung nach der Ware und einem Kriterium wählen, nicht nach dem nächsten freien Platz.",
+              page: "lf4-lager",
+              status: "verfuegbar",
+              datei: "module/lf4-lager.html"
+            },
+            {
+              id: "lf4-rechnung",
+              typ: "lektion",
+              titel: "Rechnung prüfen und Zahlung wählen",
+              beschreibung: "Rechnung, Bestellung und Lieferung abgleichen und den Zahlungsweg nur nach der genannten Bedingung wählen.",
+              page: "lf4-rechnung",
+              status: "verfuegbar",
+              datei: "module/lf4-rechnung.html"
             }
           ]
         }

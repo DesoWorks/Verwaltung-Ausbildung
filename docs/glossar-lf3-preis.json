@@ -1,0 +1,14 @@
+[
+  {
+    "begriff": "Dreisatz",
+    "erklaerung": "Eine Rechenart in drei Schritten. Du rechnest erst auf eine Einheit, zum Beispiel einen Ordner, und dann auf die gewünschte Menge."
+  },
+  {
+    "begriff": "Prozentsatz",
+    "erklaerung": "Die Zahl vor dem Prozentzeichen. 10 % bedeuten zehn von hundert, also ein Zehntel des Grundwerts."
+  },
+  {
+    "begriff": "Überschlag",
+    "erklaerung": "Eine schnelle, grobe Rechnung mit runden Zahlen. Du siehst damit, ob dein genaues Ergebnis ungefähr stimmen kann."
+  }
+]

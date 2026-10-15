@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Eine kleine Lektion zu Arbeitsplatz, Ergonomie, Belastungen und Unterstützung bei Konflikten.">
+  <title>Arbeitsplatz und Gesundheit · Lernfeld 2</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .arbeitsplatz-liste { margin:1.25rem 0; padding:0; max-width:48rem; list-style:none; display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; }
+    .arbeitsplatz-eintrag { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:.85rem 1rem; background:var(--flaeche,#fff); overflow-wrap:anywhere; }
+    .arbeitsplatz-eintrag p { margin:0; }
+    .arbeitsplatz-frage { margin:1rem 0; }
+    .arbeitsplatz-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .arbeitsplatz-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .arbeitsplatz-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .arbeitsplatz-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .arbeitsplatz-option:hover { border-color:var(--primaer,#0754a6); }
+    .arbeitsplatz-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .arbeitsplatz-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf2-arbeitsplatz" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 2</p>
+      <h1>Arbeitsplatz und Gesundheit</h1>
+      <p class="kopf-dauer">Kleine Lektion · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="step">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Samis Arbeitsplatz</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Ein Büroplatz soll zu deiner Arbeit und deinem Körper passen. Es geht nicht nur darum, ob er dir gefällt. Auch Sicherheit, Gesundheit und der Umgang miteinander zählen.</p>
+      <ul>
+        <li>Bildschirm, Stuhl, Licht und freie Wege als Teil einer sicheren, ergonomischen Gestaltung erkennen.</li>
+        <li>Eine anhaltende Belastung von einem einzelnen Zeitdieb unterscheiden.</li>
+        <li>Bei Mobbing oder schweren Konflikten Unterstützung im Betrieb suchen.</li>
+      </ul>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Ein Lernbeispiel, keine Rechtsberatung</p>
+        <p><strong>Sami und alle Situationen in dieser Lektion sind frei erfunden.</strong> Die Lektion gibt eine erste Orientierung. Sie ersetzt weder die Prüfung der Vorschriften im Betrieb noch eine Rechtsberatung oder medizinische Beratung. Sie stellt keine Diagnose.</p>
+      </aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Das vollständige Glossar findest du unter „Wörter &amp; Begriffe“.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Samis Arbeitsplatz</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Samis Arbeitsplatz</h2>
+      <p>Im frei erfundenen Beispiel beginnt Sami seine Ausbildung in einem Büro. An seinem Platz fallen ihm drei Dinge auf:</p>
+      <ol class="arbeitsplatz-liste" aria-label="Drei Situationen an Samis Arbeitsplatz">
+        <li class="arbeitsplatz-eintrag"><p><strong>Gestaltung:</strong> Sami muss sich zum Bildschirm verdrehen. Der Stuhl ist noch nicht auf ihn eingestellt. Licht blendet auf dem Bildschirm. Ein loses Kabel liegt im Gehweg.</p></li>
+        <li class="arbeitsplatz-eintrag"><p><strong>Belastung:</strong> Seit mehreren Tagen arbeitet Sami unter starkem Druck. Seine Pausen fallen immer wieder aus. Es geht nicht um eine einzelne kurze Unterbrechung.</p></li>
+        <li class="arbeitsplatz-eintrag"><p><strong>Umgang miteinander:</strong> Ein Kollege macht Sami wiederholt vor anderen lächerlich und schließt ihn aus. Sami weiß nicht, wie er damit umgehen soll.</p></li>
+      </ol>
+      <h3>1 · Ergonomie und Arbeitssicherheit</h3>
+      <p>Ergonomie bedeutet: Die Arbeitsbedingungen passen zum Menschen. Sami lässt sich zeigen, wie er Stuhl und Bildschirm passend einstellt und Blendung vermeidet. Er spricht das lose Kabel an, damit der Weg sicher frei wird. Ergonomie und Arbeitssicherheit sind keine Geschmacksfrage. Auch gesetzliche Vorschriften zur Gestaltung des Arbeitsplatzes sind zu beachten. Welche Vorgaben und Hilfen im Betrieb gelten, klärt Sami mit seiner Ausbilderin.</p>
+      <h3>2 · Belastung ernst nehmen</h3>
+      <p>Dauerstress und ständig fehlende Pausen sind nicht bloß ein einzelner Zeitdieb. Sami spricht die anhaltende Belastung bei seiner Ausbilderin an. Gemeinsam klären sie, wie Pausen und Bewegung im Arbeitsalltag möglich werden und was sich an den Arbeitsbedingungen ändern muss. Bewegung, Ernährung und Stressregulation gehören zur Erhaltung der Gesundheit. Das ersetzt keine fachliche Hilfe bei Beschwerden.</p>
+      <h3>3 · Unterstützung bei Konflikten</h3>
+      <p>Wiederholtes Lächerlichmachen und Ausgrenzen kann auf Mobbing hinweisen. Sami muss das nicht allein einordnen oder durch „einfach ignorieren“ lösen. Eine erste Anlaufstelle ist seine Ausbilderin. Ist sie selbst beteiligt, kann er sich an eine andere vertrauenswürdige Führungskraft oder eine vorhandene Interessenvertretung wenden. Bei Mobbing und schweren Konflikten sucht er Unterstützung. Die Lektion legt keinen rechtlich verbindlichen Beschwerdeweg fest.</p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Was hilft Sami?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Deine Auswahl wird auch vor dem Prüfen gespeichert. Eine leere Prüfung nennt jede fehlende Aufgabe.</p>
+      <div id="arbeitsplatz-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="arbeitsplatz-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Bildschirm, Stuhl, Licht und sichere Wege gehören zur Arbeitsplatzgestaltung. Es geht nicht nur um Geschmack.</li>
+        <li>Anhaltender Druck und fehlende Pausen sind Belastungen. Sie brauchen mehr als eine Lösung für einen einzelnen Zeitdieb.</li>
+        <li>Bei Mobbing und schweren Konflikten suchst du Unterstützung, zum Beispiel bei deiner Ausbilderin oder deinem Ausbilder.</li>
+        <li>Du musst keine Diagnose stellen und einen schweren Konflikt nicht allein lösen.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 2 · Kleine Lektion · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf2-arbeitsplatz.js"></script>
+</body>
+</html>

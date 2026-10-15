@@ -5,15 +5,59 @@
   "use strict";
   var SCHLUESSEL = {
     "lf1-rolle": "verwaltung-ausbildung.lf1-rolle.v1",
+    "lf1-rechte": "verwaltung-ausbildung.lf1-rechte.v1",
     "lf2-ablauf": "verwaltung-ausbildung.lf2-ablauf.v1",
+    "lf2-arbeitsplatz": "verwaltung-ausbildung.lf2-arbeitsplatz.v1",
     "lf3-auftrag": "verwaltung-ausbildung.lf3-auftrag.v1",
-    "lf4-bedarf": "verwaltung-ausbildung.lf4-bedarf.v1"
+    "lf4-bedarf": "verwaltung-ausbildung.lf4-bedarf.v1",
+    "lf4-bezugsquellen": "verwaltung-ausbildung.lf4-bezugsquellen.v1",
+    "lf1-betrieb": "verwaltung-ausbildung.lf1-betrieb.v1",
+    "lf2-termine": "verwaltung-ausbildung.lf2-termine.v1",
+    "lf2-post": "verwaltung-ausbildung.lf2-post.v1",
+    "lf3-preis": "verwaltung-ausbildung.lf3-preis.v1",
+    "lf3-dokumente": "verwaltung-ausbildung.lf3-dokumente.v1",
+    "lf4-vergleich": "verwaltung-ausbildung.lf4-vergleich.v1",
+    "lf1-ziele": "verwaltung-ausbildung.lf1-ziele.v1",
+    "lf2-zeit": "verwaltung-ausbildung.lf2-zeit.v1",
+    "lf4-menge": "verwaltung-ausbildung.lf4-menge.v1",
+    "lf1-aufbau": "verwaltung-ausbildung.lf1-aufbau.v1",
+    "lf3-angebot": "verwaltung-ausbildung.lf3-angebot.v1",
+    "lf4-vertrag": "verwaltung-ausbildung.lf4-vertrag.v1",
+    "lf2-team": "verwaltung-ausbildung.lf2-team.v1",
+    "lf3-textbausteine": "verwaltung-ausbildung.lf3-textbausteine.v1",
+    "lf4-wareneingang": "verwaltung-ausbildung.lf4-wareneingang.v1",
+    "lf3-formulare": "verwaltung-ausbildung.lf3-formulare.v1",
+    "lf1-fortbildung": "verwaltung-ausbildung.lf1-fortbildung.v1",
+    "lf4-lager": "verwaltung-ausbildung.lf4-lager.v1",
+    "lf4-rechnung": "verwaltung-ausbildung.lf4-rechnung.v1"
   };
   var LOESUNGEN = {
     "lf1-rolle": { q1: "azubi", q2: "abstimmen", q3: "ausbilder" },
+    "lf1-rechte": { q1: "ausbildung", q2: "nachfragen", q3: "ausbilder" },
     "lf2-ablauf": { q1: "zeitdieb", q2: "ordnen", q3: "rueckruf" },
+    "lf2-arbeitsplatz": { q1: "gestalten", q2: "belastung", q3: "unterstuetzung" },
     "lf3-auftrag": { q1: "anfrage", q2: "warten", q3: "weitergeben" },
-    "lf4-bedarf": { q1: "wunsch", q2: "voreilig", q3: "klaeren" }
+    "lf4-bedarf": { q1: "wunsch", q2: "voreilig", q3: "klaeren" },
+    "lf4-bezugsquellen": { q1: "anfragen", q2: "preis", q3: "lieferzeit" },
+    "lf1-betrieb": { q1: "quelle", q2: "leistung", q3: "datenschutz" },
+    "lf2-termine": { q1: "termin", q2: "vorbereiten", q3: "protokoll" },
+    "lf2-post": { q1: "weitergeben", q2: "versand", q3: "ablage" },
+    "lf3-preis": { q1: "rechnen", q2: "prozent", q3: "pruefen" },
+    "lf3-dokumente": { q1: "bestaetigung", q2: "lieferschein", q3: "rechnung" },
+    "lf4-vergleich": { q1: "vergleichen", q2: "kriterium", q3: "nicht-nur-preis" },
+    "lf1-ziele": { q1: "ziele", q2: "arbeitsteilung", q3: "kreislauf" },
+    "lf2-zeit": { q1: "zeitdieb", q2: "zeitfalle", q3: "prioritaet" },
+    "lf4-menge": { q1: "zeitpunkt", q2: "menge", q3: "diagramm" },
+    "lf1-aufbau": { q1: "aufbau", q2: "prozess", q3: "vollmacht" },
+    "lf3-angebot": { q1: "verlangt", q2: "unverlangt", q3: "form" },
+    "lf4-vertrag": { q1: "kauf", q2: "werk", q3: "dienst" },
+    "lf2-team": { q1: "gruende-erfragen", q2: "uebersicht-mit-details", q3: "sachlich-begruenden" },
+    "lf3-textbausteine": { q1: "wiederverwendbarer-textteil", q2: "gepruefte-falldaten", q3: "gesamttext-pruefen" },
+    "lf4-wareneingang": { q1: "lieferung-abgleichen", q2: "abweichung-dokumentieren", q3: "trocken-vorgesehen" },
+    "lf3-formulare": { q1: "nur-felder-ausfuellen", q2: "festtext-schuetzen", q3: "felder-vor-versand-pruefen" },
+    "lf1-fortbildung": { q1: "pruefen-passt", q2: "ziel-konkret", q3: "gelerntes-nutzen" },
+    "lf4-lager": { q1: "griffnah-regal", q2: "abschliessbar", q3: "trocken-regal" },
+    "lf4-rechnung": { q1: "abweichung-melden", q2: "skonto-nutzen", q3: "ueberweisung-bank" }
   };
 
   function abgeschlossen(id) {

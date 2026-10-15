@@ -1,0 +1,17 @@
+{
+  "lf1-aufbau": {
+    "q1": "aufbau",
+    "q2": "prozess",
+    "q3": "vollmacht"
+  },
+  "lf3-angebot": {
+    "q1": "verlangt",
+    "q2": "unverlangt",
+    "q3": "form"
+  },
+  "lf4-vertrag": {
+    "q1": "kauf",
+    "q2": "werk",
+    "q3": "dienst"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "lf2-team": {
+    "q1": "gruende-erfragen",
+    "q2": "uebersicht-mit-details",
+    "q3": "sachlich-begruenden"
+  },
+  "lf3-textbausteine": {
+    "q1": "wiederverwendbarer-textteil",
+    "q2": "gepruefte-falldaten",
+    "q3": "gesamttext-pruefen"
+  },
+  "lf4-wareneingang": {
+    "q1": "lieferung-abgleichen",
+    "q2": "abweichung-dokumentieren",
+    "q3": "trocken-vorgesehen"
+  }
+}

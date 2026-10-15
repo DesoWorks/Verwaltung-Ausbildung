@@ -1,0 +1,14 @@
+[
+  {
+    "begriff": "Bestellzeitpunkt",
+    "erklaerung": "Der Zeitpunkt, an dem eine Bestellung ausgelöst wird. Er wird so geplant, dass der Bestand unter Berücksichtigung der Lieferzeit und eines nötigen Puffers bis zur Lieferung reicht."
+  },
+  {
+    "begriff": "Optimale Bestellmenge",
+    "erklaerung": "Eine Bestellmenge, die unter den jeweiligen Annahmen einen günstigen Ausgleich zwischen Bestell- und Lagerkosten erreicht. Betriebliche Grenzen müssen zusätzlich passen; die größte Menge ist nicht automatisch optimal."
+  },
+  {
+    "begriff": "Diagramm",
+    "erklaerung": "Eine bildliche Darstellung von Daten, die Unterschiede und Zusammenhänge sichtbar macht. Sie unterstützt eine Entscheidung, ersetzt aber nicht die Prüfung der Daten, Annahmen und betrieblichen Bedingungen."
+  }
+]

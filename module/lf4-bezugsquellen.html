@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Nach geklärtem Bedarf eine passende Bezugsquelle anfragen und fehlende Angaben in einem Angebot erkennen.">
+  <title>Bezugsquellen nach dem Bedarf · Lernfeld 4</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .bezugsquellen-liste { margin:1.25rem 0; padding:0; max-width:48rem; list-style:none; display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; }
+    .bezugsquellen-eintrag { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:.85rem 1rem; background:var(--flaeche,#fff); overflow-wrap:anywhere; }
+    .bezugsquellen-eintrag p { margin:0; }
+    .bezugsquellen-art { display:inline-block; margin-right:.4rem; padding:.05rem .5rem; border:2px solid currentColor; border-radius:.4rem; font-weight:700; }
+    .bezugsquellen-frage { margin:1rem 0; }
+    .bezugsquellen-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .bezugsquellen-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .bezugsquellen-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .bezugsquellen-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .bezugsquellen-option:hover { border-color:var(--primaer,#0754a6); }
+    .bezugsquellen-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .bezugsquellen-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf4-bezugsquellen" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 4</p>
+      <h1>Bezugsquellen nach dem Bedarf</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="true">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Zehn Ordner</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Der Bedarf ist schon geklärt. Jetzt geht es darum, wo du die benötigten Dinge bekommst und welche Angaben du vor einer Bestellung noch brauchst.</p>
+      <ul>
+        <li>Eine passende Bezugsquelle für einen bekannten Bedarf wählen.</li>
+        <li>Mit festgelegtem Artikel, Menge und Termin gezielt anfragen.</li>
+        <li>Einen fehlenden Preis oder eine fehlende Lieferzeit im Angebot erkennen.</li>
+      </ul>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Ein Lernbeispiel, keine Betriebsregel</p>
+        <p><strong>Das Beispielunternehmen Lindenbogen Büroservice, die Person Mara und die beschriebenen Angebote sind frei erfunden.</strong> Im Betrieb gelten die dortigen Zuständigkeiten. Diese Lektion behandelt nur einen kleinen Ausschnitt von Lernfeld 4. Sie ist keine Rechtsberatung.</p>
+      </aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Eine Bezugsquelle ist eine Stelle, bei der du benötigte Güter oder Dienstleistungen bekommen kannst. Ein Angebot nennt dir, was ein Anbieter zu welchen Bedingungen liefern kann. Öffne die Begriffe für die Glossarerklärungen.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Mara sucht zehn Ordner</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Mara sucht zehn Ordner</h2>
+      <p>Im erfundenen Lindenbogen Büroservice steht fest: Das Team braucht <strong>zehn blaue A4-Ordner mit acht Zentimetern Rückenbreite bis Freitag</strong>. Bestand und Bedarf wurden bereits geklärt. Mara soll mögliche Anbieter recherchieren, noch nicht bestellen.</p>
+      <h3>Drei Wege – welcher führt weiter?</h3>
+      <ol class="bezugsquellen-liste" aria-label="Drei Wege nach dem geklärten Bedarf">
+        <li class="bezugsquellen-eintrag"><p><span class="bezugsquellen-art">1 · Üblicher Händler</span>Mara findet den Kontakt in der Lieferantenliste des Betriebs. Sie ruft an und nennt Artikel, Menge und Termin. Sie fragt nach Preis und Lieferzeit. So erfährt sie gezielt, ob diese Bezugsquelle zum Bedarf passt.</p></li>
+        <li class="bezugsquellen-eintrag"><p><span class="bezugsquellen-art">2 · Allgemeine Internetsuche</span>Die Suche nach „Ordner“ zeigt viele Treffer. Ohne die festgelegten Eigenschaften, Menge und Termin ist noch nicht klar, welcher Anbieter passt. Mara kann die Suche eingrenzen und offene Angaben per E-Mail oder Kontaktformular erfragen.</p></li>
+        <li class="bezugsquellen-eintrag"><p><span class="bezugsquellen-art">3 · Wunsch eines Kollegen</span>„Bunte Ordner wären schöner“ ist keine Bezugsquelle. Der Wunsch nennt weder einen Anbieter noch sagt er etwas über die Lieferbarkeit der benötigten Ordner.</p></li>
+      </ol>
+      <p>Lieferantenliste, Anbieter-Webseite und Onlinekatalog sind mögliche <strong>Datenquellen</strong>. Telefon, E-Mail und Kontaktformular sind <strong>Kommunikationswege</strong>. Entscheidend ist nicht der Weg allein, sondern ob du damit Angaben zu deinem konkreten Bedarf bekommst.</p>
+      <h3>Eine gezielte Anfrage</h3>
+      <p>Zum Beispiel: „Wir benötigen zehn blaue A4-Ordner mit acht Zentimetern Rückenbreite bis Freitag. Können Sie diese Menge bis dahin liefern? Bitte nennen Sie uns den Preis und die Lieferzeit.“ Das ist eine Anfrage, noch keine Bestellung.</p>
+      <h3>Was steht im Angebot – und was fehlt?</h3>
+      <p>Mara liest, ob der angebotene Artikel und die Menge passen. Dann schaut sie nach <strong>Preis und Lieferzeit</strong>. Fehlt eine dieser Angaben, fragt sie nach. Ein Angebot ohne Preis oder ohne Lieferzeit reicht in diesem Beispiel noch nicht als Grundlage für eine Bestellung. Auch mit diesen Angaben gelten weiterhin die Zuständigkeiten des Betriebs.</p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Gezielt anfragen und Lücken erkennen</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="bezugsquellen-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="bezugsquellen-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Nach dem geklärten Bedarf suchst du eine passende Bezugsquelle.</li>
+        <li>Nutze Datenquellen und Kommunikationswege gezielt: Nenne Artikel, Menge und Termin.</li>
+        <li>Ein Wunsch nennt noch keinen Anbieter.</li>
+        <li>Fehlen im Angebot Preis oder Lieferzeit, klärst du das vor einer Bestellung.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 4 · Lernorientierung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf4-bezugsquellen.js"></script>
+</body>
+</html>

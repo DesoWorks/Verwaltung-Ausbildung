@@ -1,0 +1,17 @@
+{
+  "lf1-fortbildung": {
+    "q1": "pruefen-passt",
+    "q2": "ziel-konkret",
+    "q3": "gelerntes-nutzen"
+  },
+  "lf4-lager": {
+    "q1": "griffnah-regal",
+    "q2": "abschliessbar",
+    "q3": "trocken-regal"
+  },
+  "lf4-rechnung": {
+    "q1": "abweichung-melden",
+    "q2": "skonto-nutzen",
+    "q3": "ueberweisung-bank"
+  }
+}

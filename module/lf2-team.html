@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Im Team können unterschiedliche Vorschläge sinnvoll sein. Du lernst, Gründe auszutauschen und eine gemeinsame Lösung zu suchen, statt nur den eigenen Wunsch durchzusetzen.">
+  <title>Im Team einen Kompromiss finden · Lernfeld 2</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .rollen-karten { display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; margin:1.25rem 0; max-width:48rem; }
+    .rollen-karte { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:1rem; background:var(--flaeche,#fff); }
+    .rollen-karte h3 { margin-top:0; }
+    .rollen-karte p:last-child { margin-bottom:0; }
+    .rollen-frage { margin:1rem 0; }
+    .rollen-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .rollen-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .rollen-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .rollen-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .rollen-option:hover { border-color:var(--primaer,#0754a6); }
+    .rollen-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .rollen-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf2-team" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 2</p>
+      <h1>Im Team einen Kompromiss finden</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="step">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Beispiel</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Im Team können unterschiedliche Vorschläge sinnvoll sein. Du lernst, Gründe auszutauschen und eine gemeinsame Lösung zu suchen, statt nur den eigenen Wunsch durchzusetzen.</p>
+      <ul>
+        <li>Die Gründe hinter unterschiedlichen Vorschlägen erfragen.</li>
+        <li>Einen Kompromiss am gemeinsamen Arbeitsziel ausrichten.</li>
+        <li>Die eigene Meinung verständlich und wertschätzend vertreten.</li>
+      </ul>
+      <aside class="hinweis-box"><p class="hinweis-titel">Ein erfundenes Lernbeispiel</p><p>Der Betrieb Uferblick Büroservice und alle Personen und Vorgänge im Beispiel sind frei erfunden. Die Lektion zeigt einen kleinen Ausschnitt des Lernfeldes und ersetzt keine betrieblichen Vorgaben.</p></aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Die Erklärungen stehen direkt in dieser Lektion bereit.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Beispiel</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Zwei Vorschläge für eine gemeinsame Kundenmappe</h2>
+      <p>Im erfundenen Betrieb Uferblick Büroservice arbeiten Samira und Ben gemeinsam an einer digitalen Kundenmappe. Samira möchte eine kurze Übersicht. Ben möchte ausführliche Hinweise, damit das Team schwierige Fälle bearbeiten kann. Beide sollen mit derselben Mappe arbeiten können.</p>
+      <div class="rollen-karten">
+        <div class="rollen-karte"><h3>1. Erst die Gründe verstehen</h3><p>Samira fragt: „Welche Hinweise brauchst du für die schwierigen Fälle?“ Ben erklärt seine Anforderungen. Samira erklärt, warum eine kurze Übersicht im Alltag hilft. Sie lassen einander ausreden. <strong>Kooperation</strong> heißt hier: Beide arbeiten am gemeinsamen Ergebnis.</p></div>
+        <div class="rollen-karte"><h3>2. Eine gemeinsame Lösung entwickeln</h3><p>Die Mappe bekommt eine kurze Startübersicht und verlinkte Detailseiten. So bleiben wichtige Informationen schnell erreichbar, ohne die ausführlichen Hinweise zu verlieren. Beide rücken von ihrem ursprünglichen Vorschlag ab. Das ist hier ein <strong>Kompromiss</strong>: Die Lösung berücksichtigt die begründeten Anliegen beider Seiten.</p></div>
+        <div class="rollen-karte"><h3>3. Sachlich begründen und prüfen</h3><p>Samira sagt: „Eine kurze Übersicht hilft uns, das Anliegen schneller zuzuordnen. Für besondere Fälle öffnen wir die Details.“ Sie wertet Ben nicht ab. Das ist <strong>wertschätzende Kommunikation</strong>. Beide testen die Mappe an einem einfachen und einem schwierigen Beispielfall und passen sie gemeinsam an.</p></div>
+      </div>
+      <aside class="hinweis-box"><p class="hinweis-titel">Wichtig</p><p>Ein Kompromiss muss zur Aufgabe passen. Es geht nicht darum, dass eine Person schweigt oder dass jede Lösung genau zur Hälfte aus zwei Vorschlägen besteht. Verbindliche betriebliche Vorgaben werden nicht zur Verhandlungssache.</p></aside>
+      <details class="fachwort-hinweis"><summary>Grundlage im Rahmenlehrplan</summary><p>Wörtlicher Planausschnitt:</p><blockquote>Die Schülerinnen und Schüler arbeiten kooperativ im Team auch unter Nutzung digitaler Medien, und berücksichtigen bei Entscheidungen die Notwendigkeit von Kompromissen.</blockquote><p><a href="../quellen/kmk-rahmenlehrplan-bueromanagement.pdf#page=11">KMK-Rahmenlehrplan · Dokumentseite 11 · Lernfeld 2</a></p></details>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Was passt zur Situation?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="lektion-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="lektion-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Frage nach den Gründen, bevor du einen Vorschlag ablehnst.</li>
+        <li>Ein Kompromiss berücksichtigt verschiedene Anliegen und bleibt am gemeinsamen Arbeitsziel ausgerichtet.</li>
+        <li>Begründe deine Meinung sachlich, höre zu und werte niemanden ab.</li>
+        <li>Prüft die gemeinsame Lösung und verbessert sie bei Bedarf.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 2 · Lernorientierung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf2-team.js"></script>
+</body>
+</html>

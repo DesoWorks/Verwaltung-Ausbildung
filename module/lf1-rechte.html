@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lernorientierung: Rechte und Pflichten im Ausbildungsverhältnis einordnen und wissen, wen du bei einem Problem zuerst fragst.">
+  <title>Rechte und Pflichten im Ausbildungsverhältnis · Lernfeld 1</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .rollen-karten { display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; margin:1.25rem 0; max-width:48rem; }
+    .rollen-karte { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:1rem; background:var(--flaeche,#fff); }
+    .rollen-karte h3 { margin-top:0; }
+    .rollen-karte p:last-child { margin-bottom:0; }
+    .rollen-frage { margin:1rem 0; }
+    .rollen-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .rollen-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .rollen-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .rollen-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .rollen-option:hover { border-color:var(--primaer,#0754a6); }
+    .rollen-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .rollen-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf1-rechte" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 1</p>
+      <h1>Rechte und Pflichten im Ausbildungsverhältnis</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="true">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Beispiel</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Als Auszubildende oder Auszubildender hast du Rechte und Pflichten. Du musst keine Paragraphen auswendig können. Du solltest wissen, wo sie stehen und wen du fragst.</p>
+      <ul>
+        <li>Den Ausbildungsvertrag von einem späteren Arbeitsvertrag unterscheiden.</li>
+        <li>Wissen, wo Rechte und Pflichten stehen, und dass du nachfragen darfst.</li>
+        <li>Wissen, wen du bei einem Problem zuerst fragst.</li>
+      </ul>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Ein Lernbeispiel, keine Rechtsberatung</p>
+        <p><strong>Der Beispielbetrieb Elbblick Verwaltungsservice und Jonas sind frei erfunden.</strong> Diese Lektion ersetzt keine Rechtsberatung. Was für dich gilt, steht in deinem Ausbildungsvertrag. Bei Fragen hilft dir deine Ausbilderin oder dein Ausbilder.</p>
+      </aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Das vollständige Glossar findest du unter „Wörter &amp; Begriffe“.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Beispiel</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Wo stehen Rechte und Pflichten?</h2>
+      <p>Jonas beginnt eine Ausbildung im fiktiven Betrieb Elbblick Verwaltungsservice. Am ersten Tag bekommt er seinen Ausbildungsvertrag. Er liest ihn in Ruhe und fragt sich: Was steht hier eigentlich, und was gilt sonst noch?</p>
+      <div class="rollen-karten">
+        <div class="rollen-karte"><h3>1. Der Ausbildungsvertrag</h3><p>Er regelt das Ausbildungsverhältnis. Er ist nicht der Vertrag für ein späteres Arbeitsverhältnis. Das wäre ein anderer Vertrag.</p></div>
+        <div class="rollen-karte"><h3>2. Die Gesetze</h3><p>Das Berufsbildungsgesetz und das Jugendarbeitsschutzgesetz gehören zu dem Recht, über das sich Auszubildende informieren. Jonas muss keine Paragraphen auswendig lernen. Er darf nachfragen, wenn etwas unklar ist. Eine Pflicht fällt nicht weg, nur weil sie unbequem oder unklar ist.</p></div>
+        <div class="rollen-karte"><h3>3. Der Tarifvertrag</h3><p>Tarifrecht gilt, wenn ein Tarifvertrag für dich gilt. Es gilt nicht automatisch in jedem Betrieb. Ob das bei Jonas so ist, klärt er im Betrieb.</p></div>
+        <div class="rollen-karte"><h3>4. Wer hilft?</h3><p>Bei einem Problem mit der Ausbildung fragt Jonas zuerst seine Ausbilderin oder seinen Ausbilder. Die Jugend- und Auszubildendenvertretung vertritt die Interessen der jungen Beschäftigten und Auszubildenden. Sie ist nicht seine Ausbilderin und ändert nicht allein seinen Vertrag.</p></div>
+      </div>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Wichtig</p>
+        <p>Dieses Beispiel nennt bewusst keine Paragraphen, keine Fristen und keine Beträge. Die stehen in deinem Vertrag und in den Gesetzen selbst.</p>
+      </aside>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Was passt zur Situation?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="rechte-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="rechte-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Der Ausbildungsvertrag regelt das Ausbildungsverhältnis, nicht ein späteres Arbeitsverhältnis.</li>
+        <li>Rechte und Pflichten stehen im Vertrag und in den Gesetzen. Du darfst nachfragen. Pflichten fallen nicht einfach weg.</li>
+        <li>Bei einem Problem fragst du zuerst deine Ausbilderin oder deinen Ausbilder.</li>
+        <li>Die Jugend- und Auszubildendenvertretung vertritt Interessen. Sie ändert nicht allein deinen Vertrag.</li>
+        <li>Tarifrecht gilt, wenn ein Tarifvertrag für dich gilt.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 1 · Lernorientierung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf1-rechte.js"></script>
+</body>
+</html>

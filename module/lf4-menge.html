@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Bestellmenge und Lieferzeitpunkt zusammen betrachten und ein Diagramm als Entscheidungshilfe nutzen.">
+  <title>Bestellmenge und Lieferzeitpunkt · Lernfeld 4</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .lern-karten, .lern-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; margin:1rem 0; }
+    .lern-karte, .ergebnis-box { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:1rem; background:var(--flaeche,#fff); }
+    .lern-karte h3 { margin-top:0; }
+    .lern-frage { min-width:0; margin:1rem 0; }
+    .lern-option { display:flex; align-items:flex-start; gap:.7rem; min-width:0; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); cursor:pointer; overflow-wrap:anywhere; }
+    .lern-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .lern-option:has(input:checked), .lern-option:hover { border-color:var(--primaer,#0754a6); }
+    .lern-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .lern-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box[hidden] { display:none; }
+    .mengen-diagramm { display:block; width:100%; max-width:38rem; height:auto; color:var(--text,#172a43); }
+    .diagramm-werte { overflow-x:auto; }
+    .diagramm-werte th, .diagramm-werte td { padding:.45rem .65rem; text-align:left; }
+  </style>
+</head>
+<body data-page="lf4-menge" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt"><p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 4</p><h1>Bestellmenge und Lieferzeitpunkt</h1><p class="kopf-dauer">Ungefähr 10 Minuten · kein Zeitdruck</p></div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="step">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Beispiel</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Was gebraucht wird, steht bereits fest. Jetzt geht es darum, wann bestellt und geliefert werden soll und welche Menge sinnvoll ist.</p>
+      <ul><li>Bestellzeitpunkt und Lieferzeitpunkt auseinanderhalten.</li><li>Bestand und Lieferzeit bei der Planung berücksichtigen.</li><li>Die Bestellmenge abwägen und ein Diagramm als Entscheidungshilfe lesen.</li></ul>
+      <aside class="hinweis-box"><p class="hinweis-titel">Ein vereinfachtes Lernbeispiel</p><p>Der Betrieb, die Mengen, Lieferzeiten und Kosten sind erfunden. Das Diagramm zeigt nur Modellwerte für einen festen Zeitraum, keine allgemeingültige Berechnungsformel.</p></aside>
+      <h3>Fachwörter</h3><p class="klein">Öffne einen Begriff für eine kurze Erklärung.</p><div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Beispiel</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Rechtzeitig da, aber nicht zu viel auf Lager</h2>
+      <div class="lern-karten">
+        <div class="lern-karte"><h3>1. Vom Lieferzeitpunkt zurückdenken</h3><p>Der Büroservice benötigt die nächste Papierlieferung am Donnerstag vor Arbeitsbeginn. Die Lieferung dauert im Beispiel zwei volle Arbeitstage nach dem Bestelltag. Eine Bestellung am Montag kann damit am Donnerstag vor Arbeitsbeginn eintreffen. Wochenenden und Feiertage kommen in diesem vereinfachten Beispiel nicht vor.</p><p>Bis dahin muss der vorhandene Bestand reichen. Wenn der Bestand schneller sinkt oder die Lieferzeit unsicher ist, braucht die Planung einen passenden Puffer. Ein Wunschdatum allein löst das nicht: Bestellzeitpunkt, Bestand und Lieferzeit müssen zusammenpassen.</p></div>
+        <div class="lern-karte"><h3>2. Die Menge abwägen</h3><p>Kleine, häufige Bestellungen verursachen öfter Bestellaufwand. Große, seltene Bestellungen binden mehr Geld und benötigen mehr Lagerplatz. Die optimale Bestellmenge sucht einen sinnvollen Ausgleich, im einfachen Kostenmodell das Minimum aus Bestell- und Lagerkosten. Sie ist nicht automatisch die größte Menge oder die mit dem niedrigsten Stückpreis.</p></div>
+        <div class="lern-karte"><h3>3. Das Diagramm lesen und prüfen</h3><p>Für denselben angenommenen Jahresbedarf werden drei Bestellmengen betrachtet. Die Modellkosten enthalten Bestell- und Lagerkosten. Die Einkaufskosten werden hier als gleichbleibend angenommen und nicht dargestellt.</p>
+          <figure>
+            <svg class="mengen-diagramm" viewBox="0 0 540 290" role="img" aria-labelledby="diagramm-titel diagramm-beschreibung">
+              <title id="diagramm-titel">Modellkosten je Bestellmenge</title>
+              <desc id="diagramm-beschreibung">Drei Balken zeigen jährliche Bestell- und Lagerkosten: bei 20 Packungen je Bestellung 180 Euro, bei 40 Packungen 130 Euro und bei 80 Packungen 170 Euro. 40 Packungen haben von diesen drei Varianten die niedrigsten Modellkosten. Die Werte stehen auch in der Tabelle.</desc>
+              <path d="M65 25V235H520" fill="none" stroke="currentColor" stroke-width="2" />
+              <text x="70" y="18" fill="currentColor" font-size="14">Kosten pro Jahr in Euro (Modellwerte)</text>
+              <text x="42" y="240" fill="currentColor" font-size="14">0</text>
+              <text x="24" y="140" fill="currentColor" font-size="14">100</text>
+              <text x="24" y="40" fill="currentColor" font-size="14">200</text>
+              <rect x="110" y="55" width="75" height="180" fill="#0754a6" />
+              <rect x="260" y="105" width="75" height="130" fill="#0754a6" />
+              <rect x="410" y="65" width="75" height="170" fill="#0754a6" />
+              <text x="128" y="47" fill="currentColor" font-size="15">180</text>
+              <text x="278" y="97" fill="currentColor" font-size="15">130</text>
+              <text x="428" y="57" fill="currentColor" font-size="15">170</text>
+              <text x="133" y="255" fill="currentColor" font-size="15">20</text>
+              <text x="283" y="255" fill="currentColor" font-size="15">40</text>
+              <text x="433" y="255" fill="currentColor" font-size="15">80</text>
+              <text x="125" y="280" fill="currentColor" font-size="14">Bestellmenge in Packungen je Bestellung</text>
+            </svg>
+            <figcaption>Von den drei untersuchten Mengen hat 40 Packungen die niedrigsten dargestellten Kosten. Das ist keine Aussage über alle denkbaren Mengen.</figcaption>
+          </figure>
+          <div class="diagramm-werte"><table><caption>Dieselben Modellwerte als Tabelle</caption><thead><tr><th scope="col">Packungen je Bestellung</th><th scope="col">Bestellkosten/Jahr</th><th scope="col">Lagerkosten/Jahr</th><th scope="col">Summe/Jahr</th></tr></thead><tbody><tr><th scope="row">20</th><td>160 €</td><td>20 €</td><td>180 €</td></tr><tr><th scope="row">40</th><td>90 €</td><td>40 €</td><td>130 €</td></tr><tr><th scope="row">80</th><td>60 €</td><td>110 €</td><td>170 €</td></tr></tbody></table></div>
+          <p>Das Diagramm macht den Unterschied sichtbar. Bevor der Betrieb entscheidet, prüft er außerdem Lagerplatz, verfügbare Mittel und verlässliche Lieferung. Ein Diagramm unterstützt die Entscheidung, ersetzt sie aber nicht.</p>
+        </div>
+      </div>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Zeitpunkt und Menge einordnen</h2>
+      <p>Wähle je Frage eine Antwort und drücke „Antworten prüfen“. Fehlende oder falsche Antworten kannst du ohne Zeitdruck ergänzen und verbessern.</p>
+      <div id="lektion-fragen"></div><button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="lektion-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul><li>Bestellt wird früh genug, damit der Bestand bis zur Lieferung reicht.</li><li>Lieferzeitpunkt und Bestellzeitpunkt sind nicht dasselbe. Lieferzeit und ein nötiger Puffer gehören zur Planung.</li><li>Eine sinnvolle Menge berücksichtigt Bestellaufwand, Lagerkosten und betriebliche Grenzen.</li><li>Ein Diagramm zeigt Zusammenhänge unter bestimmten Annahmen und entscheidet nicht selbst.</li></ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <p class="klein">Quelle für den Lerngegenstand: <a href="../quellen/kmk-rahmenlehrplan-bueromanagement.pdf#page=13">Lokale Arbeitskopie des KMK-Rahmenlehrplans, Dokumentseite 13</a>: Bestell- und Lieferzeitpunkte, optimale Bestellmenge und Diagramme als Entscheidungshilfe. Tabellenfunktionen sind nicht Gegenstand dieser Lektion.</p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 4 · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf4-menge.js"></script>
+</body>
+</html>

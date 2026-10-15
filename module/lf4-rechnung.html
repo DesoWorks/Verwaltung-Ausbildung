@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Eine Rechnung ist eingetroffen. Du lernst, sie mit Bestellung und Lieferung zu vergleichen, Skonto nur bei genannter Bedingung und eingehaltener Frist zu nutzen und den Bezahlweg nach der Situation zu wählen.">
+  <title>Rechnung prüfen und Zahlung wählen · Lernfeld 4</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .rollen-karten { display:grid; grid-template-columns:minmax(0,1fr); gap:.55rem; margin:1.25rem 0; max-width:48rem; }
+    .rollen-karte { border:2px solid var(--rahmen,#bdcde3); border-radius:.8rem; padding:1rem; background:var(--flaeche,#fff); }
+    .rollen-karte h3 { margin-top:0; }
+    .rollen-karte p:last-child { margin-bottom:0; }
+    .rollen-frage { margin:1rem 0; }
+    .rollen-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.65rem; }
+    .rollen-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.85rem 1rem; border:2px solid var(--rahmen,#bdcde3); border-radius:.75rem; background:var(--flaeche,#fff); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .rollen-option input { flex:0 0 auto; margin:.28rem 0 0; }
+    .rollen-option:has(input:checked) { border-color:var(--primaer,#0754a6); box-shadow:0 0 0 1px var(--primaer,#0754a6); }
+    .rollen-option:hover { border-color:var(--primaer,#0754a6); }
+    .rollen-option:focus-within { outline:3px solid var(--fokus,#0754a6); outline-offset:3px; }
+    .rollen-feedback { padding:.7rem 1rem; border-left:4px solid currentColor; background:var(--hinweis-flaeche,#eef4fb); }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--primaer,#0754a6); border-radius:.75rem; }
+    .ergebnis-box[hidden] { display:none; }
+  </style>
+</head>
+<body data-page="lf4-rechnung" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 4</p>
+      <h1>Rechnung prüfen und Zahlung wählen</h1>
+      <p class="kopf-dauer">Lernorientierung · ungefähr 10 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="step">1 · Überblick</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">2 · Beispiel</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">3 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">4 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Was du in dieser Lektion lernst</h2>
+      <p>Eine Rechnung ist eingetroffen. Du lernst, sie mit Bestellung und Lieferung zu vergleichen, Skonto nur bei genannter Bedingung und eingehaltener Frist zu nutzen und den Bezahlweg nach der Situation zu wählen.</p>
+      <ul>
+        <li>Die Rechnung mit Bestellung und Lieferung vergleichen.</li>
+        <li>Skonto nur nutzen, wenn die Bedingung genannt und die Frist eingehalten ist.</li>
+        <li>Den Bezahlweg passend zur Situation wählen.</li>
+      </ul>
+      <aside class="hinweis-box"><p class="hinweis-titel">Ein erfundenes Lernbeispiel</p><p>Der Betrieb Uferblick Büroservice und alle Personen und Vorgänge im Beispiel sind frei erfunden. Die Lektion zeigt einen kleinen Ausschnitt des Lernfeldes und ersetzt keine betrieblichen Vorgaben.</p></aside>
+      <h3>Fachwörter</h3>
+      <p class="klein">Öffne einen Begriff für eine kurze Erklärung. Die Erklärungen stehen direkt in dieser Lektion bereit.</p>
+      <div id="fachwoerter-liste"></div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Beispiel</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Tom kontrolliert Rechnungen und zahlt</h2>
+      <p>Im erfundenen Betrieb Uferblick Büroservice wurden 12 Ordner bestellt und 12 geliefert. Die Rechnung nennt 15 Ordner. Alle Zahlen, Fristen und Prozente sind erfundene Übungsdaten, keine Vorgaben für deinen Betrieb.</p>
+      <div class="rollen-karten">
+        <div class="rollen-karte"><h3>1. Rechnung gegen Bestellung und Lieferung prüfen</h3><p>Tom führt eine <strong>Rechnungskontrolle</strong> durch: Er vergleicht Menge und Ware auf der Rechnung mit Bestellung und Lieferung. Er sieht 15 statt 12 Ordner. Die Abweichung hält er fest und fragt nach, bevor bezahlt wird.</p></div>
+        <div class="rollen-karte"><h3>2. Skonto nur bei genannter Bedingung</h3><p><strong>Skonto</strong> ist ein Preisnachlass bei Zahlung innerhalb einer genannten Frist. Auf einer anderen erfundenen Rechnung steht: 2 % Skonto bei Zahlung bis zum 10. Tag nach Rechnungsdatum. Es ist Tag 8, die Rechnung stimmt, und Tom nutzt den Skonto. Stünde keine Bedingung dort oder wäre die Frist vorbei, zöge er nichts ab. Die 10 Tage gelten nur in diesem erfundenen Beispiel.</p></div>
+        <div class="rollen-karte"><h3>3. Bezahlweg nach der Situation</h3><p>Auf der Rechnung steht eine Bankverbindung, und der erfundene Betrieb zahlt Rechnungen per Überweisung. Ein <strong>Bezahlsystem</strong> ist hier der Weg, auf dem bezahlt wird. Tom überweist auf die Bankverbindung der Rechnung und gibt die Rechnungsnummer an.</p></div>
+      </div>
+      <aside class="hinweis-box"><p class="hinweis-titel">Wichtig</p><p>Diese Lektion übt, Rechnungen zu kontrollieren und die Zahlung zu wählen. Allgemeine Zahlungsfristen werden nicht vorgegeben; es zählt, was im Beispiel steht. Angebotsvergleich, Vertragsarten und Wareneingang sind andere Lektionen.</p></aside>
+      <details class="fachwort-hinweis"><summary>Grundlage im Rahmenlehrplan</summary><p>Wörtlicher Planausschnitt:</p><blockquote>Die Schülerinnen und Schüler kontrollieren Rechnungen und veranlassen die situationsgerechte Bezahlung (Skontonutzung, Bezahlsysteme).</blockquote><p><a href="../quellen/kmk-rahmenlehrplan-bueromanagement.pdf#page=13">KMK-Rahmenlehrplan · Dokumentseite 13 · Lernfeld 4</a></p></details>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Was passt zur Situation?</h2>
+      <p>Wähle je Situation eine Antwort. Drücke anschließend „Antworten prüfen“. Du kannst Antworten ändern und erneut prüfen. Es gibt keinen Zeitdruck. Eine leere Prüfung sagt dir, was noch fehlt.</p>
+      <div id="lektion-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="antworten-pruefen">Antworten prüfen</button>
+      <section id="lektion-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf" id="uebung-reset">Antworten zurücksetzen</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Vergleiche die Rechnung mit Bestellung und Lieferung.</li>
+        <li>Halte Abweichungen fest und kläre sie vor der Zahlung.</li>
+        <li>Nutze Skonto nur, wenn die Bedingung genannt und die Frist eingehalten ist.</li>
+        <li>Wähle den Bezahlweg passend zur Situation.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Übung wiederholen</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 4 · Lernorientierung · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf4-rechnung.js"></script>
+</body>
+</html>

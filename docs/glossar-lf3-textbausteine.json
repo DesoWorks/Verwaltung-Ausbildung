@@ -1,0 +1,14 @@
+[
+  {
+    "begriff": "Textbaustein",
+    "erklaerung": "Ein gespeicherter Textteil für wiederkehrende Inhalte. Vor der Verwendung wird er auf den konkreten Fall abgestimmt und geprüft."
+  },
+  {
+    "begriff": "Platzhalter",
+    "erklaerung": "Eine markierte Stelle, die noch mit einer konkreten Angabe gefüllt werden muss, zum Beispiel mit einem geprüften Namen oder einer Auftragsnummer."
+  },
+  {
+    "begriff": "Textverarbeitungsprogramm",
+    "erklaerung": "Ein Programm zum Schreiben, Bearbeiten und Gestalten von Texten. Wiederkehrende Textteile lassen sich damit vorbereiten und weiterverwenden."
+  }
+]

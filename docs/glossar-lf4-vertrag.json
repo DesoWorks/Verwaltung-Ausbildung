@@ -1,0 +1,14 @@
+[
+  {
+    "begriff": "Kaufvertrag",
+    "erklaerung": "Ein Vertrag über eine Sache gegen Geld, zum Beispiel Ordner gegen Bezahlung."
+  },
+  {
+    "begriff": "Werkvertrag",
+    "erklaerung": "Ein Vertrag über ein herzustellendes Ergebnis, zum Beispiel ein Regal nach Maß. Entscheidend ist das fertige Werk."
+  },
+  {
+    "begriff": "Dienstvertrag",
+    "erklaerung": "Ein Vertrag über eine Tätigkeit, zum Beispiel Beratung an zwei Tagen. Geschuldet ist die Tätigkeit, nicht ein fertiges Werk."
+  }
+]

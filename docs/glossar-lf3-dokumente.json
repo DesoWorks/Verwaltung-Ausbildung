@@ -1,0 +1,14 @@
+[
+  {
+    "begriff": "Lieferschein",
+    "erklaerung": "Ein Dokument zur Lieferung, das die zugehörigen Artikel und Mengen beschreibt. Du kannst es mit den angekommenen Artikeln vergleichen."
+  },
+  {
+    "begriff": "Rechnung",
+    "erklaerung": "Das Dokument, mit dem ein Betrieb eine Lieferung oder ausgeführte Arbeit abrechnet. Es ist nicht automatisch ein Nachweis einer Zahlung."
+  },
+  {
+    "begriff": "Auftragsabwicklung",
+    "erklaerung": "Die Durchführung eines angenommenen Auftrags. Dazu gehört, die passenden Dokumente für Bestätigung, Lieferung und Abrechnung zuzuordnen."
+  }
+]

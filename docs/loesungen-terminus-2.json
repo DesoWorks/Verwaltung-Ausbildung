@@ -1,0 +1,5 @@
+{
+  "lf1-ziele": { "q1": "ziele", "q2": "arbeitsteilung", "q3": "kreislauf" },
+  "lf2-zeit": { "q1": "zeitdieb", "q2": "zeitfalle", "q3": "prioritaet" },
+  "lf4-menge": { "q1": "zeitpunkt", "q2": "menge", "q3": "diagramm" }
+}
