@@ -502,14 +502,15 @@ html.ruhige-ansicht *, html.bewegung-reduziert * { animation: none !important; t
 .nav-options { max-width: 1200px; margin: .4rem auto 0; }
 .nav-options .leseoptionen { max-width: none; margin: 0; padding: 0; }
 .nav-options .leseoptionen-inhalt { max-width: 36rem; }
-.glossar-liste { margin-top: 1rem; }
-.glossar-liste .glossar-eintrag { border-top: 1px solid var(--farbe-rahmen); break-inside: avoid; }
-/* Eine Spalte unter 1100px. Drei ab Desktop, vier nur wenn die Erklärungen noch lesbar bleiben. */
+.glossar-liste { display: grid; grid-template-columns: 1fr; gap: 0 1.5rem; align-items: start; margin-top: 1rem; }
+.glossar-liste .glossar-eintrag { border-top: 1px solid var(--farbe-rahmen); }
+/* Eine Spalte unter 1100px. Drei ab Desktop, vier nur wenn die Erklärungen noch lesbar bleiben.
+   Raster statt Spalten: ein aufgeklapptes Wort bleibt in seiner Spalte. */
 @media (min-width: 1100px) {
-  .glossar-liste { columns: 3; column-gap: 1.75rem; }
+  .glossar-liste { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 1.75rem; }
 }
 @media (min-width: 1600px) {
-  .glossar-liste { columns: 4; column-gap: 1.5rem; }
+  .glossar-liste { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 1.5rem; }
 }
 /* Klarer Abstand zwischen Testfragen der Lektionen; Antwortoptionen bleiben enger. */
 #questions > .question, #questions > fieldset { margin: 0 0 1.5rem; }

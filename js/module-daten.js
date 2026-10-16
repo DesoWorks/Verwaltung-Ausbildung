@@ -122,7 +122,7 @@
             },
             {
               id: "lf1-lernziel", typ: "lernzielkontrolle", titel: "Lernzielkontrolle",
-              beschreibung: "Fünf Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
+              beschreibung: "24 Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
               page: "lf1-lernziel", status: "verfuegbar", datei: "module/lf1-lernziel.html"
             }
           ]
@@ -199,7 +199,7 @@
             },
             {
               id: "lf2-lernziel", typ: "lernzielkontrolle", titel: "Lernzielkontrolle",
-              beschreibung: "Fünf Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
+              beschreibung: "24 Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
               page: "lf2-lernziel", status: "verfuegbar", datei: "module/lf2-lernziel.html"
             }
           ]
@@ -276,7 +276,7 @@
             },
             {
               id: "lf3-lernziel", typ: "lernzielkontrolle", titel: "Lernzielkontrolle",
-              beschreibung: "Fünf Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
+              beschreibung: "24 Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
               page: "lf3-lernziel", status: "verfuegbar", datei: "module/lf3-lernziel.html"
             }
           ]
@@ -389,7 +389,7 @@
             },
             {
               id: "lf4-lernziel", typ: "lernzielkontrolle", titel: "Lernzielkontrolle",
-              beschreibung: "Fünf Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
+              beschreibung: "24 Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
               page: "lf4-lernziel", status: "verfuegbar", datei: "module/lf4-lernziel.html"
             }
           ]
