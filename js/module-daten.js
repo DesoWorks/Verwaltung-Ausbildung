@@ -119,6 +119,11 @@
               page: "lf1-praesentation",
               status: "verfuegbar",
               datei: "module/lf1-praesentation.html"
+            },
+            {
+              id: "lf1-lernziel", typ: "lernzielkontrolle", titel: "Lernzielkontrolle",
+              beschreibung: "Fünf Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
+              page: "lf1-lernziel", status: "verfuegbar", datei: "module/lf1-lernziel.html"
             }
           ]
         },
@@ -191,6 +196,11 @@
               page: "lf2-protokoll",
               status: "verfuegbar",
               datei: "module/lf2-protokoll.html"
+            },
+            {
+              id: "lf2-lernziel", typ: "lernzielkontrolle", titel: "Lernzielkontrolle",
+              beschreibung: "Fünf Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
+              page: "lf2-lernziel", status: "verfuegbar", datei: "module/lf2-lernziel.html"
             }
           ]
         },
@@ -263,6 +273,11 @@
               page: "lf3-vervielfaeltigen",
               status: "verfuegbar",
               datei: "module/lf3-vervielfaeltigen.html"
+            },
+            {
+              id: "lf3-lernziel", typ: "lernzielkontrolle", titel: "Lernzielkontrolle",
+              beschreibung: "Fünf Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
+              page: "lf3-lernziel", status: "verfuegbar", datei: "module/lf3-lernziel.html"
             }
           ]
         },
@@ -371,6 +386,11 @@
               page: "lf4-stoerung",
               status: "verfuegbar",
               datei: "module/lf4-stoerung.html"
+            },
+            {
+              id: "lf4-lernziel", typ: "lernzielkontrolle", titel: "Lernzielkontrolle",
+              beschreibung: "Fünf Fragen zu den vorhandenen Lektionen. Zurücksetzen nur mit Projektpasswort.",
+              page: "lf4-lernziel", status: "verfuegbar", datei: "module/lf4-lernziel.html"
             }
           ]
         }

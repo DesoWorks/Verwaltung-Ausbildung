@@ -8,4 +8,6 @@ Die Themenübersicht (`index.html`) zeigt drei Ausbildungsjahre. Geplante Lernfe
 
 Am 15.10.2026 kam in Lernfeld 4 die erste kleine Lektion dazu: „Bedarf vor der Bestellung“ (Version `0.1.4-alpha.1`). Das Glossar hat dafür drei neue Begriffe: Bedarf, ökonomisches Prinzip, Beschaffung. Lernfeld 4 ist begonnen, nicht fertig. Beleg: `docs/lektion-lf4-bedarf-2026-10-15.md`.
 
+Stand 16.10.2026, Version `0.1.15-alpha.1`: Lernfeld 1 bis 4 haben je eine Lernzielkontrolle. Zurücksetzen geht nur mit dem Projektpasswort. Der Wortlaut steht nicht im Repository, nur ein SHA-256-Hash. Einzeltests bleiben frei. Öffentliche Vorschau: https://desoworks.github.io/Verwaltung-Ausbildung/
+
 Der Plan steht in `docs/plan-lernplattform.md`. Die Quelle steht in `docs/ausbildungsplan.md`. Die lokale Vorschau startet mit `./start.sh` auf `http://127.0.0.1:8107`.

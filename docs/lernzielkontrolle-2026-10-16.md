@@ -1,0 +1,12 @@
+# Lernzielkontrollen · 16.10.2026
+
+- Je eine Kontrolle als letzter Eintrag in Lernfeld 1 bis 4; jeweils fünf Fragen aus den vorhandenen Lektionen. Keine Erweiterung der Lernfelder 5 bis 13.
+- Ein Passwort pro Projekt, ausschließlich zum Zurücksetzen dieser Kontrollen. Der freigegebene Wortlaut liegt beim Commander und wird hier nicht wiederholt.
+- Der SHA-256-Hash steht in der gemeinsamen Datei `js/lernzielkontrolle.js`. Der Browser vergleicht die Eingabe über `crypto.subtle.digest`; Groß- und Kleinschreibung zählt. Bei fehlender Kryptografie oder Speicherfehler bleibt der Stand erhalten.
+- Jede Kontrolle speichert nur `verwaltung-ausbildung.lfN-lernziel.v1`. Vor der Abgabe werden Antworten als Entwurf gespeichert; nach vollständiger Abgabe sind Antworten und Ergebnis gesperrt, auch nach Neuladen. Alle fünf Antworten müssen für „bestanden“ stimmen.
+- „Lernzielkontrolle zurücksetzen“ öffnet eine Passworteingabe. Falsch, leer oder abgebrochen verändert nichts. Richtig entfernt ausschließlich den Schlüssel der geöffneten Kontrolle, ohne einen leeren Ersatzwert anzulegen.
+- Einzeltests und die bisherigen Knöpfe `uebung-reset` und `reset-alles` bleiben frei und unverändert. Eine Änderung ihrer Antworten setzt keine Lernzielkontrolle zurück.
+- Die bestehende Übersicht und Navigation verwenden den zentralen Katalog. Ein Abschlusszeichen wird wie bisher aus den gespeicherten Antworten abgeleitet; kein weiterer Abschlusswert wird angelegt.
+- Grenze: Das ist ein lokaler Bedienungsschutz, keine manipulationssichere Prüfung. Wer Browserdaten löscht oder Entwicklerwerkzeuge nutzt, kann lokalen Speicher verändern. Für wirksame Zugriffskontrolle gegen solche Eingriffe wäre eine gesonderte serverseitige Lösung erforderlich. `crypto.subtle` braucht einen sicheren Browserkontext (zum Beispiel localhost oder HTTPS).
+- Grundlagen gelesen: `docs/ausbildungsplan.md` und die vorhandenen Lektionen. Fragen LF1: Rolle, Aufbau, Ziele, Betrieb/Präsentation, Fortbildung. LF2: Zeit, Arbeitsplatz, Termine/Protokoll, Post, Team. LF3: Auftrag, Preis, Dokumente, Textbausteine, Vervielfältigen. LF4: Bedarf, Bezugsquellen/Vergleich, Miete/Vertrag, Wareneingang/Lager, Rechnung.
+- Version: `0.1.15-alpha.1`. Kein Commit, kein Push, keine Veröffentlichung und keine neuen Abhängigkeiten.

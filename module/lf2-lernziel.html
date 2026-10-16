@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lernzielkontrolle zu Büroprozessen und Arbeitsorganisation in Lernfeld 2.">
+  <title>Lernzielkontrolle · Lernfeld 2</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body data-page="lf2-lernziel" data-base="../" data-lernfeld="lf2">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt"><p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 2</p><h1>Lernzielkontrolle</h1><p class="kopf-dauer">Fünf Fragen · ohne Zeitdruck</p></div>
+  </header>
+  <main id="hauptinhalt" tabindex="-1">
+    <section class="abschnitt" aria-labelledby="kontrolle-titel">
+      <h2 id="kontrolle-titel">Büroprozesse und Arbeitsorganisation</h2>
+      <p>Prüfe dein Verständnis der vorhandenen Lektionen: Prioritäten, Arbeitsplatz, Protokoll, Datenschutz und Zusammenarbeit. Noah und sein Betrieb Uferblick Büroservice sind frei erfunden.</p>
+      <aside class="hinweis-box"><p>Wähle je Frage eine Antwort. Vor der Abgabe kannst du deine Auswahl ändern. Nach „Lernzielkontrolle abgeben“ bleiben Antworten und Ergebnis gespeichert und gesperrt. Alle fünf Antworten müssen richtig sein, damit die Kontrolle als bestanden zählt. Ein neuer Versuch braucht die Freigabe zum Zurücksetzen. Die Einzeltests in den Lektionen bleiben frei.</p></aside>
+      <noscript><p>Für diese Kontrolle muss JavaScript aktiviert sein.</p></noscript>
+      <form id="lernziel-form"><div id="lernziel-fragen" class="quiz-liste"></div><div class="knopf-reihe"><button class="knopf knopf-haupt" id="lernziel-abgeben" type="submit">Lernzielkontrolle abgeben</button></div></form>
+      <p id="lernziel-status" class="rueckmeldung" role="status" tabindex="-1"></p>
+      <p id="speicher-hinweis" role="alert"></p>
+      <div class="knopf-reihe"><button class="knopf knopf-warn" id="lernziel-reset" type="button">Lernzielkontrolle zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <dialog id="reset-dialog" class="dialog" aria-labelledby="reset-titel" aria-describedby="reset-beschreibung">
+    <h2 id="reset-titel">Lernzielkontrolle zurücksetzen</h2>
+    <p id="reset-beschreibung">Nur diese Kontrolle wird geleert. Das Projektpasswort erhältst du von der zuständigen Ausbildungsperson. Groß- und Kleinschreibung zählt.</p>
+    <form id="reset-form"><p><label for="reset-passwort">Projektpasswort</label><br><input id="reset-passwort" type="password" autocomplete="off" spellcheck="false" aria-describedby="reset-hinweis"></p><p id="reset-hinweis" role="status"></p><div class="knopf-reihe"><button class="knopf knopf-warn" id="reset-bestaetigen" type="submit">Zurücksetzen bestätigen</button><button class="knopf" id="reset-abbrechen" type="button">Abbrechen</button></div></form>
+  </dialog>
+  <footer class="fuss"><p>Lernfeld 2 · Lernzielkontrolle · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lernzielkontrolle.js"></script>
+</body>
+</html>

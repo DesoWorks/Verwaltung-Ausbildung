@@ -4,6 +4,10 @@
 (function (global) {
   "use strict";
   var SCHLUESSEL = {
+    "lf1-lernziel": "verwaltung-ausbildung.lf1-lernziel.v1",
+    "lf2-lernziel": "verwaltung-ausbildung.lf2-lernziel.v1",
+    "lf3-lernziel": "verwaltung-ausbildung.lf3-lernziel.v1",
+    "lf4-lernziel": "verwaltung-ausbildung.lf4-lernziel.v1",
     "lf1-rolle": "verwaltung-ausbildung.lf1-rolle.v1",
     "lf1-rechte": "verwaltung-ausbildung.lf1-rechte.v1",
     "lf2-ablauf": "verwaltung-ausbildung.lf2-ablauf.v1",
@@ -38,6 +42,10 @@
     "lf4-miete": "verwaltung-ausbildung.lf4-miete.v1"
   };
   var LOESUNGEN = {
+    "lf1-lernziel": { q1: "a", q2: "b", q3: "c", q4: "a", q5: "b" },
+    "lf2-lernziel": { q1: "c", q2: "a", q3: "b", q4: "c", q5: "a" },
+    "lf3-lernziel": { q1: "b", q2: "c", q3: "a", q4: "b", q5: "c" },
+    "lf4-lernziel": { q1: "a", q2: "b", q3: "c", q4: "a", q5: "b" },
     "lf1-rolle": { q1: "azubi", q2: "abstimmen", q3: "ausbilder" },
     "lf1-rechte": { q1: "ausbildung", q2: "nachfragen", q3: "ausbilder" },
     "lf2-ablauf": { q1: "zeitdieb", q2: "ordnen", q3: "rueckruf" },
