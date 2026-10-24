@@ -32,15 +32,22 @@
   }
 
   function money(text) {
-    var raw = String(text == null ? "" : text).trim().replace(/\s/g, "");
+    /* Akzeptierte Formate: Ziffern ohne Gruppierung (12, 1234,56) oder mit Tausenderpunkten
+       (erste Gruppe 1 bis 3 Ziffern, danach genau 3, z. B. 1.234,56), optional Komma
+       mit 1 oder 2 Nachkommastellen. Nur Leerzeichen am Rand werden ignoriert.
+       Alles andere wird abgelehnt, nichts wird stillschweigend entfernt. */
+    var raw = String(text == null ? "" : text).trim();
     if (raw === "") return { ok: false, error: "Trage einen Betrag ein, zum Beispiel 12,50." };
     if (raw.indexOf(".") >= 0 && raw.indexOf(",") < 0) {
       return { ok: false, error: "Verwende das Komma als Dezimalzeichen, zum Beispiel 12,50. Der Punkt ist nur das Tausenderzeichen." };
     }
-    raw = raw.replace(/\./g, "").replace(",", ".");
-    if (!/^\d+(\.\d{1,2})?$/.test(raw)) {
-      return { ok: false, error: "Gib einen Geldbetrag mit höchstens zwei Nachkommastellen ein, zum Beispiel 12,50." };
+    if (!/^(\d{1,3}(\.\d{3})+|\d+)(,\d{1,2})?$/.test(raw)) {
+      if (raw.indexOf(".") >= 0 && /^[\d.]+(,\d{1,2})?$/.test(raw)) {
+        return { ok: false, error: "Der Tausenderpunkt steht an der falschen Stelle. Schreibe zum Beispiel 1.234,56 oder 1234,56." };
+      }
+      return { ok: false, error: "Gib einen Geldbetrag nur mit Ziffern und einem Komma ein, mit höchstens zwei Nachkommastellen, zum Beispiel 12,50 oder 1.234,56." };
     }
+    raw = raw.replace(/\./g, "").replace(",", ".");
     var parts = raw.split(".");
     var cents = Number(parts[0]) * 100 + (parts[1] ? Number((parts[1] + "00").slice(0, 2)) : 0);
     if (!Number.isSafeInteger(cents) || cents > MAX_CENTS) {
@@ -50,10 +57,12 @@
   }
 
   function qty(text) {
-    var raw = String(text == null ? "" : text).trim().replace(/\s/g, "").replace(",", ".");
-    if (!/^\d+(\.\d{1,3})?$/.test(raw)) {
-      return { ok: false, error: "Gib eine Menge als Zahl ein, zum Beispiel 3 oder 1,5." };
+    /* Akzeptiert: Ziffern, optional Komma mit 1 bis 3 Nachkommastellen (3, 1,5). Nichts wird still entfernt. */
+    var raw = String(text == null ? "" : text).trim();
+    if (!/^\d+(,\d{1,3})?$/.test(raw)) {
+      return { ok: false, error: "Gib eine Menge nur mit Ziffern und höchstens einem Komma ein, zum Beispiel 3 oder 1,5." };
     }
+    raw = raw.replace(",", ".");
     var parts = raw.split(".");
     var milli = Number(parts[0]) * 1000 + (parts[1] ? Number((parts[1] + "000").slice(0, 3)) : 0);
     if (!Number.isSafeInteger(milli) || milli > MAX_QTY_MILLI) {
@@ -63,11 +72,14 @@
   }
 
   function rate(text) {
-    var raw = String(text == null ? "" : text).trim().replace(/\s/g, "").replace("%", "").replace(",", ".");
+    /* Akzeptiert: Ziffern, optional Komma mit 1 oder 2 Nachkommastellen, optional ein einzelnes % am Ende (7, 7,5, 19,00 %). */
+    var raw = String(text == null ? "" : text).trim();
     if (raw === "") return { ok: false, error: "Gib einen Prozentsatz ein, zum Beispiel 7 oder 19,00." };
-    if (!/^\d+(\.\d{1,2})?$/.test(raw)) {
-      return { ok: false, error: "Ein Prozentsatz hat höchstens zwei Nachkommastellen, zum Beispiel 7,50." };
+    var m = /^(\d+(,\d{1,2})?)\s*%?$/.exec(raw);
+    if (!m) {
+      return { ok: false, error: "Gib einen Prozentsatz nur mit Ziffern und höchstens einem Komma ein, mit höchstens zwei Nachkommastellen, zum Beispiel 7,50." };
     }
+    raw = m[1].replace(",", ".");
     var parts = raw.split(".");
     var hundertstel = Number(parts[0]) * 100 + (parts[1] ? Number((parts[1] + "00").slice(0, 2)) : 0);
     if (hundertstel > MAX_RATE) return { ok: false, error: "Der Prozentsatz darf nicht über 100,00 liegen." };

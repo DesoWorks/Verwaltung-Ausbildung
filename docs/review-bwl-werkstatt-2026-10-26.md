@@ -29,3 +29,17 @@ Rechenkern der BWL-Werkstatt aus IT-Ausbildung, Review-Stand 17fd7fd, nur lesend
 - Sprachprüfung durch C-3PO (siehe Übergaben) ist nicht vollständig eingearbeitet.
 - Höchstens 6 Artikel, Beträge bis 1.000.000.000,00 Euro, Prozentsätze mit höchstens zwei Nachkommastellen.
 - Die Versionsnummer wurde nicht geändert.
+
+## Nachtrag: Eingabevalidierung (Fix nach QA-Befund von GLaDOS)
+
+Befund: `money("1.2,00")` lieferte stillschweigend 12,00 €, weil alle Punkte vor der Prüfung entfernt wurden.
+Gleiches Muster bei Menge und Prozentsatz (`qty("1 5")` ergab 15, `rate("5%7")` ergab 57,00 %).
+
+Jetzt gilt: Es wird nichts mehr stillschweigend entfernt. Nur Leerzeichen am Anfang und Ende werden ignoriert.
+
+Akzeptierte Formate:
+- Geldbetrag: Ziffern ohne Gruppierung (`12`, `1234,56`) oder mit Tausenderpunkten (erste Gruppe 1 bis 3 Ziffern, danach genau 3, z. B. `1.234,56`). Dezimalzeichen nur das Komma, 1 oder 2 Nachkommastellen. Kein Vorzeichen, keine Währungszeichen, keine Buchstaben.
+- Menge: Ziffern, optional Komma mit 1 bis 3 Nachkommastellen (`3`, `1,5`). Kein Tausenderpunkt.
+- Prozentsatz: Ziffern, optional Komma mit 1 oder 2 Nachkommastellen, optional ein einzelnes `%` am Ende (`7`, `7,5`, `19,00 %`).
+
+Rechenregeln, Rundung und Bezugsbasen sind unverändert. Weiterhin keine fachliche Freigabe.
