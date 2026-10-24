@@ -40,6 +40,14 @@
       beschreibung: "Kriterien, Gewichte, Punkte und Summe.",
       datei: "module/werkzeuge/nutzwert.html",
       lektion: "module/lf4-vergleich.html"
+    },
+    {
+      id: "werkzeug-bwl-werkstatt",
+      page: "werkzeug-bwl-werkstatt",
+      titel: "BWL-Werkstatt (Testfassung)",
+      beschreibung: "Angebot, Gewinn, Rabatt und Netto-Brutto mit Rechenweg. Technische Demonstration, fachlich noch nicht freigegeben.",
+      datei: "module/werkzeuge/bwl-werkstatt.html",
+      lektion: "module/lf3-preis.html"
     }
   ];
 

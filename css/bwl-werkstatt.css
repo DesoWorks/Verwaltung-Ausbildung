@@ -1,0 +1,27 @@
+/* BWL-Werkstatt (Verwaltung-Ausbildung). Nutzt nur die gemeinsamen Farbvariablen. Keine Animationen. */
+.bwl { max-width: 46rem; }
+.bwl-form { display: grid; gap: .6rem; }
+.bwl-form label { font-weight: 700; display: block; }
+.bwl-form input[type="text"], .bwl-form select {
+  font: inherit; padding: .6rem .7rem; min-height: 2.75rem; width: 100%; box-sizing: border-box;
+  border: 2px solid var(--farbe-rahmen); border-radius: 8px;
+  background: var(--farbe-kontroll-flaeche); color: var(--farbe-kontroll-text);
+}
+.bwl-form input:focus-visible, .bwl-form select:focus-visible, .bwl-form .knopf:focus-visible,
+#bwl-ergebnis:focus-visible, #bwl-fehler:focus-visible { outline: 3px solid var(--farbe-akzent); outline-offset: 2px; }
+.bwl-panel[hidden], .bwl-unterfelder[hidden], .bwl-zeile[hidden], #bwl-fehler[hidden] { display: none; }
+.bwl-panel, .bwl-unterfelder { display: grid; gap: .6rem; }
+.bwl-zeile { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .5rem .75rem; padding-bottom: .8rem; border-bottom: 1px solid var(--farbe-rahmen); }
+.bwl-zeile h3 { grid-column: 1 / -1; margin: 0; font-size: 1.1rem; }
+.bwl-name { grid-column: 1 / -1; }
+.bwl-wahl { font-weight: 600; display: flex; gap: .45rem; align-items: center; min-height: 2.75rem; }
+.bwl-form fieldset { border: 2px solid var(--farbe-rahmen); border-radius: var(--radius); padding: .6rem 1rem; }
+#bwl-fehler { margin-top: .9rem; padding: .8rem 1rem; border: 3px solid var(--farbe-fehler); border-radius: var(--radius); background: var(--farbe-fehler-flaeche); color: var(--farbe-fehler); font-weight: 700; }
+#bwl-fehler::before { content: "Eingabe prüfen: "; }
+.bwl-tabelle-wrap { overflow-x: auto; margin: .8rem 0; max-width: 100%; }
+.bwl-tabelle { border-collapse: collapse; width: 100%; min-width: 24rem; }
+.bwl-tabelle caption { text-align: left; font-weight: 700; padding: .3rem 0; }
+.bwl-tabelle th, .bwl-tabelle td { border: 1px solid var(--farbe-rahmen); padding: .5rem .65rem; text-align: left; vertical-align: top; }
+.bwl-tabelle thead th { background: var(--farbe-leiste); }
+.bwl-tabelle .bwl-zahl { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 640px) { .bwl-zeile { grid-template-columns: minmax(0, 1fr); } }

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="BWL-Werkstatt (Testfassung): Angebot, Gewinn, Rabatt und Netto-Brutto mit sichtbarem Rechenweg. Läuft lokal im Browser.">
+  <title>BWL-Werkstatt · Werkzeug (Testfassung)</title>
+  <link rel="icon" href="../../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/bwl-werkstatt.css">
+</head>
+<body data-page="werkzeug-bwl-werkstatt" data-base="../../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Werkzeug · Testfassung</p>
+      <h1>BWL-Werkstatt</h1>
+      <p class="kopf-dauer">Angebot, Gewinn, Rabatt, Netto und Brutto · mit Rechenweg · kein Zeitdruck</p>
+    </div>
+  </header>
+  <main id="hauptinhalt" class="bwl" tabindex="-1">
+    <section class="abschnitt" aria-labelledby="bwl-titel">
+      <h2 id="bwl-titel">Was macht dieses Werkzeug?</h2>
+      <p class="gross">Du gibst Zahlen ein. Das Werkzeug rechnet in ganzen Cent, rundet kaufmännisch und zeigt jeden Schritt. Es speichert nichts und braucht kein Internet.</p>
+      <div class="hinweis-box">
+        <p class="hinweis-titel">Testfassung – noch nicht fachlich freigegeben</p>
+        <p>Das ist eine technische Demonstration. Die Beispiele sind erfunden. Welche Basis für Zuschläge gilt, ist hier als Übungsannahme gewählt und noch nicht von einer Fachperson bestätigt. Es ist keine Steuer- oder Rechtsberatung. Prüfe wichtige Ergebnisse im Unterricht oder im Betrieb.</p>
+      </div>
+    </section>
+
+    <section class="abschnitt" aria-labelledby="bwl-rechner-titel">
+      <h2 id="bwl-rechner-titel">Rechnen</h2>
+      <form id="bwl-form" class="bwl-form" novalidate>
+        <label for="bwl-art">Was willst du rechnen?</label>
+        <select id="bwl-art">
+          <option value="angebot">Angebot (Nettoangebotspreis)</option>
+          <option value="gewinn">Gewinn</option>
+          <option value="rabatt">Rabatt</option>
+          <option value="steuer">Netto und Brutto</option>
+        </select>
+
+        <div id="panel-angebot" class="bwl-panel" data-rechner="angebot">
+          <p id="bwl-hilfe-angebot">Trage Menge und Einzelpreis netto ein. Ungenutzte Zeilen bleiben leer. Du kannst bis zu 6 Artikel verwenden. Die Handlungskosten werden auf die Positionssumme gerechnet, der Gewinn auf die Selbstkosten.</p>
+          <div id="bwl-positionen"></div>
+          <div class="knopf-reihe"><button type="button" class="knopf" id="bwl-artikel-plus">Weiteren Artikel hinzufügen</button></div>
+          <p id="bwl-position-status" class="klein" role="status"></p>
+          <label for="an-hk">Handlungskostenzuschlag in Prozent (auf die Positionssumme)</label>
+          <input type="text" id="an-hk" inputmode="decimal" autocomplete="off">
+          <label for="an-gw">Gewinnzuschlag in Prozent (auf die Selbstkosten)</label>
+          <input type="text" id="an-gw" inputmode="decimal" autocomplete="off">
+        </div>
+
+        <div id="panel-gewinn" class="bwl-panel" data-rechner="gewinn" hidden>
+          <fieldset>
+            <legend>Weg der Gewinnberechnung</legend>
+            <label class="bwl-wahl"><input type="radio" name="gewinn-weg" value="zuschlag" checked> Zuschlag auf einen Betrag</label>
+            <label class="bwl-wahl"><input type="radio" name="gewinn-weg" value="differenz"> Differenz aus Erlös und Kosten</label>
+          </fieldset>
+          <div id="gw-zuschlag" class="bwl-unterfelder">
+            <label for="gw-basis">Basis in Euro</label>
+            <input type="text" id="gw-basis" inputmode="decimal" autocomplete="off">
+            <label for="gw-satz">Gewinnzuschlag in Prozent</label>
+            <input type="text" id="gw-satz" inputmode="decimal" autocomplete="off">
+          </div>
+          <div id="gw-differenz" class="bwl-unterfelder" hidden>
+            <label for="gw-erloes">Erlös in Euro</label>
+            <input type="text" id="gw-erloes" inputmode="decimal" autocomplete="off">
+            <label for="gw-kosten">Kosten in Euro</label>
+            <input type="text" id="gw-kosten" inputmode="decimal" autocomplete="off">
+          </div>
+        </div>
+
+        <div id="panel-rabatt" class="bwl-panel" data-rechner="rabatt" hidden>
+          <label for="rb-basis">Warenwert (Basis) in Euro</label>
+          <input type="text" id="rb-basis" inputmode="decimal" autocomplete="off">
+          <fieldset>
+            <legend>Art des Rabatts</legend>
+            <label class="bwl-wahl"><input type="radio" name="rabatt-art" value="prozent" checked> Prozentsatz</label>
+            <label class="bwl-wahl"><input type="radio" name="rabatt-art" value="betrag"> Fester Betrag</label>
+          </fieldset>
+          <div id="rb-satz-feld" class="bwl-unterfelder"><label for="rb-satz">Rabattsatz in Prozent</label><input type="text" id="rb-satz" inputmode="decimal" autocomplete="off"></div>
+          <div id="rb-betrag-feld" class="bwl-unterfelder" hidden><label for="rb-betrag">Rabattbetrag in Euro</label><input type="text" id="rb-betrag" inputmode="decimal" autocomplete="off"></div>
+        </div>
+
+        <div id="panel-steuer" class="bwl-panel" data-rechner="steuer" hidden>
+          <fieldset>
+            <legend>Richtung</legend>
+            <label class="bwl-wahl"><input type="radio" name="steuer-richtung" value="netto-zu-brutto" checked> Von Netto nach Brutto</label>
+            <label class="bwl-wahl"><input type="radio" name="steuer-richtung" value="brutto-zu-netto"> Von Brutto nach Netto</label>
+          </fieldset>
+          <label for="st-betrag">Betrag in Euro</label>
+          <input type="text" id="st-betrag" inputmode="decimal" autocomplete="off">
+          <label for="st-satz">Steuersatz in Prozent (frei wählbar, 19 ist nur ein Beispiel)</label>
+          <input type="text" id="st-satz" inputmode="decimal" autocomplete="off">
+        </div>
+
+        <div class="knopf-reihe">
+          <button type="submit" class="knopf knopf-haupt">Berechnen</button>
+          <button type="button" class="knopf" id="bwl-beispiel">Beispiel laden</button>
+          <button type="button" class="knopf" id="bwl-leeren">Leeren</button>
+        </div>
+      </form>
+      <p id="bwl-fehler" role="alert" tabindex="-1" hidden></p>
+      <div id="bwl-ergebnis" class="feedback-box" aria-live="polite" tabindex="-1" hidden></div>
+    </section>
+
+    <section class="abschnitt" aria-labelledby="bwl-wissen">
+      <h2 id="bwl-wissen">Kurz erklärt</h2>
+      <ul>
+        <li><strong>Positionssumme:</strong> Menge mal Einzelpreis, alle Positionen addiert.</li>
+        <li><strong>Handlungskosten:</strong> Zuschlag für allgemeine Kosten des Betriebs, hier auf die Positionssumme.</li>
+        <li><strong>Selbstkosten:</strong> Positionssumme plus Handlungskosten.</li>
+        <li><strong>Gewinn und Nettoangebotspreis:</strong> Gewinnzuschlag auf die Selbstkosten. Selbstkosten plus Gewinn ergibt den Nettoangebotspreis.</li>
+        <li><strong>Rabatt:</strong> Preisnachlass, wird von einer genannten Basis abgezogen.</li>
+        <li><strong>Netto, Steuerbetrag, Brutto:</strong> drei getrennte Beträge.</li>
+        <li><strong>Kaufmännisch runden:</strong> Auf volle Cent. Genau ein halber Cent wird aufgerundet.</li>
+      </ul>
+      <p class="klein">Bekannte Grenzen: höchstens 6 Artikel, Beträge bis 1.000.000.000,00 Euro, Prozentsätze mit höchstens zwei Nachkommastellen. Der Lernmodus der IT-Ausbildung ist nicht übernommen.</p>
+    </section>
+  </main>
+  <footer class="fuss"><p>Werkzeug · BWL-Werkstatt (Testfassung) · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../../js/module-daten.js"></script>
+  <script src="../../js/fortschritt.js"></script>
+  <script src="../../js/navigation.js"></script>
+  <script src="../../js/version.js"></script>
+  <script src="../../js/bwl-kern.js"></script>
+  <script src="../../js/bwl-werkstatt-ui.js"></script>
+</body>
+</html>
