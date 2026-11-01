@@ -378,6 +378,9 @@ test("Regression: Vorrang und keine Einteilung bestehen ohne das Wort freigestel
   assert.equal(ergebnis.bestanden, true);
   assert.equal(ergebnis.darfAbschliessen, true);
   assert.equal(JSON.stringify(ergebnis).includes(kern.lehrkraftLoesung().mustertext), false);
+  const kriterien = kern.lehrkraftLoesung().kriterien.join(" ");
+  assert.match(kriterien, /Vorrang des Berufsschulbesuchs/);
+  assert.match(kriterien, /späteren Satz/);
 });
 
 test("Regression: Widerspruch nach richtigem Satz besteht nicht", () => {

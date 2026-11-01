@@ -429,8 +429,8 @@
         "Entscheidung B gewählt",
         "BBiG § 15 als Begründung gewählt",
         "Keine Falle gewählt",
-        "Antwort mindestens 40 Zeichen, sachlich, sagt Freistellung für die Berufsschule zu",
-        "Antwort verlangt nicht, dass die Berufsschule ausfällt"
+        "Antwort mindestens 40 Zeichen, sachlich, sagt Freistellung für die Berufsschule zu oder nennt Vorrang des Berufsschulbesuchs und keine Einteilung zum Dienst",
+        "Antwort verlangt nicht, dass die Berufsschule ausfällt, und hebt die Freistellung nicht in einem späteren Satz auf"
       ],
       mustertext: "Guten Tag, Herr Holm. Luca Berger wird am Dienstag für die Berufsschule freigestellt. Acht Unterrichtsstunden sind mehr als fünf. Er kommt an diesem Tag nicht in die Dienststelle. Personalmangel ist dafür kein Ausnahmegrund. Mit freundlichen Grüßen, Mira Holtz, Personalamt.",
       quellen: QUELLEN.slice(),
