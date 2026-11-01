@@ -192,3 +192,9 @@ Nicht entfernen, solange niemand das ausdrücklich ändert: der Warnbanner „Nu
 Beim späteren Bau ein Regressionstest: die an die Oberfläche gegebenen Quellen und der Unsicherheitstext dürfen `/home/starnet`, `unterrichtsmaterial`, `VPS` und Scan-Auswertungsstand nicht enthalten. BBiG, JArbSchG, KMK und der Rechtsstand 01.11.2026 müssen bleiben.
 
 Diese Regel rückt in dasselbe Korrekturpaket wie die sechs Punkte. Sie ist keine neue Funktion.
+
+## Umsetzungsvermerk Korrekturpaket (01.11.2026)
+
+Umgesetzt auf `feature/operation-rathaus-mvp1`, lokal committet, nicht gepusht. Reihenfolge: (1) umgekehrte Freistellung wird abgelehnt, (2) sachliche Formulierungen und Glossar „abbedingen“, (3) Gesetzeserklärung ohne Lösung, einklappbar, (4) Hilfe mehr, weniger, einklappen, (5) Rückmeldung mit „Das passt schon“ und „Dein nächster Blick“, (6) interne Pfade, Scan-Hinweise und Fallkennung aus den Nutzeransichten entfernt.
+
+Geprüft mit `node --test tests/rathaus-kern.test.js` (Kerntests und Textprüfungen der Oberfläche). Eine Browserprüfung wurde NICHT AUSGEFÜHRT. Die Bedienung der Knöpfe, des Einklappens und der Fokussetzung ist am Windows-Rechner noch zu prüfen. Unabhängige Prüfung durch GLaDOS steht aus.
