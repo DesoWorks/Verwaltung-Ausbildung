@@ -497,6 +497,9 @@ html.ruhige-ansicht *, html.bewegung-reduziert * { animation: none !important; t
 .nav-planned { padding: .4rem .75rem; color: var(--farbe-geplant-tekst); background: var(--farbe-geplant-flaeche); border-radius: 6px; }
 .nav-category { border-top: 1px solid var(--farbe-rahmen); margin-top: .8rem !important; padding-top: .4rem; }
 .nav-category > details > summary { font-weight: 700; }
+.nav-bereich { border-top: 1px solid var(--farbe-rahmen); margin-top: .8rem !important; padding-top: .4rem; list-style: none; }
+.nav-bereich-titel { margin: 0 0 .2rem; padding: 0 .75rem; font-size: .8rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--farbe-text-leise); }
+.nav-bereich + .nav-category { border-top: 0; margin-top: 0 !important; padding-top: 0; }
 .nav-learning-field { padding: .55rem .75rem .3rem; font-weight: 700; }
 .nav-topic { margin-left: .5rem; }
 .nav-options { max-width: 1200px; margin: .4rem auto 0; }

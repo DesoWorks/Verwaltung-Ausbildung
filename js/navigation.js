@@ -6,6 +6,7 @@
   var base = body.getAttribute("data-base") || "";
   var modules = window.MODULE_DATEN || [];
   var tools = window.MODULE_TOOLS || [];
+  var bereiche = window.PLATTFORM_NAVIGATION.bereiche({ einstieg: window.MODULE_EINSTIEG, module: modules, tools: tools });
 
   var host = document.createElement("div");
   host.className = "site-navigation";
@@ -19,10 +20,18 @@
     var li = document.createElement("li");
     var a = document.createElement("a");
     var label = document.createElement("span"); label.textContent = entry.label; a.appendChild(label); a.href = entry.href;
-    a.setAttribute("data-progress-id", entry.id);
+    if (entry.zaehltFortschritt !== false) a.setAttribute("data-progress-id", entry.id);
     if (entry.page === page && entry.aktuell !== false) a.setAttribute("aria-current", "page");
-    aktualisiereMarkierung(a, entry.id);
+    if (entry.zaehltFortschritt !== false) aktualisiereMarkierung(a, entry.id);
     li.appendChild(a); return li;
+  }
+  function bereich(id) {
+    return bereiche.filter(function (b) { return b.id === id; })[0] || { id: id, label: "", eintraege: [] };
+  }
+  function bereichKopf(id) {
+    var li = document.createElement("li"); li.className = "nav-bereich"; li.setAttribute("data-nav-bereich", id);
+    var titel = document.createElement("p"); titel.className = "nav-bereich-titel"; titel.textContent = bereich(id).label;
+    li.appendChild(titel); list.appendChild(li);
   }
   function aktualisiereMarkierung(a, id) {
     var mark = a.querySelector(".abschlusszeichen");
@@ -41,13 +50,16 @@
     update();
     details.addEventListener("toggle", update);
   }
+  bereichKopf("themen");
   list.appendChild(item({ id: "overview", label: "Themenübersicht", href: base + "index.html", page: "overview" }));
-  var entryData = (window.MODULE_EINSTIEG || [])[0];
-  if (entryData && entryData.status === "verfuegbar" && entryData.datei) {
-    var entryItem = item({ id: entryData.id, label: entryData.titel, href: base + entryData.datei, page: entryData.page });
+  var entryData = bereich("praxiswelten").eintraege[0];
+  if (entryData) {
+    bereichKopf("praxiswelten");
+    var entryItem = item({ id: entryData.id, label: entryData.titel, href: base + entryData.datei, page: entryData.page, zaehltFortschritt: entryData.zaehltFortschritt });
     entryItem.classList.add("nav-topic", "nav-entry");
     list.appendChild(entryItem);
   }
+  bereichKopf("unterricht");
   modules.forEach(function (yearData) {
     var group = document.createElement("li"); group.className = "nav-category";
     var details = document.createElement("details");
@@ -90,6 +102,7 @@
     });
     details.appendChild(sub); group.appendChild(details); list.appendChild(group);
   });
+  bereichKopf("werkzeuge");
   if (tools.length) {
     var toolsGroup = document.createElement("li"); toolsGroup.className = "nav-category nav-tools";
     var toolsDetails = document.createElement("details");
