@@ -77,14 +77,34 @@ test("Hilfe verrät in Stufe 3 keinen Mustertext", () => {
   assert.match(loesung.unsicherheit, /keine Rechtsberatung/i);
 });
 
-test("Fall bleibt fiktiv und nennt die fehlenden PDFs", () => {
+test("Fall bleibt fiktiv und nennt öffentliche Rechtsquellen", () => {
   const fall = kern.fallDaten();
   assert.equal(fall.person.name, "Luca Berger");
   assert.equal(fall.person.alter, 17);
   assert.equal(fall.person.stunden, 8);
   assert.equal(fall.quellen.some(function (quelle) {
-    return quelle.includes("LS04");
+    return quelle.includes("BBiG");
   }), true);
+});
+
+test("Nutzeransichten enthalten keine internen Angaben", () => {
+  const loesung = kern.lehrkraftLoesung();
+  const sichtbar = [].concat(kern.fallDaten().quellen, loesung.quellen, [loesung.unsicherheit]).join(" | ");
+  ["/home/starnet", "unterrichtsmaterial", "VPS", "Scan", "nicht vollständig ausgewertet", "LS04"].forEach(function (verboten) {
+    assert.equal(sichtbar.includes(verboten), false, verboten);
+  });
+  ["BBiG", "JArbSchG", "KMK", "01.11.2026", "gesetze-im-internet.de"].forEach(function (pflicht) {
+    assert.equal(sichtbar.includes(pflicht), true, pflicht);
+  });
+  assert.match(loesung.unsicherheit, /vorläufig|Vorläufige/i);
+  assert.match(loesung.unsicherheit, /nicht verbindlich/);
+  assert.match(loesung.unsicherheit, /keine Rechtsberatung/);
+  assert.match(loesung.unsicherheit, /Länderregeln/);
+  const ui = fs.readFileSync(path.join(__dirname, "../js/rathaus-ui.js"), "utf8");
+  assert.equal(ui.includes("berufsschule-statt-dienststelle"), false);
+  assert.equal(/fall\.id/.test(ui), false, "Die Fallkennung wird nicht gerendert");
+  assert.equal(/fallId/.test(ui), false);
+  assert.match(ui, /Nur lokaler Test\. Keine echte Rollenprüfung\. Nicht produktiv\. Keine Schülerdaten\./);
 });
 
 test("Oberfläche zieht keine externen Skripte und ruft kein fetch auf", () => {

@@ -235,7 +235,7 @@
     titel.id = "ansicht-titel";
     titel.tabIndex = -1;
     ziel.appendChild(titel);
-    ziel.appendChild(el("p", "rathaus-meta", "Fall " + fall.id + " · fiktive Beispieldaten · vorläufig, nicht verbindlich · Rechtsstand " + kern.RECHTSSTAND));
+    ziel.appendChild(el("p", "rathaus-meta", "Fiktive Beispieldaten · vorläufig, nicht verbindlich · Rechtsstand " + kern.RECHTSSTAND));
     if (!state.gelesen) {
       ziel.appendChild(el("p", "rathaus-hinweis", "Lies zuerst die Nachricht im Posteingang."));
       var zurPost = el("button", "knopf knopf-haupt", "Zum Posteingang");
@@ -459,7 +459,7 @@
     loesung.kriterien.forEach(function (punkt) { ul.appendChild(el("li", "", punkt)); });
     ziel.appendChild(ul);
     ziel.appendChild(el("h3", "", "Vorhandene Übungsfälle"));
-    ziel.appendChild(el("p", "", fall.id + " – " + fall.betreff));
+    ziel.appendChild(el("p", "", fall.betreff));
     ziel.appendChild(el("h3", "", "Quellen und Rechtsstand " + loesung.rechtsstand));
     var quellen = el("ul", "");
     loesung.quellen.forEach(function (quelle) { quellen.appendChild(el("li", "", quelle)); });
