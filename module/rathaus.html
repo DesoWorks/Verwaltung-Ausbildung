@@ -26,13 +26,11 @@
     <nav class="rathaus-ansichten" aria-label="Bereiche der Stadtverwaltung">
       <button type="button" class="knopf" data-ansicht="stadt">Stadtübersicht</button>
       <button type="button" class="knopf" data-ansicht="personal">Personalamt</button>
-      <button type="button" class="knopf" data-ansicht="post">Posteingang</button>
-      <button type="button" class="knopf" data-ansicht="akte">Ausbildungsakte</button>
-      <button type="button" class="knopf" data-ansicht="vorgang">Vorgang</button>
-      <button type="button" class="knopf" data-ansicht="lehrkraft">Lehrkraftansicht</button>
     </nav>
     <button type="button" class="knopf" id="lehrkraft-schalter" aria-pressed="false">Lehrkraftmodus lokal ein oder aus</button>
   </div>
+  <nav id="rathaus-unterleiste" class="rathaus-unterleiste" aria-label="Personalamt" hidden></nav>
+  <nav id="rathaus-brotkrumen" class="rathaus-brotkrumen" aria-label="Du bist hier" hidden></nav>
   <div id="rathaus-fortschritt"></div>
   <main id="hauptinhalt" class="inhalt rathaus-inhalt" tabindex="-1"></main>
   <footer class="fuss"><p>Virtuelles Rathaus · lokale Testfassung · Version <span data-version></span> · kein Cloud-Dienst</p></footer>
@@ -41,6 +39,7 @@
   <script src="../js/navigation.js"></script>
   <script src="../js/version.js"></script>
   <script src="../js/rathaus-kern.js"></script>
+  <script src="../js/rathaus-navigation.js"></script>
   <script src="../js/rathaus-ui.js"></script>
 </body>
 </html>

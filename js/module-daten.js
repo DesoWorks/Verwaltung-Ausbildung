@@ -43,7 +43,17 @@
     }
   ];
 
-  global.MODULE_EINSTIEG = [];
+  global.MODULE_EINSTIEG = [
+    {
+      id: "rathaus-einstieg",
+      typ: "bereich",
+      titel: "Virtuelles Rathaus",
+      beschreibung: "Die Stadtübersicht ist der Ausgangspunkt. Von dort erreichst du die Ämter und den Übungsvorgang.",
+      page: "rathaus",
+      status: "verfuegbar",
+      datei: "module/rathaus.html#stadt"
+    }
+  ];
 
   global.MODULE_DATEN = [
     {
@@ -82,7 +92,8 @@
               beschreibung: "Übungsvorgang im Personalamt. Lokal testen, nur fiktive Personen.",
               page: "rathaus",
               status: "verfuegbar",
-              datei: "module/rathaus.html"
+              datei: "module/rathaus.html#vorgang",
+              navigationAktuell: false
             },
             {
               id: "lf1-betrieb",

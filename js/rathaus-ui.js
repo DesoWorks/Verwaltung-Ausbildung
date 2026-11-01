@@ -4,8 +4,11 @@
 
   var KEY = "verwaltung-ausbildung.rathaus.v1";
   var kern = window.RATHAUS_KERN;
+  var navi = window.RATHAUS_NAVIGATION;
   var fall = kern.fallDaten();
   var katalog = kern.katalog();
+  // Wahr, solange eine Ansicht nur über den Hash geöffnet wird: das erledigt keinen Lernschritt.
+  var ohneSchritt = false;
 
   var state = {
     ansicht: "stadt",
@@ -131,15 +134,18 @@
     });
     ziel.appendChild(skyline);
     var raster = el("div", "rathaus-raster");
-    var personal = bereichskarte("Personalamt", "Ausbildungsverhältnisse, Akten und der erste bearbeitbare Vorgang.", "Benutzbar", true);
-    var knopf = el("button", "knopf knopf-haupt", "Personalamt öffnen");
-    knopf.type = "button";
-    knopf.addEventListener("click", function () { zeige("personal"); });
-    personal.appendChild(knopf);
-    raster.appendChild(personal);
-    raster.appendChild(bereichskarte("Bürgerbüro", "Schalter und Anliegen der Einwohnerschaft. In dieser Testfassung nur eine Vorschau.", "Vorschau", false));
-    raster.appendChild(bereichskarte("Ordnungsamt", "Ordnung und Genehmigungen. Noch keine Vorgänge.", "Vorschau", false));
-    raster.appendChild(bereichskarte("Stadtkasse", "Zahlungen und Gebühren. Noch keine Vorgänge.", "Vorschau", false));
+    navi.aemter().forEach(function (amt) {
+      if (amt.benutzbar) {
+        var karte = bereichskarte(amt.titel, amt.beschreibung, "Benutzbar", true);
+        var knopf = el("button", "knopf knopf-haupt", amt.titel + " öffnen");
+        knopf.type = "button";
+        knopf.addEventListener("click", function () { zeige(amt.ansicht); });
+        karte.appendChild(knopf);
+        raster.appendChild(karte);
+      } else {
+        raster.appendChild(bereichskarte(amt.titel, amt.beschreibung + " Dieses Amt ist noch geschlossen.", "Vorschau", false));
+      }
+    });
     ziel.appendChild(raster);
   }
 
@@ -159,10 +165,7 @@
       state.akteGelesen = true;
       zeige("akte");
     });
-    var zurueck = el("button", "knopf", "Zur Stadtübersicht");
-    zurueck.type = "button";
-    zurueck.addEventListener("click", function () { zeige("stadt"); });
-    reihe.append(post, akte, zurueck);
+    reihe.append(post, akte);
     ziel.appendChild(reihe);
   }
 
@@ -194,7 +197,7 @@
     titel.id = "ansicht-titel";
     titel.tabIndex = -1;
     ziel.appendChild(titel);
-    state.akteGelesen = true;
+    if (!ohneSchritt) state.akteGelesen = true;
     var liste = el("dl", "rathaus-akte");
     function zeile(name, wert) {
       liste.appendChild(el("dt", "", name));
@@ -502,6 +505,74 @@
     fortschritt(host);
   }
 
+  function navKnopf(text, klasse, ansicht) {
+    var knopf = el("button", klasse, text);
+    knopf.type = "button";
+    knopf.addEventListener("click", function () { zeige(ansicht); });
+    return knopf;
+  }
+
+  function zeichneNavigation() {
+    var ebene = navi.leistenEbene(state.ansicht);
+    document.querySelectorAll("[data-ansicht]").forEach(function (knopf) {
+      var aktiv = knopf.getAttribute("data-ansicht") === ebene;
+      if (aktiv) knopf.setAttribute("aria-current", "page");
+      else knopf.removeAttribute("aria-current");
+    });
+
+    var unter = document.getElementById("rathaus-unterleiste");
+    if (unter) {
+      leeren(unter);
+      var eintraege = navi.personalUnternavigation(state.ansicht);
+      unter.hidden = eintraege.length === 0;
+      eintraege.forEach(function (eintrag) {
+        var knopf = navKnopf(eintrag.label, "knopf", eintrag.ansicht);
+        if (eintrag.aktuell) knopf.setAttribute("aria-current", "page");
+        unter.appendChild(knopf);
+      });
+    }
+
+    var krumen = document.getElementById("rathaus-brotkrumen");
+    if (krumen) {
+      leeren(krumen);
+      var rueck = navi.rueckziel(state.ansicht);
+      krumen.hidden = !rueck;
+      if (rueck) {
+        var liste = el("ol", "rathaus-krumenliste");
+        navi.brotkrumen(state.ansicht).forEach(function (krume) {
+          var li = el("li", "");
+          if (krume.ziel) {
+            li.appendChild(navKnopf(krume.label, "knopf rathaus-krume", krume.ziel));
+          } else {
+            var text = el("span", "rathaus-krume-text", krume.label);
+            text.setAttribute("aria-current", "page");
+            li.appendChild(text);
+          }
+          liste.appendChild(li);
+        });
+        krumen.appendChild(liste);
+        var zurStadt = navKnopf(rueck.label, "knopf knopf-haupt rathaus-zur-stadt", rueck.ansicht);
+        zurStadt.id = "zur-stadt";
+        krumen.appendChild(zurStadt);
+      }
+    }
+  }
+
+  function hashAnwenden() {
+    var ansicht = navi.hashZuAnsicht(window.location.hash);
+    if (!ansicht) return false;
+    // Nur die Ansicht wechseln. Fall- und Bewertungsdaten bleiben unverändert.
+    state.ansicht = ansicht;
+    try {
+      if (window.history && typeof window.history.replaceState === "function") {
+        window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+    } catch (fehler) {
+      /* Hash bleibt stehen */
+    }
+    return true;
+  }
+
   function zeichnen() {
     var haupt = document.getElementById("hauptinhalt");
     var fort = document.getElementById("rathaus-fortschritt");
@@ -510,10 +581,7 @@
     leeren(fort);
     fortschritt(fort);
     banner.hidden = !state.lehrkraft;
-    document.querySelectorAll("[data-ansicht]").forEach(function (knopf) {
-      var aktiv = knopf.getAttribute("data-ansicht") === state.ansicht;
-      knopf.setAttribute("aria-current", aktiv ? "page" : "false");
-    });
+    zeichneNavigation();
     var lehrknopf = document.getElementById("lehrkraft-schalter");
     if (lehrknopf) lehrknopf.setAttribute("aria-pressed", state.lehrkraft ? "true" : "false");
     leeren(haupt);
@@ -527,6 +595,7 @@
 
   function init() {
     laden();
+    var vomHash = hashAnwenden();
     document.querySelectorAll("[data-ansicht]").forEach(function (knopf) {
       knopf.addEventListener("click", function () {
         zeige(knopf.getAttribute("data-ansicht"));
@@ -542,7 +611,18 @@
         fokus("ansicht-titel");
       });
     }
+    ohneSchritt = vomHash;
     zeichnen();
+    ohneSchritt = false;
+    if (vomHash) speichern();
+    window.addEventListener("hashchange", function () {
+      if (!hashAnwenden()) return;
+      ohneSchritt = true;
+      zeichnen();
+      ohneSchritt = false;
+      speichern();
+      fokus("ansicht-titel");
+    });
   }
 
   if (document.readyState === "loading") {

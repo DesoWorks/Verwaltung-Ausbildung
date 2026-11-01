@@ -20,7 +20,7 @@
     var a = document.createElement("a");
     var label = document.createElement("span"); label.textContent = entry.label; a.appendChild(label); a.href = entry.href;
     a.setAttribute("data-progress-id", entry.id);
-    if (entry.page === page) a.setAttribute("aria-current", "page");
+    if (entry.page === page && entry.aktuell !== false) a.setAttribute("aria-current", "page");
     aktualisiereMarkierung(a, entry.id);
     li.appendChild(a); return li;
   }
@@ -73,7 +73,7 @@
         m.unterthemen.forEach(function (u) {
           var available = u.status === "verfuegbar" && u.datei;
           if (available) {
-            var entry = item({ id: u.id, label: u.titel, href: base + u.datei, page: u.page });
+            var entry = item({ id: u.id, label: u.titel, href: base + u.datei, page: u.page, aktuell: u.navigationAktuell });
             entry.classList.add("nav-topic"); topics.appendChild(entry);
           } else {
             var planned = document.createElement("li"); planned.className = "nav-planned nav-topic";

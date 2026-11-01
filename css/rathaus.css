@@ -155,9 +155,53 @@
 .rathaus-option:focus-within,
 .rathaus-form textarea:focus-visible,
 .rathaus-leiste .knopf:focus-visible,
+.rathaus-unterleiste .knopf:focus-visible,
+.rathaus-brotkrumen .knopf:focus-visible,
 .rathaus-karte .knopf:focus-visible {
   outline: 3px solid var(--farbe-akzent);
   outline-offset: 2px;
+}
+
+.rathaus-leiste .knopf[aria-current="page"],
+.rathaus-unterleiste .knopf[aria-current="page"] {
+  border-width: 3px;
+  font-weight: 700;
+}
+
+.rathaus-unterleiste,
+.rathaus-brotkrumen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+  max-width: 960px;
+  margin: 0.6rem auto 0;
+  padding: 0 1rem;
+}
+
+.rathaus-unterleiste[hidden],
+.rathaus-brotkrumen[hidden] {
+  display: none;
+}
+
+.rathaus-krumenliste {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rathaus-krumenliste li + li::before {
+  content: "›";
+  margin-right: 0.3rem;
+}
+
+.rathaus-krume-text {
+  font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .rathaus-form textarea {
@@ -195,6 +239,8 @@
     width: 100%;
   }
   .rathaus-ansichten .knopf,
+  .rathaus-unterleiste .knopf,
+  .rathaus-zur-stadt,
   #lehrkraft-schalter {
     width: 100%;
   }
