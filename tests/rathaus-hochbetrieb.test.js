@@ -204,8 +204,9 @@ test("Oberfläche: zweiter Vorgang ist erreichbar, ohne Navigation oder Hash zu 
   assert.match(ui, /wechsleFall\(/);
   assert.match(ui, /window\.RATHAUS_HOCHBETRIEB/);
   const nav = require("../js/rathaus-navigation.js");
-  assert.deepEqual(nav.HASH_ANSICHTEN, ["stadt", "personal", "post", "akte", "vorgang", "nachschlagen"]);
-  assert.equal(nav.ANSICHTEN.length, 7);
+  // Das Personalamt bekommt keine weiteren Ansichten; neu sind nur die zwei Bürgerbüro-Ansichten.
+  assert.deepEqual(nav.HASH_ANSICHTEN, ["stadt", "personal", "post", "akte", "vorgang", "nachschlagen", "buerger", "buerger-karte"]);
+  assert.equal(nav.ANSICHTEN.length, 9);
 });
 
 test("Oberfläche: Reset löscht nur den Speicher des aktiven Vorgangs", () => {

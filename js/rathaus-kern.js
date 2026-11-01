@@ -392,7 +392,7 @@
     if (n === 2) {
       return "Personalmangel ändert die Freistellung nicht. Welches Gesetz schützt den Besuch der Berufsschule, und was gilt bei mehr als fünf Unterrichtsstunden?";
     }
-    return "Richtung, keine Musterlösung: Die passende Entscheidung ist die Freistellung für den ganzen Berufsschultag. Die vollständige Musterantwort steht nur in der Lehrkraftansicht.";
+    return "Notiere getrennt: Was steht in der Akte zu Alter und Unterrichtsstunden? Welche Regel zur Freistellung passt zu diesen Angaben? Was muss der Antwortbrief dazu sagen, und was bleibt offen? Die vollständige Musterantwort steht nur in der Lehrkraftansicht.";
   }
 
   function hilfeWechsel(stufe, richtung) {

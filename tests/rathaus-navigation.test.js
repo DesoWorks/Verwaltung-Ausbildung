@@ -63,13 +63,35 @@ test("Rückziel jeder Nicht-Stadt-Ansicht ist stadt", () => {
   assert.strictEqual(nav.rueckziel("stadt"), null);
 });
 
-test("Vorschauämter haben keine Aktion, Personalamt ist benutzbar", () => {
+test("Hashes #buerger und #buerger-karte werden erkannt, #lehrkraft bleibt abgelehnt", () => {
+  assert.strictEqual(nav.hashZuAnsicht("#buerger"), "buerger");
+  assert.strictEqual(nav.hashZuAnsicht("#buerger-karte"), "buerger-karte");
+  assert.strictEqual(nav.hashZuAnsicht("#lehrkraft"), null);
+  assert.ok(nav.ANSICHTEN.includes("buerger") && nav.ANSICHTEN.includes("buerger-karte"));
+});
+
+test("Bürgerbüro: Brotkrumen, Rückziel und Unternavigation", () => {
+  assert.deepStrictEqual(labels(nav.brotkrumen("buerger", "uebersicht")), ["Stadtverwaltung", "Bürgerbüro"]);
+  assert.deepStrictEqual(labels(nav.brotkrumen("buerger", "fall")), ["Stadtverwaltung", "Bürgerbüro", "Fall B01"]);
+  assert.deepStrictEqual(labels(nav.brotkrumen("buerger-karte")), ["Stadtverwaltung", "Bürgerbüro", "Nachschlagen"]);
+  ["buerger", "buerger-karte"].forEach((a) => {
+    assert.deepStrictEqual(nav.rueckziel(a), { ansicht: "stadt", label: "Zur Stadtübersicht" });
+    assert.strictEqual(nav.leistenEbene(a), "buerger");
+  });
+  const u = nav.buergerUnternavigation("buerger", "fall");
+  assert.deepStrictEqual(labels(u), ["Übersicht", "Fall B01", "Nachschlagen"]);
+  assert.deepStrictEqual(u.filter((e) => e.aktuell).map((e) => e.label), ["Fall B01"]);
+  assert.deepStrictEqual(nav.buergerUnternavigation("personal"), []);
+  assert.deepStrictEqual(nav.buergerUnternavigation("stadt"), []);
+});
+
+test("Vorschauämter haben keine Aktion, Personalamt und Bürgerbüro sind benutzbar", () => {
   const liste = nav.aemter();
   assert.deepStrictEqual(liste.map((a) => a.titel), ["Personalamt", "Bürgerbüro", "Ordnungsamt", "Stadtkasse"]);
   liste.forEach((a) => {
-    if (a.id === "personal") {
+    if (a.id === "personal" || a.id === "buergerbuero") {
       assert.strictEqual(a.benutzbar, true);
-      assert.strictEqual(a.ansicht, "personal");
+      assert.strictEqual(a.ansicht, a.id === "personal" ? "personal" : "buerger");
     } else {
       assert.strictEqual(a.benutzbar, false);
       assert.strictEqual(a.ansicht, null);

@@ -15,6 +15,8 @@
   var katalog = kern.katalog();
   // Wahr, solange eine Ansicht nur über den Hash geöffnet wird: das erledigt keinen Lernschritt.
   var ohneSchritt = false;
+  // Unterseite im Bürgerbüro: "uebersicht" (Fallübersicht) oder "fall" (Arbeitsplatz B01). Wird nie gespeichert.
+  var buergerModus = "uebersicht";
 
   var state = {
     ansicht: "stadt",
@@ -168,7 +170,8 @@
     }, 0);
   }
 
-  function zeige(ansicht) {
+  function zeige(ansicht, modus) {
+    if (ansicht === "buerger") buergerModus = modus === "fall" ? "fall" : "uebersicht";
     state.ansicht = ansicht;
     speichern();
     zeichnen();
@@ -246,7 +249,7 @@
     ziel.appendChild(el("h2", "", "Stadtverwaltung Sonnenthal", "ansicht-titel"));
     ziel.querySelector("h2").id = "ansicht-titel";
     ziel.querySelector("h2").tabIndex = -1;
-    ziel.appendChild(el("p", "rathaus-einleitung", "Willkommen in der Übungsstadt. Alles hier ist erfunden. Du bearbeitest Vorgänge im Personalamt, ohne echte Personen und ohne Netzwerk."));
+    ziel.appendChild(el("p", "rathaus-einleitung", "Willkommen in der Übungsstadt. Alles hier ist erfunden. Du bearbeitest Vorgänge im Personalamt und Anliegen im Bürgerbüro, ohne echte Personen und ohne Netzwerk."));
     var skyline = el("div", "rathaus-skyline");
     skyline.setAttribute("aria-hidden", "true");
     ["turm", "haus", "rathaus", "haus", "turm"].forEach(function (art) {
@@ -876,6 +879,10 @@
       var d = k.fallDaten();
       faelleListe.appendChild(el("li", "", d.betreff + " (" + d.person.name + ")"));
     });
+    if (window.RATHAUS_BUERGERBUERO) {
+      var b01 = window.RATHAUS_BUERGERBUERO.fallDaten();
+      faelleListe.appendChild(el("li", "", b01.titel + " (" + b01.person.name + ", Bürgerbüro B01)"));
+    }
     ziel.appendChild(faelleListe);
 
     ziel.appendChild(el("h3", "", "Zurücksetzen"));
@@ -887,6 +894,9 @@
     reset.addEventListener("click", function () { zeigeResetFrage(resetHost, daten); });
     ziel.appendChild(reset);
     ziel.appendChild(resetHost);
+
+    // Dritter Fall: Bürgerbüro B01. Nur Lesen, der Bürgerbüro-Speicher wird hier nicht berührt.
+    if (window.RATHAUS_BUERGERBUERO_UI) window.RATHAUS_BUERGERBUERO_UI.zeichneLehrkraft(ziel);
   }
 
   function fortschrittNur() {
@@ -895,10 +905,10 @@
     zeichneFortschritt(host);
   }
 
-  function navKnopf(text, klasse, ansicht) {
+  function navKnopf(text, klasse, ansicht, modus) {
     var knopf = el("button", klasse, text);
     knopf.type = "button";
-    knopf.addEventListener("click", function () { zeige(ansicht); });
+    knopf.addEventListener("click", function () { zeige(ansicht, modus); });
     return knopf;
   }
 
@@ -914,9 +924,15 @@
     if (unter) {
       leeren(unter);
       var eintraege = navi.personalUnternavigation(state.ansicht);
+      var unterName = "Personalamt";
+      if (!eintraege.length) {
+        eintraege = navi.buergerUnternavigation(state.ansicht, buergerModus);
+        if (eintraege.length) unterName = "Bürgerbüro";
+      }
+      unter.setAttribute("aria-label", unterName);
       unter.hidden = eintraege.length === 0;
       eintraege.forEach(function (eintrag) {
-        var knopf = navKnopf(eintrag.label, "knopf", eintrag.ansicht);
+        var knopf = navKnopf(eintrag.label, "knopf", eintrag.ansicht, eintrag.modus || undefined);
         if (eintrag.aktuell) knopf.setAttribute("aria-current", "page");
         unter.appendChild(knopf);
       });
@@ -929,10 +945,10 @@
       krumen.hidden = !rueck;
       if (rueck) {
         var liste = el("ol", "rathaus-krumenliste");
-        navi.brotkrumen(state.ansicht).forEach(function (krume) {
+        navi.brotkrumen(state.ansicht, buergerModus).forEach(function (krume) {
           var li = el("li", "");
           if (krume.ziel) {
-            li.appendChild(navKnopf(krume.label, "knopf rathaus-krume", krume.ziel));
+            li.appendChild(navKnopf(krume.label, "knopf rathaus-krume", krume.ziel, krume.modus));
           } else {
             var text = el("span", "rathaus-krume-text", krume.label);
             text.setAttribute("aria-current", "page");
@@ -979,8 +995,27 @@
     else if (state.ansicht === "akte") zeichneAkte(haupt);
     else if (state.ansicht === "vorgang") zeichneVorgang(haupt);
     else if (state.ansicht === "nachschlagen") zeichneNachschlagen(haupt);
+    else if (state.ansicht === "buerger" || state.ansicht === "buerger-karte") zeichneBuergerbuero(haupt);
     else if (state.ansicht === "lehrkraft") zeichneLehrkraft(haupt);
     else zeichneStadt(haupt);
+  }
+
+  // Das Bürgerbüro zeichnet seinen Arbeitsplatz selbst und speichert nur unter seinem eigenen Schlüssel.
+  function zeichneBuergerbuero(ziel) {
+    var ui = window.RATHAUS_BUERGERBUERO_UI;
+    if (!ui) {
+      var titel = el("h2", "", "Bürgerbüro");
+      titel.id = "ansicht-titel";
+      titel.tabIndex = -1;
+      ziel.appendChild(titel);
+      ziel.appendChild(el("p", "rathaus-fehler", "Das Bürgerbüro ist gerade nicht verfügbar."));
+      return;
+    }
+    ui.zeichne(ziel, {
+      ansicht: state.ansicht,
+      modus: buergerModus,
+      wechsle: function (ansicht, modus) { zeige(ansicht, modus); }
+    });
   }
 
   function init() {

@@ -11,15 +11,16 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  var ANSICHTEN = ["stadt", "personal", "post", "akte", "vorgang", "nachschlagen", "lehrkraft"];
-  var HASH_ANSICHTEN = ["stadt", "personal", "post", "akte", "vorgang", "nachschlagen"];
+  var ANSICHTEN = ["stadt", "personal", "post", "akte", "vorgang", "nachschlagen", "buerger", "buerger-karte", "lehrkraft"];
+  var HASH_ANSICHTEN = ["stadt", "personal", "post", "akte", "vorgang", "nachschlagen", "buerger", "buerger-karte"];
   var PERSONAL_ANSICHTEN = ["personal", "post", "akte", "vorgang", "nachschlagen"];
+  var BUERGER_ANSICHTEN = ["buerger", "buerger-karte"];
   var STADT_LABEL = "Stadtverwaltung";
   var RUECK_LABEL = "Zur Stadtübersicht";
 
   var AEMTER = [
     { id: "personal", titel: "Personalamt", benutzbar: true, ansicht: "personal", beschreibung: "Ausbildungsverhältnisse, Akten und der erste bearbeitbare Vorgang." },
-    { id: "buergerbuero", titel: "Bürgerbüro", benutzbar: false, ansicht: null, beschreibung: "Schalter und Anliegen der Einwohnerschaft." },
+    { id: "buergerbuero", titel: "Bürgerbüro", benutzbar: true, ansicht: "buerger", beschreibung: "Schalter und Anliegen der Einwohnerschaft. Erster Fall: Anmeldung nach einem Zuzug." },
     { id: "ordnungsamt", titel: "Ordnungsamt", benutzbar: false, ansicht: null, beschreibung: "Ordnung und Genehmigungen." },
     { id: "stadtkasse", titel: "Stadtkasse", benutzbar: false, ansicht: null, beschreibung: "Zahlungen und Gebühren." }
   ];
@@ -31,6 +32,8 @@
     akte: "Ausbildungsakte",
     vorgang: "Vorgang",
     nachschlagen: "Nachschlagen",
+    buerger: "Bürgerbüro",
+    "buerger-karte": "Nachschlagen",
     lehrkraft: "Lehrkraftansicht"
   };
 
@@ -56,11 +59,19 @@
     });
   }
 
-  function brotkrumen(ansicht) {
+  // Zweites Argument nur für das Bürgerbüro: "uebersicht" zeigt die Fallübersicht, sonst gilt Fall B01.
+  function brotkrumen(ansicht, modus) {
     var stadt = { label: STADT_LABEL, ziel: "stadt" };
     if (ansicht === "stadt") return [{ label: STADT_LABEL, ziel: null }];
     if (ansicht === "lehrkraft") return [stadt, { label: TITEL.lehrkraft, ziel: null }];
     if (ansicht === "personal") return [stadt, { label: TITEL.personal, ziel: null }];
+    if (ansicht === "buerger") {
+      if (modus === "uebersicht") return [stadt, { label: TITEL.buerger, ziel: null }];
+      return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: "Fall B01", ziel: null }];
+    }
+    if (ansicht === "buerger-karte") {
+      return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: TITEL["buerger-karte"], ziel: null }];
+    }
     if (ansicht === "post" || ansicht === "akte" || ansicht === "vorgang" || ansicht === "nachschlagen") {
       return [stadt, { label: TITEL.personal, ziel: "personal" }, { label: TITEL[ansicht], ziel: null }];
     }
@@ -86,10 +97,22 @@
     });
   }
 
-  // Aktuelle Rathausebene für die Leiste: "stadt", "personal" oder null (Lehrkraftansicht).
+  // Kompakte Unternavigation des Bürgerbüros mit Textlabels. Zweites Argument wie bei brotkrumen().
+  function buergerUnternavigation(ansicht, modus) {
+    if (BUERGER_ANSICHTEN.indexOf(ansicht) === -1) return [];
+    var fall = ansicht === "buerger" && modus !== "uebersicht";
+    return [
+      { ansicht: "buerger", modus: "uebersicht", label: "Übersicht", aktuell: ansicht === "buerger" && modus === "uebersicht" },
+      { ansicht: "buerger", modus: "fall", label: "Fall B01", aktuell: fall },
+      { ansicht: "buerger-karte", modus: null, label: "Nachschlagen", aktuell: ansicht === "buerger-karte" }
+    ];
+  }
+
+  // Aktuelle Rathausebene für die Leiste: "stadt", "personal", "buerger" oder null (Lehrkraftansicht).
   function leistenEbene(ansicht) {
     if (ansicht === "stadt") return "stadt";
     if (PERSONAL_ANSICHTEN.indexOf(ansicht) !== -1) return "personal";
+    if (BUERGER_ANSICHTEN.indexOf(ansicht) !== -1) return "buerger";
     return null;
   }
 
@@ -122,6 +145,7 @@
     brotkrumen: brotkrumen,
     rueckziel: rueckziel,
     personalUnternavigation: personalUnternavigation,
+    buergerUnternavigation: buergerUnternavigation,
     leistenEbene: leistenEbene,
     fortschrittSichtbar: fortschrittSichtbar,
     lehrkraftUmschalten: lehrkraftUmschalten,

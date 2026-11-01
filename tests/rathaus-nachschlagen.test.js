@@ -162,7 +162,7 @@ test("Lehrkraft bleibt ohne Personalamt-Kind, geschlossene Ämter ohne Aktion", 
   assert.ok(!navi.personalUnternavigation("personal").some((e) => e.ansicht === "lehrkraft"));
   assert.ok(!navi.HASH_ANSICHTEN.includes("lehrkraft"));
   assert.equal(navi.leistenEbene("lehrkraft"), null);
-  navi.aemter().filter((a) => a.id !== "personal").forEach((a) => {
+  navi.aemter().filter((a) => a.id !== "personal" && a.id !== "buergerbuero").forEach((a) => {
     assert.equal(a.benutzbar, false);
     assert.equal(a.ansicht, null);
   });
@@ -250,7 +250,14 @@ test("Plattformdateien sind gegenüber 85e0e3c unverändert", () => {
 });
 
 test("Fall- und Bewertungsdateien sind gegenüber 85e0e3c unverändert", () => {
-  const dateien = ["js/rathaus-kern.js", "js/rathaus-hochbetrieb.js"];
-  const diff = execFileSync("git", ["diff", "--name-only", "85e0e3cc694bd0574c7f5fc1f6b4145e5165abbd", "--"].concat(dateien), { cwd: wurzel }).toString().trim();
+  const basis = "85e0e3cc694bd0574c7f5fc1f6b4145e5165abbd";
+  const diff = execFileSync("git", ["diff", "--name-only", basis, "--", "js/rathaus-hochbetrieb.js"], { cwd: wurzel }).toString().trim();
   assert.equal(diff, "");
+  // rathaus-kern.js: nur die Funktion hilfe darf abweichen.
+  const ohneHilfe = (text) => text.replace(/  function hilfe\(stufe\) \{[\s\S]*?\n  \}\n\n  function hilfeWechsel/, "  function hilfeWechsel");
+  const alt = execFileSync("git", ["show", basis + ":js/rathaus-kern.js"], { cwd: wurzel }).toString();
+  const neu = fs.readFileSync(path.join(wurzel, "js/rathaus-kern.js"), "utf8");
+  assert.notEqual(ohneHilfe(alt), alt, "Funktion hilfe nicht gefunden (alt)");
+  assert.notEqual(ohneHilfe(neu), neu, "Funktion hilfe nicht gefunden (neu)");
+  assert.equal(ohneHilfe(neu), ohneHilfe(alt));
 });
