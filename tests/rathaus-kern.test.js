@@ -10,6 +10,10 @@ const PASSENDE_ANTWORT = "Guten Tag, Herr Holm. Luca Berger wird am Dienstag fü
 const AUSFALL_ANTWORT = "Luca soll die Berufsschule ausfallen lassen und stattdessen den Tag in der Dienststelle am Schalter arbeiten.";
 const WINDOWS_FALSCHE_RICHTUNG = "Guten Tag Herr Holm, leider ist es uns rechtlich nicht möglich, Luca von der Berufsschule freizustellen und in die Firma zu beordern. Luca wird zur Berufsschule gehen. Mit freundlichen Grüßen Frau Holtz";
 const UMGEKEHRTE_FREISTELLUNG = "Luca Berger erhält eine Freistellung von der Berufsschule und muss an diesem Tag nicht zum Unterricht.";
+const VORRANG_OHNE_DIENST = "Der Berufsschulbesuch von Luca Berger hat am Dienstag Vorrang. Für diesen Tag erfolgt keine Einteilung zum Dienst.";
+const WIDERSPRUCH_NACH_FREISTELLUNG = "Luca wird für die Berufsschule freigestellt. Trotzdem muss er während des Unterrichts in der Dienststelle arbeiten und darf die Schule nicht besuchen.";
+const NUR_VORRANG = "Der Berufsschulbesuch von Luca Berger hat am Dienstag Vorrang. Er soll den Tag sinnvoll nutzen und pünktlich sein.";
+const NUR_KEINE_EINTEILUNG = "Für diesen Tag erfolgt keine Einteilung zum Dienst. Weitere Angaben folgen nach der Dienstbesprechung morgen früh.";
 
 test("Entscheidung B ist richtig, A ist falsch", () => {
   assert.equal(kern.bewerteEntscheidung("B").richtig, true);
@@ -361,4 +365,49 @@ test("Oberfläche zeigt, was passt, und den nächsten Blick", () => {
   const ui = fs.readFileSync(path.join(__dirname, "../js/rathaus-ui.js"), "utf8");
   assert.match(ui, /Das passt schon/);
   assert.match(ui, /Dein nächster Blick/);
+});
+
+test("Regression: Vorrang und keine Einteilung bestehen ohne das Wort freigestellt", () => {
+  const bewertet = kern.bewerteAntwort(VORRANG_OHNE_DIENST);
+  assert.equal(bewertet.ok, true, bewertet.hinweise.join(" | "));
+  const ergebnis = kern.auswertung({
+    entscheidung: "B",
+    gruende: ["bbig15"],
+    antwort: VORRANG_OHNE_DIENST
+  });
+  assert.equal(ergebnis.bestanden, true);
+  assert.equal(ergebnis.darfAbschliessen, true);
+  assert.equal(JSON.stringify(ergebnis).includes(kern.lehrkraftLoesung().mustertext), false);
+});
+
+test("Regression: Widerspruch nach richtigem Satz besteht nicht", () => {
+  const bewertet = kern.bewerteAntwort(WIDERSPRUCH_NACH_FREISTELLUNG);
+  assert.equal(bewertet.ok, false, "Ein späterer Gegensatz muss die erste Freistellung aufheben.");
+  assert.equal(bewertet.hinweise.join(" ").includes(kern.lehrkraftLoesung().mustertext), false);
+  const ergebnis = kern.auswertung({
+    entscheidung: "B",
+    gruende: ["bbig15"],
+    antwort: WIDERSPRUCH_NACH_FREISTELLUNG
+  });
+  assert.equal(ergebnis.bestanden, false);
+  assert.equal(ergebnis.darfAbschliessen, false);
+});
+
+test("Nur Vorrang oder nur keine Einteilung reicht nicht", () => {
+  assert.equal(kern.bewerteAntwort(NUR_VORRANG).ok, false);
+  assert.equal(kern.bewerteAntwort(NUR_KEINE_EINTEILUNG).ok, false);
+});
+
+test("Regression: vier bestätigte Windows-Fälle bleiben", () => {
+  assert.equal(kern.bewerteAntwort(PASSENDE_ANTWORT).ok, true, "korrekte Standardantwort");
+  assert.equal(kern.bewerteAntwort(WINDOWS_FALSCHE_RICHTUNG).ok, false, "umgekehrte Freistellung");
+  assert.equal(kern.bewerteAntwort(UMGEKEHRTE_FREISTELLUNG).ok, false, "umgekehrte Freistellung");
+  const mangel = kern.auswertung({
+    entscheidung: "B",
+    gruende: ["bbig15", "falle-mangel"],
+    antwort: PASSENDE_ANTWORT
+  });
+  assert.equal(mangel.bestanden, false, "Personalmangel als falscher Grund");
+  assert.equal(kern.bewerteAntwort("").ok, false, "inhaltsleere Antwort");
+  assert.equal(kern.bewerteAntwort("   ").ok, false, "inhaltsleere Antwort");
 });
