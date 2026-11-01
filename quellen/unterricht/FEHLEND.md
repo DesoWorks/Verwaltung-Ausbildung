@@ -1,15 +1,13 @@
-# Fehlende Unterrichtsunterlagen
+# Unterrichtsunterlagen
 
-Ablageort für die nachzuliefernden PDFs:
+Die drei Scans liegen außerhalb des Repositorys und werden nicht committed:
 
-`/home/starnet/projects/Verwaltung-Ausbildung-rathaus/quellen/unterricht/`
+`/home/starnet/unterrichtsmaterial/verwaltung/`
 
-Konkret fehlend, Stand 01.11.2026:
+- `doc01626520261030131013.pdf`
+- `doc01626720261030131327.pdf`
+- `doc01626820261030131415_2.pdf`
 
-- `LS03-Ausbildungsvertrag.pdf` – Kompetenzbereich I, Ausbildungsvertrag
-- `LS04-Rechte-und-Pflichten.pdf` – Kompetenzbereich I, Rechte und Pflichten
-- `LS06-Jugendarbeitsschutz.pdf` – Kompetenzbereich I, Jugendarbeitsschutz
+Sie sind nicht als LS03, LS04 oder LS06 beschriftet. Eine Seitenübersicht steht in `docs/rathaus-unterrichtsuebersicht.md`.
 
-Diese Dateien lagen weder im Repository noch unter `/home/starnet/Downloads` oder in den Arbeitsbereichen. Es wurden keine PDF-Inhalte erfunden.
-
-Bis die Dateien hier liegen, verwendet das virtuelle Rathaus nur klar gekennzeichnete fiktive Beispieldaten. Die Übungslösung im Lehrkraftmodus ist vorläufig und nicht verbindlich.
+Nicht gelesen und deshalb nicht als Grundlage verwendet: die meisten Folgeseiten, insbesondere doc016265 ab Seite 9 und doc016267 ab Seite 4.

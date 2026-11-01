@@ -318,6 +318,7 @@
     pruefen.type = "button";
     pruefen.addEventListener("click", function () {
       state.versuche += 1;
+      state.abgeschlossen = false;
       state.letzteAuswertung = kern.auswertung({
         entscheidung: state.entscheidung,
         gruende: state.gruende,

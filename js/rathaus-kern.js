@@ -16,7 +16,7 @@
     "KMK-Rahmenlehrplan Kaufmann für Büromanagement und Kauffrau für Büromanagement, Fassung vom 20.03.2025, Lernfeld 1, Seite 9",
     "Berufsbildungsgesetz (BBiG) § 14 und § 15, nichtamtliche Fassung auf gesetze-im-internet.de, abgerufen am 01.11.2026",
     "Jugendarbeitsschutzgesetz (JArbSchG) § 9, nichtamtliche Fassung auf gesetze-im-internet.de, abgerufen am 01.11.2026",
-    "Unterrichts-PDFs LS03, LS04 und LS06 lagen lokal nicht vor und sind nicht eingearbeitet"
+    "Scans unter /home/starnet/unterrichtsmaterial/verwaltung/, nicht ins Repository kopiert. LS03, LS04 und LS06 sind auf den geprüften Seiten nicht als solche beschriftet und nicht vollständig eingearbeitet"
   ];
 
   var ENTSCHEIDUNGEN = {
@@ -262,7 +262,7 @@
     return {
       fallId: "berufsschule-statt-dienststelle",
       rechtsstand: RECHTSSTAND,
-      unsicherheit: "Vorläufige Übungslösung, nicht verbindlich. Die Unterrichts-PDFs LS03, LS04 und LS06 fehlen. Länderregeln zur Berufsschulpflicht können abweichen. Die Übung stützt sich nur auf die genannten Gesetzestexte, nicht auf eine geprüfte Unterrichtsvorlage. Das ist keine Rechtsberatung und keine gesicherte Rechtslage.",
+      unsicherheit: "Vorläufige Übungslösung, nicht verbindlich. Die gescannten Unterlagen sind da, aber nicht vollständig ausgewertet und nicht als verbindliche Musterlösung geprüft. Länderregeln zur Berufsschulpflicht können abweichen. Das ist keine Rechtsberatung und keine gesicherte Rechtslage.",
       entscheidung: "B",
       pflichtgrund: "bbig15",
       stuetzendeGruende: ["bbig14-4", "bbig14-3", "jarbschg9"],

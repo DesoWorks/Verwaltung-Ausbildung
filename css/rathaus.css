@@ -152,7 +152,10 @@
   background: #fff;
 }
 
-.rathaus-option:focus-within {
+.rathaus-option:focus-within,
+.rathaus-form textarea:focus-visible,
+.rathaus-leiste .knopf:focus-visible,
+.rathaus-karte .knopf:focus-visible {
   outline: 3px solid var(--farbe-akzent);
   outline-offset: 2px;
 }
