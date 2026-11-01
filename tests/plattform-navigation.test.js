@@ -76,14 +76,23 @@ test("startseite.js setzt für den Einstieg kein data-progress-id", () => {
   assert.ok(!eintrag.includes("data-progress-id"));
 });
 
+function htmlSeiten(ordner, liste) {
+  fs.readdirSync(ordner, { withFileTypes: true }).forEach((eintrag) => {
+    if (eintrag.name === ".git" || eintrag.name === "node_modules") return;
+    const voll = path.join(ordner, eintrag.name);
+    if (eintrag.isDirectory()) htmlSeiten(voll, liste);
+    else if (eintrag.name.endsWith(".html")) liste.push(path.relative(wurzel, voll));
+  });
+  return liste;
+}
+
 test("jede Seite mit navigation.js lädt plattform-navigation.js davor, ohne Module", () => {
-  const seiten = ["index.html", "glossar.html"].concat(
-    fs.readdirSync(path.join(wurzel, "module")).filter((f) => f.endsWith(".html")).map((f) => "module/" + f)
-  );
+  const seiten = htmlSeiten(wurzel, []).filter((seite) => /js\/navigation\.js/.test(lies(seite)));
+  assert.ok(seiten.some((seite) => seite.includes("werkzeuge/")), "Werkzeugseiten fehlen in der Prüfung");
   seiten.forEach((seite) => {
     const html = lies(seite);
-    const nav = html.search(/<script src="(\.\.\/)?js\/navigation\.js"><\/script>/);
-    const plattformPos = html.search(/<script src="(\.\.\/)?js\/plattform-navigation\.js"><\/script>/);
+    const nav = html.search(/<script src="(?:\.\.\/)*js\/navigation\.js"><\/script>/);
+    const plattformPos = html.search(/<script src="(?:\.\.\/)*js\/plattform-navigation\.js"><\/script>/);
     assert.ok(nav !== -1, seite + ": navigation.js fehlt");
     assert.ok(plattformPos !== -1 && plattformPos < nav, seite + ": plattform-navigation.js fehlt oder steht zu spät");
     assert.ok(!/type="module"/.test(html), seite + ": Script-Modul");
