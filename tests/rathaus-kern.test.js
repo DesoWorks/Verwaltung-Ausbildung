@@ -8,6 +8,8 @@ const kern = require("../js/rathaus-kern.js");
 
 const PASSENDE_ANTWORT = "Guten Tag, Herr Holm. Luca Berger wird am Dienstag für die Berufsschule freigestellt. Er kommt nicht in die Dienststelle.";
 const AUSFALL_ANTWORT = "Luca soll die Berufsschule ausfallen lassen und stattdessen den Tag in der Dienststelle am Schalter arbeiten.";
+const WINDOWS_FALSCHE_RICHTUNG = "Guten Tag Herr Holm, leider ist es uns rechtlich nicht möglich, Luca von der Berufsschule freizustellen und in die Firma zu beordern. Luca wird zur Berufsschule gehen. Mit freundlichen Grüßen Frau Holtz";
+const UMGEKEHRTE_FREISTELLUNG = "Luca Berger erhält eine Freistellung von der Berufsschule und muss an diesem Tag nicht zum Unterricht.";
 
 test("Entscheidung B ist richtig, A ist falsch", () => {
   assert.equal(kern.bewerteEntscheidung("B").richtig, true);
@@ -171,4 +173,21 @@ test("Oberfläche übernimmt den zurückgesetzten Abschluss", () => {
   assert.match(handler, /kern\.nachPruefung\(state\)/);
   assert.match(handler, /state\.abgeschlossen\s*=\s*naechster\.abgeschlossen/);
   assert.equal(/if\s*\(\s*!state\.letzteAuswertung\.bestanden\s*\)\s*state\.abgeschlossen/.test(handler), false);
+});
+
+test("Regression: Windows-Satz mit Freistellung von der Berufsschule besteht nicht", () => {
+  const bewertet = kern.bewerteAntwort(WINDOWS_FALSCHE_RICHTUNG);
+  assert.equal(
+    bewertet.ok,
+    false,
+    "Der Satz dreht die Richtung: von der Berufsschule statt von der Arbeit."
+  );
+  const ergebnis = kern.auswertung({
+    entscheidung: "B",
+    gruende: ["bbig15"],
+    antwort: WINDOWS_FALSCHE_RICHTUNG
+  });
+  assert.equal(ergebnis.bestanden, false);
+  assert.equal(ergebnis.darfAbschliessen, false);
+  assert.equal(kern.bewerteAntwort(UMGEKEHRTE_FREISTELLUNG).ok, false);
 });
