@@ -33,14 +33,35 @@ test("Virtuelles Rathaus liegt nur unter Praxiswelten und ist keine Lektion", ()
   });
 });
 
-test("lf1-rathaus liegt nur unter Unterricht in Lernfeld 1 als Lektion", () => {
-  const lektion = bereich("unterricht").eintraege.find((e) => e.id === "lf1-rathaus");
-  assert.ok(lektion);
-  assert.strictEqual(lektion.rolle, "lektion");
-  assert.strictEqual(lektion.lernfeld, "lf1");
-  assert.strictEqual(lektion.datei, "module/rathaus.html#vorgang");
-  assert.ok(!ids(bereich("praxiswelten")).includes("lf1-rathaus"));
-  assert.ok(!ids(bereich("werkzeuge")).includes("lf1-rathaus"));
+function findeFeld(knoten, id) {
+  if (!knoten || typeof knoten !== "object") return null;
+  if (knoten.id === id && Array.isArray(knoten.unterthemen)) return knoten;
+  for (const wert of Object.values(knoten)) {
+    const treffer = findeFeld(wert, id);
+    if (treffer) return treffer;
+  }
+  return null;
+}
+
+test("Der Lernfeld-1-Verweis auf das Rathaus ist in keinem Bereich mehr vorhanden", () => {
+  const titel = "Virtuelles Rathaus: Berufsschule oder Dienststelle";
+  plattform.bereiche(daten()).forEach((b) => {
+    assert.ok(!ids(b).includes("lf1-rathaus"), b.id);
+    assert.ok(!b.eintraege.some((e) => e.titel === titel), b.id);
+  });
+  const roh = JSON.stringify(daten());
+  assert.ok(!roh.includes("lf1-rathaus"));
+  assert.ok(!roh.includes(titel));
+  assert.ok(!JSON.stringify(global.MODULE_EINSTIEG).includes("lf1-rathaus"));
+});
+
+test("Lernfeld 1 hat genau die acht Lektionen in fester Reihenfolge", () => {
+  const feld = findeFeld(global.MODULE_DATEN, "lf1");
+  assert.ok(feld);
+  assert.deepStrictEqual(feld.unterthemen.map((u) => u.id), [
+    "lf1-rolle", "lf1-rechte", "lf1-betrieb", "lf1-ziele",
+    "lf1-aufbau", "lf1-fortbildung", "lf1-praesentation", "lf1-lernziel"
+  ]);
 });
 
 test("Werkzeuge enthalten alle Tool-ids und das Glossar", () => {

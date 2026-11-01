@@ -16,7 +16,7 @@ Dann im Browser öffnen: `http://127.0.0.1:8117/module/rathaus.html`
 
 Die bestehende Plattform startet weiter mit `./start.sh` auf Port `8107`. Diesen Port lässt die Rathaus-Fassung unangetastet. Wenn `8117` schon belegt ist, den Prozess nicht aus einem anderen Projekt beenden, sondern den Konflikt melden.
 
-Themenübersicht der Plattform: `http://127.0.0.1:8117/index.html`. Der Eintrag steht in Lernfeld 1 als „Virtuelles Rathaus: Berufsschule oder Dienststelle“.
+Themenübersicht der Plattform: `http://127.0.0.1:8117/index.html`. Der Einstieg steht unter Praxiswelten als „Virtuelles Rathaus“ und als Karte auf der Startseite. Der Übungsfall ist im Personalamt, nicht als Lektion in Lernfeld 1.
 
 ## Was der Test kann
 
