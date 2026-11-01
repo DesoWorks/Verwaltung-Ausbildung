@@ -1,5 +1,7 @@
 # Unterrichtsscans – kompakte Übersicht für die Entwicklung
 
+Ersetzt am 01.11.2026 durch `docs/rathaus-phase-d-auswertung.md`. Diese Datei bleibt als früher Zwischenstand. Sie hat nicht alle Seiten gesehen. Nicht als vollständige Auswertung verwenden.
+
 Stand: 01.11.2026. Nur Seiten, die tatsächlich angesehen wurden. Keine erfundenen Aufgaben.
 
 Originale, nicht im Git:
