@@ -284,7 +284,10 @@
   }
 
   function hilfe(stufe) {
-    var n = Number(stufe) || 1;
+    var n = (stufe === undefined || stufe === null) ? 1 : (Number(stufe) || 0);
+    if (n <= 0) {
+      return "";
+    }
     if (n <= 1) {
       return "Lies die Nachricht und öffne die Ausbildungsakte. Achte auf das Alter und auf die Zahl der Unterrichtsstunden.";
     }
@@ -292,6 +295,15 @@
       return "Personalmangel ändert die Freistellung nicht. Welches Gesetz schützt den Besuch der Berufsschule, und was gilt bei mehr als fünf Unterrichtsstunden?";
     }
     return "Richtung, keine Musterlösung: Die passende Entscheidung ist die Freistellung für den ganzen Berufsschultag. Die vollständige Musterantwort steht nur in der Lehrkraftansicht.";
+  }
+
+  function hilfeWechsel(stufe, richtung) {
+    var n = Math.floor(Number(stufe)) || 0;
+    n = Math.max(0, Math.min(3, n));
+    if (richtung === "mehr") return Math.min(3, n + 1);
+    if (richtung === "weniger") return Math.max(0, n - 1);
+    if (richtung === "einklappen") return 0;
+    return n;
   }
 
   function gesetzesErklaerung() {
@@ -354,6 +366,7 @@
     auswertung: auswertung,
     nachPruefung: nachPruefung,
     hilfe: hilfe,
+    hilfeWechsel: hilfeWechsel,
     gesetzesErklaerung: gesetzesErklaerung,
     lehrkraftLoesung: lehrkraftLoesung,
     katalog: katalog

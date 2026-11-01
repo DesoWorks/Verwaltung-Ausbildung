@@ -268,3 +268,29 @@ test("Oberfläche zeigt die Gesetzeserklärung einklappbar und geschlossen", () 
   assert.match(ui, /el\("details", "rathaus-begriffe rathaus-gesetze"\)/);
   assert.equal(/erklaerDetails\.open\s*=\s*true/.test(ui), false);
 });
+
+test("Hilfestufen lassen sich zurückschalten und einklappen", () => {
+  assert.equal(kern.hilfeWechsel(2, "weniger"), 1);
+  assert.equal(kern.hilfeWechsel(1, "weniger"), 0);
+  assert.equal(kern.hilfeWechsel(0, "weniger"), 0);
+  assert.equal(kern.hilfeWechsel(3, "einklappen"), 0);
+  assert.equal(kern.hilfeWechsel(3, "mehr"), 3);
+  assert.equal(kern.hilfeWechsel(0, "mehr"), 1);
+  assert.equal(kern.hilfeWechsel(7, "halten"), 3);
+});
+
+test("Stufe 0 zeigt keinen Hilfetext, Stufe 3 keinen Mustertext", () => {
+  assert.equal(kern.hilfe(0), "");
+  assert.notEqual(kern.hilfe(1), "");
+  assert.equal(kern.hilfe(3).includes(kern.lehrkraftLoesung().mustertext), false);
+});
+
+test("Oberfläche bietet drei Hilfeknöpfe und hält aria-expanded passend", () => {
+  const ui = fs.readFileSync(path.join(__dirname, "../js/rathaus-ui.js"), "utf8");
+  assert.match(ui, /"Mehr Hilfe"/);
+  assert.match(ui, /"Weniger Hilfe"/);
+  assert.match(ui, /"Hilfe einklappen"/);
+  assert.match(ui, /aria-expanded", state\.hilfeStufe > 0/);
+  assert.match(ui, /hilfeBereich\.hidden = state\.hilfeStufe <= 0/);
+  assert.match(ui, /state\.hilfeStufe = 0;/, "Zurücksetzen setzt die Hilfestufe auf 0");
+});

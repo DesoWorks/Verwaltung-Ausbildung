@@ -364,18 +364,42 @@
     ziel.appendChild(auswertung);
 
     begriffHilfe(ziel);
-    var hilfe = el("button", "knopf", "Hilfe, Stufe " + Math.min(state.hilfeStufe + 1, 3));
-    hilfe.type = "button";
-    hilfe.addEventListener("click", function () {
-      state.hilfeStufe = Math.min(state.hilfeStufe + 1, 3);
-      speichern();
-      zeichnen();
-    });
-    var aktionen = el("div", "knopf-reihe");
-    aktionen.appendChild(hilfe);
-    if (state.hilfeStufe > 0) {
-      ziel.appendChild(el("p", "rathaus-hinweis", kern.hilfe(state.hilfeStufe)));
+    state.hilfeStufe = kern.hilfeWechsel(state.hilfeStufe, "halten");
+    var hilfeReihe = el("div", "knopf-reihe");
+    function hilfeKnopf(text, richtung, gesperrt) {
+      var knopf = el("button", "knopf", text);
+      knopf.type = "button";
+      knopf.disabled = gesperrt;
+      knopf.addEventListener("click", function () {
+        state.hilfeStufe = kern.hilfeWechsel(state.hilfeStufe, richtung);
+        speichern();
+        zeichnen();
+        var ziel2 = document.getElementById("hilfe-" + richtung);
+        fokus(ziel2 && !ziel2.disabled ? "hilfe-" + richtung : "hilfe-mehr");
+      });
+      return knopf;
     }
+    var mehr = hilfeKnopf("Mehr Hilfe", "mehr", state.hilfeStufe >= 3);
+    mehr.id = "hilfe-mehr";
+    var weniger = hilfeKnopf("Weniger Hilfe", "weniger", state.hilfeStufe <= 0);
+    weniger.id = "hilfe-weniger";
+    var einklappen = hilfeKnopf("Hilfe einklappen", "einklappen", state.hilfeStufe <= 0);
+    einklappen.id = "hilfe-einklappen";
+    einklappen.setAttribute("aria-controls", "hilfe-bereich");
+    einklappen.setAttribute("aria-expanded", state.hilfeStufe > 0 ? "true" : "false");
+    hilfeReihe.append(mehr, weniger, einklappen);
+    ziel.appendChild(hilfeReihe);
+    var hilfeBereich = el("div", "rathaus-hilfe");
+    hilfeBereich.id = "hilfe-bereich";
+    hilfeBereich.setAttribute("role", "region");
+    hilfeBereich.setAttribute("aria-label", "Hilfe");
+    hilfeBereich.hidden = state.hilfeStufe <= 0;
+    if (state.hilfeStufe > 0) {
+      hilfeBereich.appendChild(el("p", "rathaus-meta", "Hilfestufe " + state.hilfeStufe + " von 3"));
+      hilfeBereich.appendChild(el("p", "rathaus-hinweis", kern.hilfe(state.hilfeStufe)));
+    }
+    ziel.appendChild(hilfeBereich);
+    var aktionen = el("div", "knopf-reihe");
 
     var abschluss = el("button", "knopf knopf-haupt", "7. Vorgang abschließen");
     abschluss.type = "button";
