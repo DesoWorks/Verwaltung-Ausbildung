@@ -11,9 +11,9 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function () {
   "use strict";
 
-  var ANSICHTEN = ["stadt", "personal", "post", "akte", "vorgang", "lehrkraft"];
-  var HASH_ANSICHTEN = ["stadt", "personal", "post", "akte", "vorgang"];
-  var PERSONAL_ANSICHTEN = ["personal", "post", "akte", "vorgang"];
+  var ANSICHTEN = ["stadt", "personal", "post", "akte", "vorgang", "nachschlagen", "lehrkraft"];
+  var HASH_ANSICHTEN = ["stadt", "personal", "post", "akte", "vorgang", "nachschlagen"];
+  var PERSONAL_ANSICHTEN = ["personal", "post", "akte", "vorgang", "nachschlagen"];
   var STADT_LABEL = "Stadtverwaltung";
   var RUECK_LABEL = "Zur Stadtübersicht";
 
@@ -30,6 +30,7 @@
     post: "Posteingang",
     akte: "Ausbildungsakte",
     vorgang: "Vorgang",
+    nachschlagen: "Nachschlagen",
     lehrkraft: "Lehrkraftansicht"
   };
 
@@ -60,7 +61,7 @@
     if (ansicht === "stadt") return [{ label: STADT_LABEL, ziel: null }];
     if (ansicht === "lehrkraft") return [stadt, { label: TITEL.lehrkraft, ziel: null }];
     if (ansicht === "personal") return [stadt, { label: TITEL.personal, ziel: null }];
-    if (ansicht === "post" || ansicht === "akte" || ansicht === "vorgang") {
+    if (ansicht === "post" || ansicht === "akte" || ansicht === "vorgang" || ansicht === "nachschlagen") {
       return [stadt, { label: TITEL.personal, ziel: "personal" }, { label: TITEL[ansicht], ziel: null }];
     }
     return [{ label: STADT_LABEL, ziel: null }];
@@ -77,7 +78,8 @@
       { ansicht: "personal", label: "Übersicht Personalamt" },
       { ansicht: "post", label: "Posteingang" },
       { ansicht: "akte", label: "Ausbildungsakte" },
-      { ansicht: "vorgang", label: "Vorgang" }
+      { ansicht: "vorgang", label: "Vorgang" },
+      { ansicht: "nachschlagen", label: "Nachschlagen" }
     ].map(function (eintrag) {
       eintrag.aktuell = eintrag.ansicht === ansicht;
       return eintrag;

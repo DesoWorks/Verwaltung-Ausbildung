@@ -81,9 +81,9 @@ test("Personalamt-Unternavigation nur in Personalamt-Ansichten", () => {
   assert.deepStrictEqual(nav.personalUnternavigation("stadt"), []);
   assert.deepStrictEqual(nav.personalUnternavigation("lehrkraft"), []);
   assert.deepStrictEqual(nav.personalUnternavigation("unbekannt"), []);
-  ["personal", "post", "akte", "vorgang"].forEach((a) => {
+  ["personal", "post", "akte", "vorgang", "nachschlagen"].forEach((a) => {
     const u = nav.personalUnternavigation(a);
-    assert.deepStrictEqual(labels(u), ["Übersicht Personalamt", "Posteingang", "Ausbildungsakte", "Vorgang"]);
+    assert.deepStrictEqual(labels(u), ["Übersicht Personalamt", "Posteingang", "Ausbildungsakte", "Vorgang", "Nachschlagen"]);
     assert.deepStrictEqual(u.filter((e) => e.aktuell).map((e) => e.ansicht), [a]);
   });
 });

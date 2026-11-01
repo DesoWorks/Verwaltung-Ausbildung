@@ -251,6 +251,10 @@
     });
     reihe.append(post, akte);
     ziel.appendChild(reihe);
+    var nachschlagen = el("button", "knopf", "Nachschlagekarte öffnen");
+    nachschlagen.type = "button";
+    nachschlagen.addEventListener("click", function () { zeige("nachschlagen"); });
+    reihe.appendChild(nachschlagen);
     if (kernHochbetrieb) {
       ziel.appendChild(el("h3", "", "Vorgang wählen"));
       ziel.appendChild(el("p", "rathaus-meta", "Jeder Vorgang hat einen eigenen Stand. Beim Wechsel geht nichts verloren."));
@@ -268,6 +272,52 @@
       ziel.appendChild(wahl);
       ziel.appendChild(el("p", "", "Aktueller Vorgang: " + fall.betreff));
     }
+  }
+
+  // Nachschlagekarte: nur Lesen. Verändert weder Lesestand noch Schritte noch Entwurf.
+  function zeichneNachschlagen(ziel) {
+    var daten = window.RATHAUS_NACHSCHLAGEN ? window.RATHAUS_NACHSCHLAGEN.karte() : null;
+    var titel = el("h2", "", daten ? daten.titel : "Nachschlagen");
+    titel.id = "ansicht-titel";
+    titel.tabIndex = -1;
+    ziel.appendChild(titel);
+    if (!daten) {
+      ziel.appendChild(el("p", "", "Die Nachschlagekarte ist gerade nicht verfügbar."));
+    } else {
+      ziel.appendChild(el("p", "rathaus-einleitung", daten.einleitung));
+      var inhalt = el("nav", "knopf-reihe");
+      inhalt.setAttribute("aria-label", "Inhalt der Nachschlagekarte");
+      daten.abschnitte.forEach(function (abschnitt) {
+        var sprung = el("button", "knopf", abschnitt.titel);
+        sprung.type = "button";
+        sprung.addEventListener("click", function () {
+          var kopf = document.getElementById("nachschlagen-" + abschnitt.id);
+          if (kopf) kopf.focus();
+        });
+        inhalt.appendChild(sprung);
+      });
+      ziel.appendChild(inhalt);
+      daten.abschnitte.forEach(function (abschnitt) {
+        var box = el("section", "rathaus-nachschlag-abschnitt");
+        var kopf = el("h3", "", abschnitt.titel);
+        kopf.id = "nachschlagen-" + abschnitt.id;
+        kopf.tabIndex = -1;
+        box.appendChild(kopf);
+        abschnitt.absaetze.forEach(function (text) { box.appendChild(el("p", "", text)); });
+        if (abschnitt.punkte.length) {
+          var liste = el("ul", "");
+          abschnitt.punkte.forEach(function (text) { liste.appendChild(el("li", "", text)); });
+          box.appendChild(liste);
+        }
+        ziel.appendChild(box);
+      });
+      ziel.appendChild(el("p", "rathaus-hinweis", daten.quelle));
+      ziel.appendChild(el("p", "rathaus-meta", daten.grenze));
+    }
+    var zurueck = el("button", "knopf", "Zurück zum Personalamt");
+    zurueck.type = "button";
+    zurueck.addEventListener("click", function () { zeige("personal"); });
+    ziel.appendChild(zurueck);
   }
 
   function zeichnePost(ziel) {
@@ -700,6 +750,7 @@
     else if (state.ansicht === "post") zeichnePost(haupt);
     else if (state.ansicht === "akte") zeichneAkte(haupt);
     else if (state.ansicht === "vorgang") zeichneVorgang(haupt);
+    else if (state.ansicht === "nachschlagen") zeichneNachschlagen(haupt);
     else if (state.ansicht === "lehrkraft") zeichneLehrkraft(haupt);
     else zeichneStadt(haupt);
   }
