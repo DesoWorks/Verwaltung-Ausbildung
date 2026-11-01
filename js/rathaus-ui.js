@@ -595,6 +595,7 @@
 
   function init() {
     laden();
+    state.ansicht = navi.ansichtNachLaden(state.ansicht, state.lehrkraft);
     var vomHash = hashAnwenden();
     document.querySelectorAll("[data-ansicht]").forEach(function (knopf) {
       knopf.addEventListener("click", function () {
@@ -604,8 +605,9 @@
     var schalter = document.getElementById("lehrkraft-schalter");
     if (schalter) {
       schalter.addEventListener("click", function () {
-        state.lehrkraft = !state.lehrkraft;
-        if (state.lehrkraft) state.ansicht = "lehrkraft";
+        var umschalt = navi.lehrkraftUmschalten(state.ansicht, state.lehrkraft);
+        state.lehrkraft = umschalt.lehrkraft;
+        state.ansicht = umschalt.ansicht;
         speichern();
         zeichnen();
         fokus("ansicht-titel");

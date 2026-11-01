@@ -99,3 +99,39 @@ test("Lehrkraft ist kein Kind des Personalamts", () => {
   assert.ok(!nav.HASH_ANSICHTEN.includes("lehrkraft"));
   assert.ok(!nav.personalUnternavigation("personal").some((e) => e.ansicht === "lehrkraft"));
 });
+
+// Lehrkraftmodus: Rücksprung beim Ausschalten und beim Laden
+test("Ausschalten in der Lehrkraftansicht führt zur Stadtübersicht", () => {
+  assert.deepStrictEqual(nav.lehrkraftUmschalten("lehrkraft", true), { lehrkraft: false, ansicht: "stadt" });
+});
+
+test("Einschalten aus dem Vorgang springt zur Lehrkraftansicht", () => {
+  assert.deepStrictEqual(nav.lehrkraftUmschalten("vorgang", false), { lehrkraft: true, ansicht: "lehrkraft" });
+});
+
+test("Ausschalten aus dem Personalamt lässt die Ansicht unverändert", () => {
+  assert.deepStrictEqual(nav.lehrkraftUmschalten("personal", true), { lehrkraft: false, ansicht: "personal" });
+});
+
+test("Laden: lehrkraft ohne Modus ergibt stadt, mit Modus bleibt lehrkraft", () => {
+  assert.strictEqual(nav.ansichtNachLaden("lehrkraft", false), "stadt");
+  assert.strictEqual(nav.ansichtNachLaden("lehrkraft", true), "lehrkraft");
+  assert.strictEqual(nav.ansichtNachLaden("vorgang", false), "vorgang");
+  assert.strictEqual(nav.ansichtNachLaden("unbekannt", true), "stadt");
+});
+
+test("Lehrkraft-Funktionen verändern Zustandsobjekte nicht und geben nur zwei Felder zurück", () => {
+  const zustand = { ansicht: "lehrkraft", lehrkraft: true, antwort: "Entwurf", abgeschlossen: true };
+  const kopie = JSON.stringify(zustand);
+  const ergebnis = nav.lehrkraftUmschalten(zustand.ansicht, zustand.lehrkraft);
+  nav.ansichtNachLaden(zustand.ansicht, zustand.lehrkraft);
+  assert.strictEqual(JSON.stringify(zustand), kopie);
+  assert.deepStrictEqual(Object.keys(ergebnis).sort(), ["ansicht", "lehrkraft"]);
+});
+
+test("rathaus-ui.js nutzt beide Funktionen und hat den einseitigen Zweig nicht mehr", () => {
+  const text = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "js", "rathaus-ui.js"), "utf8");
+  assert.ok(text.includes("navi.lehrkraftUmschalten("));
+  assert.ok(text.includes("navi.ansichtNachLaden("));
+  assert.ok(!text.includes('if (state.lehrkraft) state.ansicht = "lehrkraft"'));
+});

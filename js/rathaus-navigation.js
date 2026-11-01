@@ -91,6 +91,19 @@
     return null;
   }
 
+  // Lehrkraftmodus umschalten. Gibt nur die zwei betroffenen Felder zurück und verändert nichts.
+  function lehrkraftUmschalten(ansicht, lehrkraftAn) {
+    if (!lehrkraftAn) return { lehrkraft: true, ansicht: "lehrkraft" };
+    return { lehrkraft: false, ansicht: ansicht === "lehrkraft" || !istAnsicht(ansicht) ? "stadt" : ansicht };
+  }
+
+  // Gespeicherte Ansicht nach dem Laden: keine gesperrte Lehrkraftansicht ohne Lehrkraftmodus.
+  function ansichtNachLaden(ansicht, lehrkraftAn) {
+    if (!istAnsicht(ansicht)) return "stadt";
+    if (ansicht === "lehrkraft" && !lehrkraftAn) return "stadt";
+    return ansicht;
+  }
+
   return {
     ANSICHTEN: ANSICHTEN.slice(),
     HASH_ANSICHTEN: HASH_ANSICHTEN.slice(),
@@ -100,6 +113,8 @@
     brotkrumen: brotkrumen,
     rueckziel: rueckziel,
     personalUnternavigation: personalUnternavigation,
-    leistenEbene: leistenEbene
+    leistenEbene: leistenEbene,
+    lehrkraftUmschalten: lehrkraftUmschalten,
+    ansichtNachLaden: ansichtNachLaden
   };
 });
