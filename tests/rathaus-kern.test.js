@@ -361,10 +361,12 @@ test("Mehrere Versuche bleiben möglich, der Abschluss fällt weiter", () => {
   assert.equal(zwei.letzteAuswertung.darfAbschliessen, true);
 });
 
-test("Oberfläche zeigt, was passt, und den nächsten Blick", () => {
+test("Oberfläche zeigt drei Einzelbewertungen, was stimmt, was besser wird und den nächsten Schritt", () => {
   const ui = fs.readFileSync(path.join(__dirname, "../js/rathaus-ui.js"), "utf8");
-  assert.match(ui, /Das passt schon/);
-  assert.match(ui, /Dein nächster Blick/);
+  assert.match(ui, /Das stimmt schon/);
+  assert.match(ui, /Das kannst du verbessern/);
+  assert.match(ui, /Dein nächster Schritt/);
+  assert.match(ui, /Antwortbrief/);
 });
 
 test("Regression: Vorrang und keine Einteilung bestehen ohne das Wort freigestellt", () => {

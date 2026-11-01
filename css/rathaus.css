@@ -245,3 +245,40 @@
     width: 100%;
   }
 }
+
+/* Einzelbewertungen: Wort und Symbol tragen die Aussage, Farbe und Rahmen unterstützen nur. */
+.rathaus-teilbewertungen {
+  list-style: none;
+  margin: 0.5rem 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.rathaus-teil {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--farbe-rahmen);
+}
+
+.rathaus-teil-name { font-weight: 700; }
+.rathaus-teil-symbol { font-size: 1.25rem; font-weight: 700; }
+.rathaus-teil.ist-richtig { background: var(--farbe-ok-flaeche); color: var(--farbe-ok); border-style: solid; }
+.rathaus-teil.ist-falsch { background: var(--farbe-fehler-flaeche); color: var(--farbe-fehler); border-style: dashed; }
+.rathaus-teil.ist-offen { border-style: dotted; }
+
+/* Abschlussbutton: nativ deaktiviert, zusätzlich gestrichelt und ohne Zeiger sichtbar gesperrt. */
+.rathaus-abschluss { margin-top: 1rem; }
+.rathaus-abschluss .knopf:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  border-style: dashed;
+}
+.rathaus-abschluss .knopf:not(:disabled) {
+  outline: 3px solid var(--farbe-ok);
+  outline-offset: 2px;
+}

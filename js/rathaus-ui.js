@@ -27,7 +27,9 @@
     hilfeStufe: 0,
     lehrkraft: false,
     versuche: 0,
-    veraltetHinweis: false
+    veraltetHinweis: false,
+    // Wahr, wenn nach einer Auswertung Eingaben geändert wurden. Wird nicht gespeichert.
+    eingabenGeaendert: false
   };
 
   function schluessel() {
@@ -69,6 +71,7 @@
     state.letzteAuswertung = null;
     state.abgeschlossen = false;
     state.veraltetHinweis = false;
+    state.eingabenGeaendert = false;
     state.hilfeStufe = 0;
     state.versuche = 0;
   }
@@ -391,6 +394,146 @@
     ziel.appendChild(details);
   }
 
+  // Die drei Einzelbewertungen stammen aus den echten Prüffeldern der Auswertung.
+  // Fehlt ein Feld, steht dort null und die Anzeige sagt "Noch nicht geprüft".
+  function teilbewertungen(auswertung) {
+    function lies(teil, feld) {
+      return (teil && typeof teil === "object" && typeof teil[feld] === "boolean") ? teil[feld] : null;
+    }
+    return [
+      { name: "Entscheidung", wert: lies(auswertung.entscheidung, "richtig"), ueberarbeiten: "deine Entscheidung" },
+      { name: "Begründung", wert: lies(auswertung.begruendung, "reicht"), ueberarbeiten: "deine Begründung" },
+      { name: "Antwortbrief", wert: lies(auswertung.antwort, "ok"), ueberarbeiten: "deinen Antwortbrief" }
+    ];
+  }
+
+  function ergebnisSatz(teile, auswertung) {
+    if (teile.some(function (teil) { return teil.wert === null; })) {
+      return "Nicht alle Bereiche konnten geprüft werden. Werte noch einmal aus.";
+    }
+    var richtig = teile.filter(function (teil) { return teil.wert === true; }).length;
+    var offen = teile.filter(function (teil) { return teil.wert === false; }).map(function (teil) { return teil.ueberarbeiten; });
+    if (richtig === 3) {
+      if (auswertung.darfAbschliessen === true) return "Drei von drei Bereichen sind richtig. Du kannst den Vorgang abschließen.";
+      return "Drei von drei Bereichen sind richtig. Öffne zuerst die Ausbildungsakte und werte danach erneut aus.";
+    }
+    var anzahl = richtig === 2 ? "Zwei von drei Bereichen sind richtig." : (richtig === 1 ? "Einer von drei Bereichen ist richtig." : "Noch kein Bereich ist richtig.");
+    var aufgabe = offen.length === 3 ? "Überarbeite alle drei Bereiche." :
+      (offen.length === 2 ? "Überarbeite " + offen[0] + " und " + offen[1] + "." : "Überarbeite nur " + offen[0] + ".");
+    return anzahl + " " + aufgabe;
+  }
+
+  function naechsterSchritt(teile, auswertung) {
+    if (auswertung.darfAbschliessen === true) return "Du kannst den Vorgang jetzt abschließen. Wenn du noch etwas ändern willst, werte danach erneut aus.";
+    if (!state.akteGelesen) return "Öffne zuerst die Ausbildungsakte und werte danach erneut aus.";
+    var offen = teile.filter(function (teil) { return teil.wert !== true; }).map(function (teil) { return teil.ueberarbeiten; });
+    if (offen.length === 0) return "Werte noch einmal aus.";
+    return "Ändere " + offen.join(", ").replace(/, ([^,]*)$/, " und $1") + " und wähle dann „6. Auswertung anzeigen“.";
+  }
+
+  function fuelleAuswertung(auswertung) {
+    leeren(auswertung);
+    var ausTitel = el("h3", "", "6. Auswertung");
+    ausTitel.id = "auswertung-titel";
+    ausTitel.tabIndex = -1;
+    auswertung.appendChild(ausTitel);
+    var ergebnis = state.letzteAuswertung;
+    if (state.eingabenGeaendert && !ergebnis) {
+      auswertung.appendChild(el("p", "rathaus-hinweis", "Die Eingaben haben sich geändert. Bitte erneut auswerten."));
+    } else if (state.veraltetHinweis && !ergebnis) {
+      auswertung.appendChild(el("p", "rathaus-hinweis", "Die gespeicherte Auswertung passt nicht mehr zur aktuellen Prüfung. Deine Eingaben bleiben. Bitte erneut auswerten."));
+    }
+    if (!ergebnis) {
+      auswertung.appendChild(el("p", "", "Noch keine Auswertung. Du kannst die Schritte in Ruhe ausfüllen."));
+      return;
+    }
+    var teile = teilbewertungen(ergebnis);
+    var liste = el("ul", "rathaus-teilbewertungen");
+    teile.forEach(function (teil) {
+      var symbol = teil.wert === true ? "✓" : (teil.wert === false ? "✗" : "?");
+      var wort = teil.wert === true ? "Richtig" : (teil.wert === false ? "Noch nicht richtig" : "Noch nicht geprüft");
+      var klasse = teil.wert === true ? "ist-richtig" : (teil.wert === false ? "ist-falsch" : "ist-offen");
+      var punkt = el("li", "rathaus-teil " + klasse);
+      punkt.setAttribute("aria-label", teil.name + ": " + symbol + " " + wort);
+      punkt.appendChild(el("span", "rathaus-teil-name", teil.name + ":"));
+      punkt.appendChild(el("span", "rathaus-teil-symbol", symbol));
+      punkt.appendChild(el("span", "rathaus-teil-wort", wort));
+      liste.appendChild(punkt);
+    });
+    auswertung.appendChild(liste);
+    auswertung.appendChild(el("p", ergebnis.darfAbschliessen === true ? "rathaus-ok" : "rathaus-fehler", "Ergebnis: " + ergebnisSatz(teile, ergebnis)));
+
+    function hinweisBlock(titel, punkte) {
+      if (!Array.isArray(punkte) || punkte.length === 0) return;
+      auswertung.appendChild(el("h4", "", titel));
+      var ul = el("ul", "");
+      punkte.forEach(function (punkt) { ul.appendChild(el("li", "", punkt)); });
+      auswertung.appendChild(ul);
+    }
+    hinweisBlock("Das stimmt schon", ergebnis.traegt);
+    hinweisBlock("Das kannst du verbessern", ergebnis.naechsterBlick);
+    auswertung.appendChild(el("h4", "", "Dein nächster Schritt"));
+    auswertung.appendChild(el("p", "", naechsterSchritt(teile, ergebnis)));
+    hinweisBlock("Weitere Hinweise", ergebnis.hinweise);
+  }
+
+  // Der Abschlussbutton ist nur aktiv, wenn die letzte Auswertung den Abschluss freigibt.
+  function fuelleAbschluss(host) {
+    leeren(host);
+    var frei = Boolean(state.letzteAuswertung && state.letzteAuswertung.darfAbschliessen === true);
+    var status;
+    if (state.abgeschlossen) {
+      status = el("p", "rathaus-ok", "✓ Vorgang abgeschlossen. Du kannst ihn in der Lehrkraftansicht für einen neuen Durchlauf zurücksetzen.");
+      status.id = "abschluss-titel";
+      status.tabIndex = -1;
+    } else if (frei) {
+      status = el("p", "rathaus-ok", "✓ Bereit: Du kannst den Vorgang jetzt abschließen. Zur Korrektur änderst du die Felder und prüfst erneut.");
+    } else if (state.eingabenGeaendert) {
+      status = el("p", "rathaus-meta", "Noch nicht abschließen: Die Eingaben haben sich geändert. Bitte erneut auswerten.");
+    } else if (state.letzteAuswertung && !state.akteGelesen) {
+      status = el("p", "rathaus-meta", "Noch nicht abschließen: Öffne zuerst die Ausbildungsakte und werte danach erneut aus.");
+    } else if (state.letzteAuswertung) {
+      status = el("p", "rathaus-meta", "Noch nicht abschließen: Mindestens ein Bereich ist noch nicht richtig. Zur Korrektur änderst du die Felder und prüfst erneut.");
+    } else {
+      status = el("p", "rathaus-meta", "Noch nicht abschließen: Werte zuerst deine Eingaben aus.");
+    }
+    if (!status.id) status.id = "abschluss-status";
+
+    var aktionen = el("div", "knopf-reihe");
+    var abschluss = el("button", "knopf knopf-haupt", "7. Vorgang abschließen");
+    abschluss.id = "abschluss-knopf";
+    abschluss.type = "button";
+    abschluss.disabled = !frei;
+    abschluss.setAttribute("aria-describedby", status.id);
+    abschluss.addEventListener("click", function () {
+      if (!state.letzteAuswertung || state.letzteAuswertung.darfAbschliessen !== true) return;
+      state.abgeschlossen = true;
+      speichern();
+      zeichnen();
+      fokus("abschluss-titel");
+    });
+    aktionen.appendChild(abschluss);
+    host.appendChild(aktionen);
+    host.appendChild(status);
+  }
+
+  var aktualisiereBewertung = function () {};
+
+  // Wird beim Ändern von Entscheidung, Gründen oder Antwort aufgerufen. Eine frühere
+  // Auswertung gibt den Abschluss danach nicht mehr frei. Eingaben und Entwurf bleiben.
+  function eingabeGeaendert() {
+    var hatteErgebnis = Boolean(state.letzteAuswertung) || state.abgeschlossen;
+    state.abgeschlossen = false;
+    if (state.letzteAuswertung) {
+      state.letzteAuswertung = null;
+      state.eingabenGeaendert = true;
+    }
+    speichern();
+    fortschrittNur();
+    // Nur die Bewertungsbereiche neu zeichnen, damit das Textfeld Fokus und Cursor behält.
+    if (hatteErgebnis) aktualisiereBewertung();
+  }
+
   function zeichneVorgang(ziel) {
     var titel = el("h2", "", fall.vorgangTitel || "Vorgang: Berufsschule oder Dienststelle");
     titel.id = "ansicht-titel";
@@ -430,9 +573,7 @@
       input.checked = state.entscheidung === option.id;
       input.addEventListener("change", function () {
         state.entscheidung = option.id;
-        state.abgeschlossen = false;
-        speichern();
-        fortschrittNur();
+        eingabeGeaendert();
       });
       label.appendChild(input);
       label.appendChild(el("span", "", option.text));
@@ -449,9 +590,7 @@
       input.addEventListener("change", function () {
         if (input.checked && state.gruende.indexOf(grund.id) === -1) state.gruende.push(grund.id);
         if (!input.checked) state.gruende = state.gruende.filter(function (id) { return id !== grund.id; });
-        state.abgeschlossen = false;
-        speichern();
-        fortschrittNur();
+        eingabeGeaendert();
       });
       label.appendChild(input);
       label.appendChild(el("span", "", grund.text));
@@ -480,9 +619,7 @@
     feld.setAttribute("aria-describedby", "antwort-hilfe");
     feld.addEventListener("input", function () {
       state.antwort = feld.value;
-      state.abgeschlossen = false;
-      speichern();
-      fortschrittNur();
+      eingabeGeaendert();
     });
     form.appendChild(feld);
     form.appendChild(el("p", "rathaus-meta", "Schreibe selbst. Die Musterlösung erscheint nicht in dieser Ansicht.", "antwort-hilfe"));
@@ -496,6 +633,7 @@
       state.abgeschlossen = naechster.abgeschlossen;
       state.letzteAuswertung = naechster.letzteAuswertung;
       state.veraltetHinweis = false;
+      state.eingabenGeaendert = false;
       speichern();
       zeichnen();
       fokus("auswertung-titel");
@@ -505,42 +643,7 @@
 
     var auswertung = el("section", "rathaus-auswertung");
     auswertung.setAttribute("aria-live", "polite");
-    var ausTitel = el("h3", "", "6. Auswertung");
-    ausTitel.id = "auswertung-titel";
-    ausTitel.tabIndex = -1;
-    auswertung.appendChild(ausTitel);
-    if (state.veraltetHinweis && !state.letzteAuswertung) {
-      auswertung.appendChild(el("p", "rathaus-hinweis", "Die gespeicherte Auswertung passt nicht mehr zur aktuellen Prüfung. Deine Eingaben bleiben. Bitte erneut auswerten."));
-    }
-    if (!state.letzteAuswertung) {
-      auswertung.appendChild(el("p", "", "Noch keine Auswertung. Du kannst die Schritte in Ruhe ausfüllen."));
-    } else if (state.letzteAuswertung.bestanden) {
-      auswertung.appendChild(el("p", "rathaus-ok", "Tragfähig. Die Entscheidung, die Begründung und die Antwort passen zusammen."));
-    } else {
-      auswertung.appendChild(el("p", "rathaus-fehler", "Noch nicht tragfähig. Du kannst alles ändern und es erneut versuchen."));
-    }
-    if (state.letzteAuswertung) {
-      var traegt = state.letzteAuswertung.traegt || [];
-      var blick = state.letzteAuswertung.naechsterBlick || [];
-      if (traegt.length > 0) {
-        auswertung.appendChild(el("h4", "", "Das passt schon"));
-        var traegtListe = el("ul", "");
-        traegt.forEach(function (punkt) { traegtListe.appendChild(el("li", "", punkt)); });
-        auswertung.appendChild(traegtListe);
-      }
-      if (blick.length > 0) {
-        auswertung.appendChild(el("h4", "", "Dein nächster Blick"));
-        var blickListe = el("ul", "");
-        blick.forEach(function (punkt) { blickListe.appendChild(el("li", "", punkt)); });
-        auswertung.appendChild(blickListe);
-      }
-      auswertung.appendChild(el("h4", "", "Einzelne Hinweise"));
-      var ul = el("ul", "");
-      state.letzteAuswertung.hinweise.forEach(function (hinweis) {
-        ul.appendChild(el("li", "", hinweis));
-      });
-      auswertung.appendChild(ul);
-    }
+    fuelleAuswertung(auswertung);
     ziel.appendChild(auswertung);
 
     begriffHilfe(ziel);
@@ -579,30 +682,15 @@
       hilfeBereich.appendChild(el("p", "rathaus-hinweis", kern.hilfe(state.hilfeStufe)));
     }
     ziel.appendChild(hilfeBereich);
-    var aktionen = el("div", "knopf-reihe");
-
-    var abschluss = el("button", "knopf knopf-haupt", "7. Vorgang abschließen");
-    abschluss.type = "button";
-    abschluss.disabled = !(state.letzteAuswertung && state.letzteAuswertung.darfAbschliessen);
-    abschluss.addEventListener("click", function () {
-      if (!state.letzteAuswertung || !state.letzteAuswertung.darfAbschliessen) return;
-      state.abgeschlossen = true;
-      speichern();
-      zeichnen();
-      fokus("abschluss-titel");
-    });
-    aktionen.appendChild(abschluss);
-    ziel.appendChild(aktionen);
-    if (state.abgeschlossen) {
-      var fertig = el("p", "rathaus-ok", "Vorgang abgeschlossen. Du kannst ihn in der Lehrkraftansicht für einen neuen Durchlauf zurücksetzen.");
-      fertig.id = "abschluss-titel";
-      fertig.tabIndex = -1;
-      ziel.appendChild(fertig);
-    } else if (state.letzteAuswertung && state.letzteAuswertung.darfAbschliessen) {
-      ziel.appendChild(el("p", "rathaus-ok", "Du kannst den Vorgang jetzt abschließen. Zur Korrektur änderst du die Felder und prüfst erneut."));
-    } else {
-      ziel.appendChild(el("p", "rathaus-meta", "Abschließen geht erst nach einer tragfähigen Auswertung. Zur Korrektur änderst du die Felder und prüfst erneut."));
-    }
+    var abschlussHost = el("div", "rathaus-abschluss");
+    abschlussHost.id = "abschluss-bereich";
+    ziel.appendChild(abschlussHost);
+    fuelleAbschluss(abschlussHost);
+    // Die Eingabehandler zeichnen nur diese beiden Bereiche neu, nie das Textfeld.
+    aktualisiereBewertung = function () {
+      fuelleAuswertung(auswertung);
+      fuelleAbschluss(abschlussHost);
+    };
   }
 
   function zeichneLehrkraft(ziel) {
@@ -650,6 +738,7 @@
       state.letzteAuswertung = null;
       state.abgeschlossen = false;
       state.veraltetHinweis = false;
+      state.eingabenGeaendert = false;
       state.hilfeStufe = 0;
       state.lehrkraft = lehrkraft;
       state.versuche = 0;
