@@ -381,10 +381,10 @@
         return { id: id, text: GRUENDE[id].text };
       }),
       begriffe: [
-        { begriff: "Freistellung", erklaerung: "Die Dienststelle muss Luca für die Berufsschule von der Arbeit freigeben. Er muss in dieser Zeit nicht in der Dienststelle arbeiten." },
+        { begriff: "Freistellung", erklaerung: "Die Ausbildungsstelle gibt eine Person von der Arbeit frei, damit sie am Unterricht teilnehmen kann. Das Glossar sagt nicht, welche Entscheidung in diesem Fall richtig ist." },
         { begriff: "abbedingen", erklaerung: "in einem Vertrag etwas anderes festlegen, als das Gesetz vorsieht. Die Falle in diesem Fall behauptet, die Berufsschule lasse sich so wegvereinbaren. Das geht hier nicht." },
         { begriff: "Ausbildungszweck", erklaerung: "Eine Aufgabe muss zur Ausbildung gehören. Ein Schalterdienst nur wegen Personalmangels ist kein Ausbildungszweck." },
-        { begriff: "Berufsschultag", erklaerung: "Ein Tag, an dem Berufsschulunterricht stattfindet. Bei mehr als fünf Unterrichtsstunden von je mindestens 45 Minuten gilt die Freistellung einmal in der Woche für den Tag." }
+        { begriff: "Berufsschultag", erklaerung: "Ein Tag, an dem Berufsschulunterricht stattfindet. Wie viele Unterrichtsstunden den ganzen Tag erfassen, steht im Gesetz. Diese Karte nennt die Folge nicht." }
       ]
     };
   }

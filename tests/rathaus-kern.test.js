@@ -282,6 +282,17 @@ test("Gesetzeserklärung erklärt Begriffe ohne Lösung", () => {
   assert.equal(alles.includes(kern.lehrkraftLoesung().mustertext), false);
 });
 
+test("Glossar erklärt abbedingen, ohne die Stundenfolge vorwegzunehmen", () => {
+  const begriffe = kern.katalog().begriffe;
+  const abbedingen = begriffe.find(function (eintrag) { return eintrag.begriff === "abbedingen"; });
+  assert.ok(abbedingen);
+  assert.match(abbedingen.erklaerung, /Vertrag/);
+  const alles = JSON.stringify(begriffe);
+  assert.equal(/mehr als fünf/.test(alles), false);
+  assert.equal(/gilt die Freistellung für den Tag/.test(alles), false);
+  assert.equal(/Entscheidung B/.test(alles), false);
+});
+
 test("Oberfläche zeigt die Gesetzeserklärung einklappbar und geschlossen", () => {
   const ui = fs.readFileSync(path.join(__dirname, "../js/rathaus-ui.js"), "utf8");
   assert.match(ui, /gesetzesErklaerung\(\)/);
