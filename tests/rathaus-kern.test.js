@@ -191,3 +191,26 @@ test("Regression: Windows-Satz mit Freistellung von der Berufsschule besteht nic
   assert.equal(ergebnis.darfAbschliessen, false);
   assert.equal(kern.bewerteAntwort(UMGEKEHRTE_FREISTELLUNG).ok, false);
 });
+
+test("Richtige Formulierungen der Freistellung bestehen weiterhin", () => {
+  const varianten = [
+    PASSENDE_ANTWORT,
+    "Luca Berger wird von der Arbeit freigestellt, damit er die Berufsschule besuchen kann. Er kommt nicht in die Dienststelle.",
+    "Wir stellen Luca für den Berufsschultag frei. Er geht zur Berufsschule und nicht in die Dienststelle."
+  ];
+  varianten.forEach(function (text) {
+    const bewertet = kern.bewerteAntwort(text);
+    assert.equal(bewertet.ok, true, text + " -> " + bewertet.hinweise.join(" | "));
+  });
+});
+
+test("Umgekehrte Richtung wird erklärt, ohne den Mustertext zu nennen", () => {
+  const hinweise = kern.bewerteAntwort(WINDOWS_FALSCHE_RICHTUNG).hinweise.join(" ");
+  assert.match(hinweise, /dreht die Richtung/);
+  assert.equal(hinweise.includes(kern.lehrkraftLoesung().mustertext), false);
+});
+
+test("Nur zur Berufsschule gehen reicht nicht", () => {
+  const text = "Guten Tag, Herr Holm. Luca wird am Dienstag zur Berufsschule gehen und kommt nicht in die Dienststelle.";
+  assert.equal(kern.bewerteAntwort(text).ok, false);
+});

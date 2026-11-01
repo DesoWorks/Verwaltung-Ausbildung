@@ -191,8 +191,18 @@
     return false;
   }
 
+  function drehtRichtung(text) {
+    var t = String(text || "").toLowerCase();
+    return /(von|vom)\s+(der\s+|dem\s+)?berufsschul\w*\s+(frei\s*stell\w*|freigestellt|freizustellen|frei\s+\w*stell\w*)/.test(t) ||
+      /frei(gestellt|zustellen|stellen)\s+(von|vom)\s+(der\s+|dem\s+)?berufsschul/.test(t) ||
+      /freistellung\s+(von|vom)\s+(der\s+|dem\s+)?berufsschul/.test(t);
+  }
+
   function sagtFreistellung(text) {
-    return /freistell|freigestellt|freizustellen|zur berufsschule|in die berufsschule|berufsschule besuchen/.test(String(text || "").toLowerCase());
+    var t = String(text || "").toLowerCase();
+    var nenntFreistellung = /freistell|freigestellt|freizustellen|stell\w*[^.!?]*\bfrei\b/.test(t);
+    var nenntRichtung = /zur berufsschule|für die berufsschule|fuer die berufsschule|für den berufsschul|fuer den berufsschul|von der arbeit|berufsschule besuchen/.test(t);
+    return nenntFreistellung && nenntRichtung;
   }
 
   function istUnsachlich(text) {
@@ -209,7 +219,9 @@
     if (istUnsachlich(gekuerzt)) {
       hinweise.push("Die Antwort muss sachlich bleiben. Keine Beleidigung.");
     }
-    if (!sagtFreistellung(gekuerzt)) {
+    if (drehtRichtung(gekuerzt)) {
+      hinweise.push("Die Formulierung dreht die Richtung. Freistellung meint hier von der Arbeit zur Berufsschule, nicht von der Berufsschule weg.");
+    } else if (!sagtFreistellung(gekuerzt)) {
       hinweise.push("Schreibe klar, dass Luca für die Berufsschule freigestellt wird.");
     }
     if (verlangtAusfall(gekuerzt)) {
