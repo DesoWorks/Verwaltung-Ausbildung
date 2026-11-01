@@ -214,3 +214,24 @@ test("Nur zur Berufsschule gehen reicht nicht", () => {
   const text = "Guten Tag, Herr Holm. Luca wird am Dienstag zur Berufsschule gehen und kommt nicht in die Dienststelle.";
   assert.equal(kern.bewerteAntwort(text).ok, false);
 });
+
+test("Akte spricht einfach, Fachbegriff abbedingen steht im Glossar", () => {
+  const fall = kern.fallDaten();
+  assert.equal(fall.akte.vertrag.includes("abbedungen"), false);
+  const katalog = kern.katalog();
+  assert.equal(katalog.begriffe.some(function (eintrag) {
+    return eintrag.begriff === "abbedingen" && /Vertrag/.test(eintrag.erklaerung);
+  }), true);
+  const vertragFalle = katalog.gruende.find(function (g) { return g.id === "falle-vertrag"; });
+  assert.match(vertragFalle.text, /abbedungen/);
+  assert.match(vertragFalle.text, /Abbedingen heißt/);
+});
+
+test("Entscheidungen B und D sind in sachlicher Sprache formuliert", () => {
+  const entscheidungen = kern.katalog().entscheidungen;
+  ["B", "D"].forEach(function (id) {
+    const text = entscheidungen.find(function (e) { return e.id === id; }).text;
+    assert.equal(/einteilen/.test(text), false, id);
+    assert.equal(/Schalter machen/.test(text), false, id);
+  });
+});

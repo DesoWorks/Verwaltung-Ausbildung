@@ -27,7 +27,7 @@
     },
     B: {
       id: "B",
-      text: "Luca ist für den Berufsschultag freizustellen. Die Dienststelle darf ihn nicht statt zur Schule einteilen.",
+      text: "Luca ist für den Berufsschultag von der Arbeit freizustellen. Die Dienststelle darf ihn an diesem Tag nicht zur Arbeit einsetzen.",
       richtig: true
     },
     C: {
@@ -37,7 +37,7 @@
     },
     D: {
       id: "D",
-      text: "Luca geht zur Schule, muss danach aber noch den ganzen Tag Schalter machen.",
+      text: "Luca geht zur Schule und muss danach noch den ganzen Tag am Schalter arbeiten.",
       richtig: false
     }
   };
@@ -80,7 +80,7 @@
     },
     "falle-vertrag": {
       id: "falle-vertrag",
-      text: "Im Ausbildungsvertrag kann die Berufsschule abbedungen werden.",
+      text: "Im Ausbildungsvertrag kann die Berufsschule abbedungen werden. Abbedingen heißt, im Vertrag etwas anderes festzulegen, als das Gesetz vorsieht.",
       richtig: false,
       pflicht: false,
       falle: true
@@ -106,7 +106,7 @@
       },
       nachricht: "Guten Tag, Frau Holtz. Im Bürgerbüro fehlt am Dienstag Personal am Schalter. Bitte schicken Sie Luca Berger nicht in die Berufsschule, sondern in die Dienststelle. Er soll den Tag am Schalter aushelfen. Der Unterricht würde sonst acht Stunden dauern. Danke, Sven Holm.",
       akte: {
-        vertrag: "Fiktiver Auszug: Die Berufsschule ist Teil der Ausbildung. Sie kann nicht durch eine mündliche Anweisung oder wegen Personalmangels abbedungen werden.",
+        vertrag: "Fiktiver Auszug: Die Berufsschule ist Teil der Ausbildung. Eine mündliche Anweisung oder Personalmangel kann diese Pflicht nicht aufheben.",
         hinweis: "Alle Namen und die Stadt Sonnenthal sind erfunden. Es werden keine echten Schülerdaten gespeichert."
       },
       quellen: QUELLEN.slice(),
@@ -326,6 +326,7 @@
       }),
       begriffe: [
         { begriff: "Freistellung", erklaerung: "Die Dienststelle muss Luca für die Berufsschule von der Arbeit freigeben. Er muss in dieser Zeit nicht in der Dienststelle arbeiten." },
+        { begriff: "abbedingen", erklaerung: "in einem Vertrag etwas anderes festlegen, als das Gesetz vorsieht. Die Falle in diesem Fall behauptet, die Berufsschule lasse sich so wegvereinbaren. Das geht hier nicht." },
         { begriff: "Ausbildungszweck", erklaerung: "Eine Aufgabe muss zur Ausbildung gehören. Ein Schalterdienst nur wegen Personalmangels ist kein Ausbildungszweck." },
         { begriff: "Berufsschultag", erklaerung: "Ein Tag, an dem Berufsschulunterricht stattfindet. Bei mehr als fünf Unterrichtsstunden von je mindestens 45 Minuten gilt die Freistellung einmal in der Woche für den Tag." }
       ]
