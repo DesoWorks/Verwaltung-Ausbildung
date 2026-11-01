@@ -93,6 +93,13 @@
     return null;
   }
 
+  // Die Sieben-Schritte-Anzeige gehört zu genau einem Vorgang. Sie erscheint nur in Akte und Vorgang,
+  // nicht in Stadtübersicht, Amtsübersicht, Posteingang (zwei Vorgänge), Nachschlagekarte oder Lehrkraftansicht.
+  var FORTSCHRITT_ANSICHTEN = ["akte", "vorgang"];
+  function fortschrittSichtbar(ansicht) {
+    return FORTSCHRITT_ANSICHTEN.indexOf(ansicht) !== -1;
+  }
+
   // Lehrkraftmodus umschalten. Gibt nur die zwei betroffenen Felder zurück und verändert nichts.
   function lehrkraftUmschalten(ansicht, lehrkraftAn) {
     if (!lehrkraftAn) return { lehrkraft: true, ansicht: "lehrkraft" };
@@ -116,6 +123,7 @@
     rueckziel: rueckziel,
     personalUnternavigation: personalUnternavigation,
     leistenEbene: leistenEbene,
+    fortschrittSichtbar: fortschrittSichtbar,
     lehrkraftUmschalten: lehrkraftUmschalten,
     ansichtNachLaden: ansichtNachLaden
   };

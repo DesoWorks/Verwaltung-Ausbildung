@@ -186,19 +186,51 @@
     ];
   }
 
+  // Die Sieben-Schritte-Anzeige gehört zum aktiven Vorgang und erscheint nur in dessen Ansichten.
   function fortschritt(ziel) {
     var liste = schritte();
     var fertig = liste.filter(function (schritt) { return schritt.done; }).length;
-    var kopf = el("div", "rathaus-fortschritt");
+    var name = fall.person.name;
+    var kopf = el("section", "rathaus-fortschritt");
+    kopf.setAttribute("aria-label", "Fortschritt im Vorgang von " + name);
+    kopf.appendChild(el("p", "rathaus-fortschritt-kopf", "Aktiver Vorgang: " + name));
     var text = el("p", "rathaus-fortschritt-text", fertig + " von 7 Schritten erledigt");
     kopf.appendChild(text);
     var leiste = el("ol", "rathaus-schritte");
     liste.forEach(function (schritt) {
       var punkt = el("li", schritt.done ? "ist-fertig" : "", schritt.nr + ". " + schritt.label);
+      punkt.appendChild(el("span", "nur-lesen", schritt.done ? " – erledigt" : " – offen"));
       leiste.appendChild(punkt);
     });
     kopf.appendChild(leiste);
     ziel.appendChild(kopf);
+  }
+
+  // Zeichnet die Schrittanzeige nur, wenn die Ansicht zu einem einzelnen Vorgang gehört.
+  function zeichneFortschritt(host) {
+    leeren(host);
+    var sichtbar = navi.fortschrittSichtbar(state.ansicht);
+    host.hidden = !sichtbar;
+    if (sichtbar) fortschritt(host);
+  }
+
+  // Eine Ansage pro Ereignis über die dauerhafte Statusregion außerhalb des neu gezeichneten Inhalts.
+  // Erst leeren, dann mit kurzer Verzögerung füllen, damit auch gleiche Texte erneut vorgelesen werden.
+  function ansage(nachricht) {
+    var host = document.getElementById("rathaus-ansage");
+    if (!host) return;
+    if (ansageTimer && typeof window.clearTimeout === "function") window.clearTimeout(ansageTimer);
+    host.textContent = "";
+    ansageTimer = window.setTimeout(function () { host.textContent = nachricht; }, 80);
+  }
+
+  function auswertungAnsage(ergebnis) {
+    var teile = teilbewertungen(ergebnis);
+    var einzeln = teile.map(function (teil) {
+      var wort = teil.wert === true ? "richtig" : (teil.wert === false ? "noch nicht richtig" : "noch nicht geprüft");
+      return teil.name + " " + wort + ".";
+    }).join(" ");
+    return "Auswertung fertig. " + einzeln + " " + ergebnisSatz(teile, ergebnis);
   }
 
   function bereichskarte(titel, text, status, aktiv) {
@@ -518,6 +550,7 @@
   }
 
   var aktualisiereBewertung = function () {};
+  var ansageTimer = null;
 
   // Wird beim Ändern von Entscheidung, Gründen oder Antwort aufgerufen. Eine frühere
   // Auswertung gibt den Abschluss danach nicht mehr frei. Eingaben und Entwurf bleiben.
@@ -531,7 +564,11 @@
     speichern();
     fortschrittNur();
     // Nur die Bewertungsbereiche neu zeichnen, damit das Textfeld Fokus und Cursor behält.
-    if (hatteErgebnis) aktualisiereBewertung();
+    if (hatteErgebnis) {
+      aktualisiereBewertung();
+      // Genau eine Ansage beim Übergang. Weitere Eingaben ohne Ergebnis bleiben still.
+      ansage("Eingaben geändert. Die Auswertung gilt nicht mehr. Bitte erneut auswerten.");
+    }
   }
 
   function zeichneVorgang(ziel) {
@@ -563,7 +600,20 @@
 
     var form = el("form", "rathaus-form");
     form.addEventListener("submit", function (event) { event.preventDefault(); });
-    form.appendChild(el("h3", "", "3. Sachverhalt beurteilen"));
+    // Eine Auswahl ist eine benannte Gruppe: Die Überschrift steckt in der Legende, der Hinweis hängt per aria-describedby daran.
+    function gruppe(titel, hilfeId, hilfeText) {
+      var set = el("fieldset", "rathaus-gruppe");
+      var legende = el("legend", "");
+      legende.appendChild(el("h3", "", titel));
+      set.appendChild(legende);
+      var hilfe = el("p", "rathaus-meta", hilfeText);
+      hilfe.id = hilfeId;
+      set.appendChild(hilfe);
+      set.setAttribute("aria-describedby", hilfeId);
+      form.appendChild(set);
+      return set;
+    }
+    var entscheidungsGruppe = gruppe("3. Sachverhalt beurteilen", "entscheidung-hilfe", "Wähle genau eine Antwort.");
     katalog.entscheidungen.forEach(function (option) {
       var label = el("label", "rathaus-option");
       var input = document.createElement("input");
@@ -577,10 +627,10 @@
       });
       label.appendChild(input);
       label.appendChild(el("span", "", option.text));
-      form.appendChild(label);
+      entscheidungsGruppe.appendChild(label);
     });
 
-    form.appendChild(el("h3", "", "4. Entscheidung begründen"));
+    var gruendeGruppe = gruppe("4. Entscheidung begründen", "gruende-hilfe", "Du kannst mehrere Gründe ankreuzen.");
     katalog.gruende.forEach(function (grund) {
       var label = el("label", "rathaus-option");
       var input = document.createElement("input");
@@ -594,7 +644,7 @@
       });
       label.appendChild(input);
       label.appendChild(el("span", "", grund.text));
-      form.appendChild(label);
+      gruendeGruppe.appendChild(label);
     });
 
     var erklaerung = kern.gesetzesErklaerung();
@@ -610,9 +660,14 @@
     erklaerDetails.appendChild(el("p", "rathaus-meta", erklaerung.hinweis));
     form.appendChild(erklaerDetails);
 
-    form.appendChild(el("h3", "", "5. Sachliche Antwort an " + (fall.antwortAn || "Sven Holm")));
+    var empfaenger = fall.antwortAn || "Sven Holm";
+    form.appendChild(el("h3", "", "5. Sachliche Antwort an " + empfaenger));
+    var feldName = el("label", "rathaus-feldname", "Dein Antwortbrief an " + empfaenger);
+    feldName.setAttribute("for", "antwort-text");
+    form.appendChild(feldName);
     var feld = document.createElement("textarea");
     feld.id = "antwort-text";
+    feld.name = "antwort";
     feld.rows = 6;
     feld.maxLength = 1200;
     feld.value = state.antwort;
@@ -622,7 +677,7 @@
       eingabeGeaendert();
     });
     form.appendChild(feld);
-    form.appendChild(el("p", "rathaus-meta", "Schreibe selbst. Die Musterlösung erscheint nicht in dieser Ansicht.", "antwort-hilfe"));
+    form.appendChild(el("p", "rathaus-meta", "Schreibe selbst. Eine Musterlösung gibt es ausschließlich in der lokalen Lehrkraftansicht, nicht in dieser Lernansicht."));
     form.lastChild.id = "antwort-hilfe";
 
     var pruefen = el("button", "knopf knopf-haupt", "6. Auswertung anzeigen");
@@ -637,12 +692,14 @@
       speichern();
       zeichnen();
       fokus("auswertung-titel");
+      ansage(auswertungAnsage(state.letzteAuswertung));
     });
     form.appendChild(pruefen);
     ziel.appendChild(form);
 
     var auswertung = el("section", "rathaus-auswertung");
-    auswertung.setAttribute("aria-live", "polite");
+    // Keine eigene Live-Region: Die Ansage kommt genau einmal über #rathaus-ansage.
+    auswertung.setAttribute("aria-labelledby", "auswertung-titel");
     fuelleAuswertung(auswertung);
     ziel.appendChild(auswertung);
 
@@ -700,11 +757,12 @@
     ziel.appendChild(titel);
     ziel.appendChild(el("p", "rathaus-warnbanner", "Nur lokaler Test. Keine echte Rollenprüfung. Nicht produktiv. Keine Schülerdaten."));
     if (!state.lehrkraft) {
-      ziel.appendChild(el("p", "", "Die Musterlösung bleibt zu, bis du die lokale Lehrkraftansicht einschaltest."));
+      ziel.appendChild(el("p", "", "Die Musterlösung ist ausschließlich in der lokalen Lehrkraftansicht verfügbar. Lernende sehen sie in der Lernansicht nicht."));
       return;
     }
     var loesung = kern.lehrkraftLoesung();
     ziel.appendChild(el("h3", "", "Vorläufige Übungslösung, nicht verbindlich"));
+    ziel.appendChild(el("p", "rathaus-meta", "Diese Musterlösung ist ausschließlich in der lokalen Lehrkraftansicht verfügbar. In der Lernansicht erscheint sie nicht."));
     ziel.appendChild(el("p", "", "Entscheidung: " + loesung.entscheidung));
     ziel.appendChild(el("p", "", loesung.mustertext));
     ziel.appendChild(el("h3", "", "Bewertungskriterien"));
@@ -725,6 +783,7 @@
     ziel.appendChild(quellen);
     ziel.appendChild(el("p", "rathaus-hinweis", loesung.unsicherheit));
     var reset = el("button", "knopf knopf-warn", "Fall für einen neuen Durchlauf zurücksetzen");
+    reset.id = "reset-knopf";
     reset.type = "button";
     reset.addEventListener("click", function () {
       var lehrkraft = true;
@@ -744,6 +803,8 @@
       state.versuche = 0;
       speichern();
       zeichnen();
+      fokus("ansicht-titel");
+      ansage("Der Vorgang wurde für einen neuen Durchlauf zurückgesetzt.");
     });
     ziel.appendChild(reset);
   }
@@ -751,8 +812,7 @@
   function fortschrittNur() {
     var host = document.getElementById("rathaus-fortschritt");
     if (!host) return;
-    leeren(host);
-    fortschritt(host);
+    zeichneFortschritt(host);
   }
 
   function navKnopf(text, klasse, ansicht) {
@@ -828,8 +888,7 @@
     var fort = document.getElementById("rathaus-fortschritt");
     var banner = document.getElementById("lehrkraft-banner");
     if (!haupt || !fort || !banner) return;
-    leeren(fort);
-    fortschritt(fort);
+    zeichneFortschritt(fort);
     banner.hidden = !state.lehrkraft;
     zeichneNavigation();
     var lehrknopf = document.getElementById("lehrkraft-schalter");

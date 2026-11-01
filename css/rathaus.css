@@ -39,9 +39,30 @@
   border-radius: var(--radius);
 }
 
+.rathaus-fortschritt-kopf {
+  margin: 0 0 0.2rem;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
 .rathaus-fortschritt-text {
   margin: 0 0 0.4rem;
   font-weight: 700;
+}
+
+#rathaus-fortschritt[hidden] { display: none; }
+
+/* Nur für Screenreader sichtbar. */
+.nur-lesen {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .rathaus-schritte {
@@ -142,7 +163,29 @@
   margin-top: 1rem;
 }
 
+.rathaus-gruppe {
+  min-width: 0;
+  margin: 0;
+  padding: 0.6rem 0 0;
+  border: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.rathaus-gruppe legend {
+  padding: 0;
+  float: left;
+  width: 100%;
+}
+
+.rathaus-gruppe legend h3 { margin: 0 0 0.2rem; }
+.rathaus-gruppe .rathaus-meta { margin: 0; clear: both; }
+
+.rathaus-feldname { font-weight: 700; }
+
 .rathaus-option {
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: flex;
   gap: 0.7rem;
   align-items: flex-start;
@@ -160,6 +203,12 @@
 .rathaus-karte .knopf:focus-visible {
   outline: 3px solid var(--farbe-akzent);
   outline-offset: 2px;
+}
+
+/* Fokus nach Ansichtswechsel: die fokussierte Überschrift oder Statuszeile bleibt sichtbar. */
+.rathaus-inhalt [tabindex="-1"]:focus {
+  outline: 3px solid var(--farbe-akzent);
+  outline-offset: 4px;
 }
 
 .rathaus-leiste .knopf[aria-current="page"],
@@ -244,6 +293,23 @@
   #lehrkraft-schalter {
     width: 100%;
   }
+  /* Kompakte Navigation: zwei Spalten, damit der Inhalt auf einem 360-px-Bildschirm nicht unter der Leiste verschwindet. */
+  .rathaus-ansichten,
+  .rathaus-unterleiste {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+  .rathaus-ansichten .knopf,
+  .rathaus-unterleiste .knopf {
+    min-height: 44px;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    font-size: 0.92rem;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  .rathaus-krumenliste { width: 100%; }
 }
 
 /* Einzelbewertungen: Wort und Symbol tragen die Aussage, Farbe und Rahmen unterstützen nur. */
@@ -281,4 +347,16 @@
 .rathaus-abschluss .knopf:not(:disabled) {
   outline: 3px solid var(--farbe-ok);
   outline-offset: 2px;
+}
+
+/* Fokus am Abschlussbutton: muss sich von der grünen Dauer-Outline des freigegebenen Zustands abheben. */
+.rathaus-abschluss .knopf:focus-visible,
+.rathaus-abschluss .knopf:not(:disabled):focus-visible {
+  outline: 4px solid var(--farbe-akzent);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 2px #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rathaus-inhalt *, .rathaus-leiste * { transition: none; animation: none; }
 }

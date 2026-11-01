@@ -177,7 +177,6 @@ test("Übersicht des Personalamts hat einen Knopf zur Karte", () => {
 test("Öffnen der Karte markiert nichts als gelesen, erledigt keinen Schritt und lässt den Entwurf stehen", () => {
   const entwurf = "Mein Entwurf der Antwort an die Auszubildende.";
   const s = start(personal({ antwort: entwurf, entscheidung: "", gruende: [] }));
-  const fortschrittVorher = text(s.ids["rathaus-fortschritt"]);
   s.klick("Nachschlagekarte öffnen");
   const roh = JSON.parse(s.store[KEY]);
   assert.equal(roh.ansicht, "nachschlagen");
@@ -186,9 +185,9 @@ test("Öffnen der Karte markiert nichts als gelesen, erledigt keinen Schritt und
   assert.equal(roh.antwort, entwurf);
   assert.notEqual(roh.abgeschlossen, true);
   assert.equal(roh.letzteAuswertung, null);
-  assert.ok(s.ids["rathaus-fortschritt"].children.length > 0);
-  assert.equal(text(s.ids["rathaus-fortschritt"]), fortschrittVorher, "Schrittanzeige unverändert");
-  assert.ok(fortschrittVorher.includes("1 von 7 Schritten erledigt"), "nur der vorhandene Entwurf zählt");
+  // Die Schrittanzeige gehört zum Vorgang und erscheint in der allgemeinen Karte nicht.
+  assert.equal(s.ids["rathaus-fortschritt"].hidden, true);
+  assert.equal(s.ids["rathaus-fortschritt"].children.length, 0);
 });
 
 test("Öffnen der Karte über den Hash ändert weder Lesestand noch Entwurf", () => {
