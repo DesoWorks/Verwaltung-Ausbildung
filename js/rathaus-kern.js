@@ -45,28 +45,28 @@
   var GRUENDE = {
     "bbig15": {
       id: "bbig15",
-      text: "BBiG § 15: Freistellung für den Berufsschulunterricht. Bei mehr als fünf Unterrichtsstunden an einem Tag, einmal in der Woche, gilt die Freistellung für den Tag.",
+      text: "BBiG § 15: Freistellung für den Berufsschulunterricht.",
       richtig: true,
       pflicht: true,
       falle: false
     },
     "bbig14-4": {
       id: "bbig14-4",
-      text: "BBiG § 14 Absatz 1 Nummer 4: Ausbildende haben Auszubildende zum Besuch der Berufsschule anzuhalten.",
+      text: "BBiG § 14 Absatz 1 Nummer 4: Auszubildende zum Besuch der Berufsschule anhalten.",
       richtig: true,
       pflicht: false,
       falle: false
     },
     "bbig14-3": {
       id: "bbig14-3",
-      text: "BBiG § 14 Absatz 3: Es dürfen nur Aufgaben übertragen werden, die dem Ausbildungszweck dienen.",
+      text: "BBiG § 14 Absatz 3: Nur Aufgaben übertragen, die dem Ausbildungszweck dienen.",
       richtig: true,
       pflicht: false,
       falle: false
     },
     "jarbschg9": {
       id: "jarbschg9",
-      text: "JArbSchG § 9: Luca ist 17. Jugendliche sind für die Berufsschule freizustellen und an einem Tag mit mehr als fünf Unterrichtsstunden nicht zu beschäftigen.",
+      text: "JArbSchG § 9: Schutz von Jugendlichen beim Berufsschulbesuch.",
       richtig: true,
       pflicht: false,
       falle: false
@@ -164,7 +164,7 @@
       hinweise.push("Wähle mindestens die Freistellung nach BBiG § 15.");
     }
     if (!hatPflicht) {
-      hinweise.push("Die Begründung braucht die Freistellung nach BBiG § 15. Bei mehr als fünf Unterrichtsstunden gilt sie für den Tag.");
+      hinweise.push("Die Begründung braucht die Freistellung nach BBiG § 15. Prüfe, ob du diese Regel ausgewählt hast.");
     }
     if (hatFalle) {
       hinweise.push("Eine Falle ist ausgewählt. Personalmangel ist kein Ausnahmegrund. Die Berufsschule lässt sich im Vertrag nicht abbedingen.");
@@ -294,6 +294,18 @@
     return "Richtung, keine Musterlösung: Die passende Entscheidung ist die Freistellung für den ganzen Berufsschultag. Die vollständige Musterantwort steht nur in der Lehrkraftansicht.";
   }
 
+  function gesetzesErklaerung() {
+    return {
+      titel: "Was bedeuten die Begriffe im Gesetz?",
+      punkte: [
+        { begriff: "Freistellung", text: "Die Ausbildungsstelle gibt die Auszubildende oder den Auszubildenden von der Arbeit frei, damit sie oder er am Berufsschulunterricht teilnehmen kann." },
+        { begriff: "Unterrichtsstunde", text: "Eine Unterrichtsstunde ist eine Einheit im Stundenplan der Berufsschule. Die Gesetze zählen diese Einheiten, nicht die Uhrzeit im Betrieb." },
+        { begriff: "einmal in der Woche", text: "Manche Regeln gelten nur für einen Berufsschultag je Woche. Lies im Gesetzestext nach, welche Regel an welche Bedingung geknüpft ist." }
+      ],
+      hinweis: "Diese Erklärung nennt keine Entscheidung. Prüfe selbst, welche Regel zum Fall und zu den Angaben in der Akte passt."
+    };
+  }
+
   function lehrkraftLoesung() {
     return {
       fallId: "berufsschule-statt-dienststelle",
@@ -342,6 +354,7 @@
     auswertung: auswertung,
     nachPruefung: nachPruefung,
     hilfe: hilfe,
+    gesetzesErklaerung: gesetzesErklaerung,
     lehrkraftLoesung: lehrkraftLoesung,
     katalog: katalog
   };

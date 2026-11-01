@@ -235,3 +235,36 @@ test("Entscheidungen B und D sind in sachlicher Sprache formuliert", () => {
     assert.equal(/Schalter machen/.test(text), false, id);
   });
 });
+
+test("Auswahltexte der Gründe verraten die Folge nicht", () => {
+  const gruende = kern.katalog().gruende;
+  gruende.forEach(function (g) {
+    assert.equal(/mehr als fünf/.test(g.text), false, g.id);
+    assert.equal(/gilt die Freistellung für den Tag/.test(g.text), false, g.id);
+    assert.equal(/nicht zu beschäftigen/.test(g.text), false, g.id);
+  });
+  const text = function (id) { return gruende.find(function (g) { return g.id === id; }).text; };
+  assert.equal(text("bbig15"), "BBiG § 15: Freistellung für den Berufsschulunterricht.");
+  assert.equal(text("jarbschg9"), "JArbSchG § 9: Schutz von Jugendlichen beim Berufsschulbesuch.");
+  kern.bewerteBegruendung([]).hinweise.concat(kern.bewerteBegruendung(["falle-mangel"]).hinweise).forEach(function (h) {
+    assert.equal(/mehr als fünf/.test(h), false);
+  });
+});
+
+test("Gesetzeserklärung erklärt Begriffe ohne Lösung", () => {
+  const erklaerung = kern.gesetzesErklaerung();
+  const alles = JSON.stringify(erklaerung);
+  assert.match(alles, /Freistellung/);
+  assert.match(alles, /Unterrichtsstunde/);
+  assert.match(alles, /einmal in der Woche/);
+  assert.equal(/mehr als fünf/.test(alles), false);
+  assert.equal(/Entscheidung B/.test(alles), false);
+  assert.equal(alles.includes(kern.lehrkraftLoesung().mustertext), false);
+});
+
+test("Oberfläche zeigt die Gesetzeserklärung einklappbar und geschlossen", () => {
+  const ui = fs.readFileSync(path.join(__dirname, "../js/rathaus-ui.js"), "utf8");
+  assert.match(ui, /gesetzesErklaerung\(\)/);
+  assert.match(ui, /el\("details", "rathaus-begriffe rathaus-gesetze"\)/);
+  assert.equal(/erklaerDetails\.open\s*=\s*true/.test(ui), false);
+});

@@ -297,6 +297,19 @@
       form.appendChild(label);
     });
 
+    var erklaerung = kern.gesetzesErklaerung();
+    var erklaerDetails = el("details", "rathaus-begriffe rathaus-gesetze");
+    erklaerDetails.id = "gesetzes-erklaerung";
+    erklaerDetails.appendChild(el("summary", "", erklaerung.titel));
+    erklaerung.punkte.forEach(function (punkt) {
+      var p = el("p", "");
+      p.appendChild(el("strong", "", punkt.begriff + ": "));
+      p.appendChild(document.createTextNode(punkt.text));
+      erklaerDetails.appendChild(p);
+    });
+    erklaerDetails.appendChild(el("p", "rathaus-meta", erklaerung.hinweis));
+    form.appendChild(erklaerDetails);
+
     form.appendChild(el("h3", "", "5. Sachliche Antwort an Sven Holm"));
     var feld = document.createElement("textarea");
     feld.id = "antwort-text";
