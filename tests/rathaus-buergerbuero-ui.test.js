@@ -369,7 +369,9 @@ test("rathaus.html bindet Kern und Oberfläche vor rathaus-ui.js ein", () => {
 test("Antwortentwurf B01 ist groß und vertikal veränderbar, Personalamt unberührt", () => {
   const fs = require("node:fs");
   const css = fs.readFileSync(require("node:path").join(__dirname, "..", "css", "rathaus.css"), "utf8");
-  assert.match(css, /textarea\.rathaus-freitext-gross\s*\{[^}]*min-height:\s*12rem[^}]*resize:\s*vertical/);
+  assert.match(css, /(^|\n)textarea\.rathaus-freitext-gross\s*\{[^}]*width:\s*100%[^}]*min-height:\s*12rem[^}]*resize:\s*vertical/);
+  assert.doesNotMatch(css, /\.rathaus-form textarea\.rathaus-freitext-gross/);
   const ui = fs.readFileSync(require("node:path").join(__dirname, "..", "js", "rathaus-buergerbuero-ui.js"), "utf8");
   assert.match(ui, /rathaus-freitext-gross/);
+  assert.doesNotMatch(ui, /rathaus-form/);
 });

@@ -264,9 +264,18 @@
   color: var(--farbe-text);
 }
 
-/* Bürgerbüro: Antwortentwurf größer, nur in der Höhe veränderbar. */
-.rathaus-form textarea.rathaus-freitext-gross {
+/* Bürgerbüro: Antwortentwurf größer, nur in der Höhe veränderbar.
+   Das Feld liegt nicht in .rathaus-form, deshalb gilt die Regel direkt. */
+textarea.rathaus-freitext-gross {
+  width: 100%;
   min-height: 12rem;
+  box-sizing: border-box;
+  font: inherit;
+  padding: 0.7rem;
+  border: 2px solid var(--farbe-rahmen);
+  border-radius: 0.7rem;
+  background: var(--farbe-flaeche);
+  color: var(--farbe-text);
   resize: vertical;
 }
 
