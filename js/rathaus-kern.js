@@ -12,6 +12,8 @@
   "use strict";
 
   var RECHTSSTAND = "01.11.2026";
+  // Wird bei jeder inhaltlichen Änderung der Bewertung erhöht. Gespeicherte Auswertungen mit anderem Stand gelten als veraltet.
+  var BEWERTUNGSSTAND = "2026-11-01-brief2";
   var QUELLEN = [
     "KMK-Rahmenlehrplan Kaufmann für Büromanagement und Kauffrau für Büromanagement, Fassung vom 20.03.2025, Lernfeld 1, Seite 9",
     "Berufsbildungsgesetz (BBiG) § 14 und § 15, nichtamtliche Fassung auf gesetze-im-internet.de, abgerufen am 01.11.2026",
@@ -346,11 +348,37 @@
         antwort: ergebnis.antwort
       };
     }
+    ergebnis.bewertungsstand = BEWERTUNGSSTAND;
     return {
       versuche: (Number(daten.versuche) || 0) + 1,
       abgeschlossen: false,
       letzteAuswertung: ergebnis
     };
+  }
+
+  // Bereinigt einen gespeicherten Zustand. Eingaben und Entwurf bleiben, eine Auswertung
+  // und ein Abschluss aus einem anderen Bewertungsstand werden ungültig. Das Eingabeobjekt bleibt unverändert.
+  function bereinigeGespeichert(daten) {
+    var quelle = (daten && typeof daten === "object") ? daten : {};
+    var ergebnis = {};
+    ["ansicht", "gelesen", "akteGelesen", "entscheidung", "antwort", "hilfeStufe", "lehrkraft", "versuche"].forEach(function (feld) {
+      if (quelle[feld] !== undefined) ergebnis[feld] = quelle[feld];
+    });
+    if (Array.isArray(quelle.gruende)) ergebnis.gruende = quelle.gruende.slice();
+    var auswertungQuelle = (quelle.letzteAuswertung && typeof quelle.letzteAuswertung === "object") ? quelle.letzteAuswertung : null;
+    var aktuell = quelle.bewertungsstand === BEWERTUNGSSTAND &&
+      (auswertungQuelle === null || auswertungQuelle.bewertungsstand === BEWERTUNGSSTAND);
+    if (aktuell) {
+      ergebnis.letzteAuswertung = auswertungQuelle ? JSON.parse(JSON.stringify(auswertungQuelle)) : null;
+      ergebnis.abgeschlossen = quelle.abgeschlossen === true;
+      ergebnis.verworfen = false;
+    } else {
+      ergebnis.letzteAuswertung = null;
+      ergebnis.abgeschlossen = false;
+      ergebnis.verworfen = true;
+    }
+    ergebnis.bewertungsstand = BEWERTUNGSSTAND;
+    return ergebnis;
   }
 
   function hilfe(stufe) {
@@ -419,16 +447,18 @@
         return { id: id, text: GRUENDE[id].text };
       }),
       begriffe: [
-        { begriff: "Freistellung", erklaerung: "Die Ausbildungsstelle gibt eine Person von der Arbeit frei, damit sie am Unterricht teilnehmen kann. Das Glossar sagt nicht, welche Entscheidung in diesem Fall richtig ist." },
-        { begriff: "abbedingen", erklaerung: "in einem Vertrag etwas anderes festlegen, als das Gesetz vorsieht. Die Falle in diesem Fall behauptet, die Berufsschule lasse sich so wegvereinbaren. Das geht hier nicht." },
+        { begriff: "Freistellung", erklaerung: "Die Ausbildungsstelle gibt eine Person von der Arbeit frei, damit sie am Unterricht teilnehmen kann." },
+        { begriff: "abbedingen", erklaerung: "in einem Vertrag etwas anderes festlegen, als das Gesetz vorsieht." },
         { begriff: "Ausbildungszweck", erklaerung: "Eine Aufgabe muss zur Ausbildung gehören. Ein Schalterdienst nur wegen Personalmangels ist kein Ausbildungszweck." },
-        { begriff: "Berufsschultag", erklaerung: "Ein Tag, an dem Berufsschulunterricht stattfindet. Wie viele Unterrichtsstunden den ganzen Tag erfassen, steht im Gesetz. Diese Karte nennt die Folge nicht." }
+        { begriff: "Berufsschultag", erklaerung: "Ein Tag, an dem Berufsschulunterricht stattfindet. Für die Regeln zählt, wie viele Unterrichtsstunden an diesem Tag stattfinden." }
       ]
     };
   }
 
   return {
     RECHTSSTAND: RECHTSSTAND,
+    BEWERTUNGSSTAND: BEWERTUNGSSTAND,
+    bereinigeGespeichert: bereinigeGespeichert,
     fallDaten: fallDaten,
     bewerteEntscheidung: bewerteEntscheidung,
     bewerteBegruendung: bewerteBegruendung,

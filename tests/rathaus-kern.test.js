@@ -411,3 +411,104 @@ test("Regression: vier bestätigte Windows-Fälle bleiben", () => {
   assert.equal(kern.bewerteAntwort("").ok, false, "inhaltsleere Antwort");
   assert.equal(kern.bewerteAntwort("   ").ok, false, "inhaltsleere Antwort");
 });
+
+const GESPEICHERT_ALT = {
+  ansicht: "vorgang",
+  gelesen: true,
+  akteGelesen: true,
+  entscheidung: "B",
+  gruende: ["bbig15"],
+  antwort: PASSENDE_ANTWORT,
+  letzteAuswertung: { bestanden: true, darfAbschliessen: true, hinweise: [], traegt: [], naechsterBlick: [] },
+  abgeschlossen: true,
+  hilfeStufe: 2,
+  lehrkraft: false,
+  versuche: 3
+};
+
+test("Speicherstand ohne Bewertungsstand behält Eingaben, verwirft Auswertung und Abschluss", () => {
+  const eingabe = JSON.parse(JSON.stringify(GESPEICHERT_ALT));
+  const vorher = JSON.stringify(eingabe);
+  const bereinigt = kern.bereinigeGespeichert(eingabe);
+  assert.equal(JSON.stringify(eingabe), vorher, "Eingabeobjekt bleibt unverändert");
+  assert.equal(bereinigt.antwort, PASSENDE_ANTWORT);
+  assert.equal(bereinigt.entscheidung, "B");
+  assert.deepEqual(bereinigt.gruende, ["bbig15"]);
+  assert.equal(bereinigt.hilfeStufe, 2);
+  assert.equal(bereinigt.versuche, 3);
+  assert.equal(bereinigt.ansicht, "vorgang");
+  assert.equal(bereinigt.akteGelesen, true);
+  assert.equal(bereinigt.letzteAuswertung, null);
+  assert.equal(bereinigt.abgeschlossen, false);
+  assert.equal(bereinigt.verworfen, true);
+  assert.equal(bereinigt.bewertungsstand, kern.BEWERTUNGSSTAND);
+});
+
+test("Gleicher Bewertungsstand behält Auswertung und Abschluss", () => {
+  const eingabe = JSON.parse(JSON.stringify(GESPEICHERT_ALT));
+  eingabe.bewertungsstand = kern.BEWERTUNGSSTAND;
+  eingabe.letzteAuswertung.bewertungsstand = kern.BEWERTUNGSSTAND;
+  const bereinigt = kern.bereinigeGespeichert(eingabe);
+  assert.equal(bereinigt.verworfen, false);
+  assert.equal(bereinigt.abgeschlossen, true);
+  assert.equal(bereinigt.letzteAuswertung.bestanden, true);
+  assert.equal(bereinigt.antwort, PASSENDE_ANTWORT);
+});
+
+test("Abweichender Bewertungsstand verwirft die Auswertung, auch nur in der Auswertung", () => {
+  const anderer = JSON.parse(JSON.stringify(GESPEICHERT_ALT));
+  anderer.bewertungsstand = "1999-01-01-alt";
+  anderer.letzteAuswertung.bewertungsstand = "1999-01-01-alt";
+  const a = kern.bereinigeGespeichert(anderer);
+  assert.equal(a.letzteAuswertung, null);
+  assert.equal(a.abgeschlossen, false);
+  assert.equal(a.verworfen, true);
+  assert.equal(a.antwort, PASSENDE_ANTWORT);
+
+  const gemischt = JSON.parse(JSON.stringify(GESPEICHERT_ALT));
+  gemischt.bewertungsstand = kern.BEWERTUNGSSTAND;
+  gemischt.letzteAuswertung.bewertungsstand = "1999-01-01-alt";
+  const b = kern.bereinigeGespeichert(gemischt);
+  assert.equal(b.letzteAuswertung, null);
+  assert.equal(b.verworfen, true);
+});
+
+test("nachPruefung schreibt den aktuellen Bewertungsstand in die Auswertung", () => {
+  const neu = kern.nachPruefung({ akteGelesen: true, entscheidung: "B", gruende: ["bbig15"], antwort: PASSENDE_ANTWORT });
+  assert.equal(neu.letzteAuswertung.bewertungsstand, kern.BEWERTUNGSSTAND);
+  const ohneAkte = kern.nachPruefung({ akteGelesen: false, entscheidung: "B", gruende: ["bbig15"], antwort: PASSENDE_ANTWORT });
+  assert.equal(ohneAkte.letzteAuswertung.bewertungsstand, kern.BEWERTUNGSSTAND);
+  assert.equal(kern.bereinigeGespeichert({ bewertungsstand: kern.BEWERTUNGSSTAND, letzteAuswertung: neu.letzteAuswertung }).verworfen, false);
+});
+
+test("Oberfläche nutzt bereinigeGespeichert und zeigt den Lernhinweis ohne interne Angaben", () => {
+  const ui = fs.readFileSync(path.join(__dirname, "../js/rathaus-ui.js"), "utf8");
+  assert.match(ui, /kern\.bereinigeGespeichert\(/);
+  assert.match(ui, /bewertungsstand: kern\.BEWERTUNGSSTAND/);
+  assert.match(ui, /Die gespeicherte Auswertung passt nicht mehr zur aktuellen Prüfung\. Deine Eingaben bleiben\. Bitte erneut auswerten\./);
+  assert.equal(ui.includes(kern.BEWERTUNGSSTAND), false, "Versionsstring steht nicht im Oberflächentext");
+  assert.equal(/\b[0-9a-f]{7,40}\b.*commit|commit.*\b[0-9a-f]{7,40}\b/i.test(ui), false);
+  const start = ui.indexOf('pruefen.addEventListener("click"');
+  const ende = ui.indexOf('fokus("auswertung-titel")', start);
+  assert.match(ui.slice(start, ende), /veraltetHinweis = false/, "Hinweis verschwindet nach der nächsten Auswertung");
+});
+
+test("Glossar enthält keine künstlichen Metaformulierungen mehr", () => {
+  const begriffe = kern.katalog().begriffe;
+  const alles = JSON.stringify(begriffe);
+  assert.equal(alles.includes("Diese Karte nennt die Folge nicht"), false);
+  assert.equal(alles.includes("Das Glossar sagt nicht, welche Entscheidung"), false);
+  assert.equal(/Die Falle in diesem Fall/.test(alles), false);
+  const tag = begriffe.find(function (eintrag) { return eintrag.begriff === "Berufsschultag"; });
+  assert.match(tag.erklaerung, /Berufsschulunterricht stattfindet/);
+  assert.equal(/Entscheidung B/.test(alles), false);
+});
+
+test("Weitere Antworten: Widerspruch lehnt ab, Verneinung ist kein Widerspruch", () => {
+  assert.equal(kern.bewerteAntwort("Luca wird für die Berufsschule freigestellt. Trotzdem wird er am Dienstag zum Dienst eingeteilt.").ok, false);
+  assert.equal(kern.bewerteAntwort("Luca wird für die Berufsschule freigestellt. Er arbeitet an diesem Tag nicht in der Dienststelle.").ok, true);
+  assert.equal(kern.bewerteAntwort("Der Berufsschulbesuch hat Vorrang. Luca wird an diesem Tag nicht zum Dienst eingeteilt.").ok, true);
+  const hinweise = kern.bewerteAntwort(WIDERSPRUCH_NACH_FREISTELLUNG).hinweise.join(" ");
+  assert.match(hinweise, /späterer Satz/);
+  assert.equal(/Schreibe klar, dass Luca/.test(hinweise), false);
+});

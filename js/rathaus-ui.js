@@ -18,7 +18,8 @@
     abgeschlossen: false,
     hilfeStufe: 0,
     lehrkraft: false,
-    versuche: 0
+    versuche: 0,
+    veraltetHinweis: false
   };
 
   function laden() {
@@ -27,13 +28,14 @@
       if (!roh) return;
       var daten = JSON.parse(roh);
       if (!daten || typeof daten !== "object") return;
+      var bereinigt = kern.bereinigeGespeichert(daten);
       ["ansicht", "gelesen", "akteGelesen", "entscheidung", "antwort", "abgeschlossen", "hilfeStufe", "lehrkraft", "versuche"].forEach(function (feld) {
-        if (daten[feld] !== undefined) state[feld] = daten[feld];
+        if (bereinigt[feld] !== undefined) state[feld] = bereinigt[feld];
       });
-      if (Array.isArray(daten.gruende)) state.gruende = daten.gruende.slice();
-      if (daten.letzteAuswertung && typeof daten.letzteAuswertung === "object") {
-        state.letzteAuswertung = daten.letzteAuswertung;
-      }
+      if (Array.isArray(bereinigt.gruende)) state.gruende = bereinigt.gruende.slice();
+      state.letzteAuswertung = bereinigt.letzteAuswertung;
+      var hatteErgebnis = Boolean(daten.letzteAuswertung) || daten.abgeschlossen === true;
+      state.veraltetHinweis = bereinigt.verworfen && hatteErgebnis;
     } catch (fehler) {
       state.ansicht = "stadt";
     }
@@ -49,6 +51,7 @@
       antwort: state.antwort,
       letzteAuswertung: state.letzteAuswertung,
       abgeschlossen: state.abgeschlossen,
+      bewertungsstand: kern.BEWERTUNGSSTAND,
       hilfeStufe: state.hilfeStufe,
       lehrkraft: state.lehrkraft,
       versuche: state.versuche
@@ -334,6 +337,7 @@
       state.versuche = naechster.versuche;
       state.abgeschlossen = naechster.abgeschlossen;
       state.letzteAuswertung = naechster.letzteAuswertung;
+      state.veraltetHinweis = false;
       speichern();
       zeichnen();
       fokus("auswertung-titel");
@@ -347,6 +351,9 @@
     ausTitel.id = "auswertung-titel";
     ausTitel.tabIndex = -1;
     auswertung.appendChild(ausTitel);
+    if (state.veraltetHinweis && !state.letzteAuswertung) {
+      auswertung.appendChild(el("p", "rathaus-hinweis", "Die gespeicherte Auswertung passt nicht mehr zur aktuellen Prüfung. Deine Eingaben bleiben. Bitte erneut auswerten."));
+    }
     if (!state.letzteAuswertung) {
       auswertung.appendChild(el("p", "", "Noch keine Auswertung. Du kannst die Schritte in Ruhe ausfüllen."));
     } else if (state.letzteAuswertung.bestanden) {
@@ -478,6 +485,7 @@
       state.antwort = "";
       state.letzteAuswertung = null;
       state.abgeschlossen = false;
+      state.veraltetHinweis = false;
       state.hilfeStufe = 0;
       state.lehrkraft = lehrkraft;
       state.versuche = 0;
