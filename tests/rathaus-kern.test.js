@@ -294,3 +294,40 @@ test("Oberfläche bietet drei Hilfeknöpfe und hält aria-expanded passend", () 
   assert.match(ui, /hilfeBereich\.hidden = state\.hilfeStufe <= 0/);
   assert.match(ui, /state\.hilfeStufe = 0;/, "Zurücksetzen setzt die Hilfestufe auf 0");
 });
+
+test("Rückmeldung nennt, was trägt, und einen nächsten Blick, ohne Mustertext", () => {
+  const muster = kern.lehrkraftLoesung().mustertext;
+  const teil = kern.auswertung({ entscheidung: "B", gruende: ["bbig15"], antwort: "kurz" });
+  assert.equal(teil.bestanden, false);
+  assert.ok(teil.traegt.some(function (t) { return /Entscheidung passt/.test(t); }));
+  assert.ok(teil.naechsterBlick.length > 0);
+
+  const gedreht = kern.auswertung({ entscheidung: "B", gruende: ["bbig15"], antwort: WINDOWS_FALSCHE_RICHTUNG });
+  assert.ok(gedreht.naechsterBlick.some(function (t) { return /Richtung/.test(t) && /verwechselst/.test(t); }));
+
+  const gut = kern.auswertung({ entscheidung: "B", gruende: ["bbig15"], antwort: PASSENDE_ANTWORT });
+  assert.equal(gut.bestanden, true);
+  assert.equal(gut.traegt.length, 3);
+
+  [teil, gedreht, gut].forEach(function (e) {
+    const alles = JSON.stringify([e.hinweise, e.traegt, e.naechsterBlick]);
+    assert.equal(alles.includes(muster), false);
+    assert.equal(alles.includes("Mira Holtz"), false);
+  });
+});
+
+test("Mehrere Versuche bleiben möglich, der Abschluss fällt weiter", () => {
+  const eins = kern.nachPruefung({ akteGelesen: true, entscheidung: "A", gruende: [], antwort: "", versuche: 0, abgeschlossen: true });
+  assert.equal(eins.versuche, 1);
+  assert.equal(eins.abgeschlossen, false);
+  const zwei = kern.nachPruefung({ akteGelesen: true, entscheidung: "B", gruende: ["bbig15"], antwort: PASSENDE_ANTWORT, versuche: eins.versuche, abgeschlossen: true });
+  assert.equal(zwei.versuche, 2);
+  assert.equal(zwei.abgeschlossen, false);
+  assert.equal(zwei.letzteAuswertung.darfAbschliessen, true);
+});
+
+test("Oberfläche zeigt, was passt, und den nächsten Blick", () => {
+  const ui = fs.readFileSync(path.join(__dirname, "../js/rathaus-ui.js"), "utf8");
+  assert.match(ui, /Das passt schon/);
+  assert.match(ui, /Dein nächster Blick/);
+});

@@ -355,6 +355,21 @@
       auswertung.appendChild(el("p", "rathaus-fehler", "Noch nicht tragfähig. Du kannst alles ändern und es erneut versuchen."));
     }
     if (state.letzteAuswertung) {
+      var traegt = state.letzteAuswertung.traegt || [];
+      var blick = state.letzteAuswertung.naechsterBlick || [];
+      if (traegt.length > 0) {
+        auswertung.appendChild(el("h4", "", "Das passt schon"));
+        var traegtListe = el("ul", "");
+        traegt.forEach(function (punkt) { traegtListe.appendChild(el("li", "", punkt)); });
+        auswertung.appendChild(traegtListe);
+      }
+      if (blick.length > 0) {
+        auswertung.appendChild(el("h4", "", "Dein nächster Blick"));
+        var blickListe = el("ul", "");
+        blick.forEach(function (punkt) { blickListe.appendChild(el("li", "", punkt)); });
+        auswertung.appendChild(blickListe);
+      }
+      auswertung.appendChild(el("h4", "", "Einzelne Hinweise"));
       var ul = el("ul", "");
       state.letzteAuswertung.hinweise.forEach(function (hinweis) {
         ul.appendChild(el("li", "", hinweis));

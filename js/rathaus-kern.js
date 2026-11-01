@@ -249,10 +249,41 @@
     } else {
       hinweise.push("Du kannst die Angaben ändern und die Auswertung erneut starten. Nichts ist dauerhaft blockiert.");
     }
+    var traegt = [];
+    var naechsterBlick = [];
+    if (entscheidung.richtig) {
+      traegt.push("Die Entscheidung passt schon.");
+    } else if (entscheidung.bekannt) {
+      naechsterBlick.push("Prüfe die Entscheidung noch einmal anhand von Alter und Unterrichtsstunden in der Akte.");
+    } else {
+      naechsterBlick.push("Wähle zuerst eine Entscheidung.");
+    }
+    if (begruendung.reicht) {
+      traegt.push("Die Begründung enthält die tragende Regel und keine Falle.");
+    } else if (begruendung.hatFalle) {
+      naechsterBlick.push("Prüfe, ob eine ausgewählte Begründung nur eine Behauptung ist, die das Gesetz nicht trägt.");
+    } else {
+      naechsterBlick.push("Suche in der Begründung die Regel, die den Berufsschulbesuch ausdrücklich schützt.");
+    }
+    var gedreht = drehtRichtung(daten.antwort);
+    if (antwort.ok) {
+      traegt.push("Die Antwort ist sachlich und nennt die richtige Richtung.");
+    } else if (gedreht) {
+      naechsterBlick.push("Du verwechselst die Richtung der Freistellung. Sie gilt von der Arbeit zur Berufsschule, nicht von der Berufsschule weg.");
+    } else if (antwort.laenge < 40) {
+      naechsterBlick.push("Schreibe die Antwort an Herrn Holm in ganzen, sachlichen Sätzen.");
+    } else {
+      naechsterBlick.push("Lies deine Antwort noch einmal: Sagt sie klar, wohin Luca am Berufsschultag geht und wovon er freigestellt wird?");
+    }
+    if (bestanden) {
+      naechsterBlick = ["Prüfe noch einmal, ob Herr Holm aus deiner Antwort sofort erkennt, was am Dienstag gilt."];
+    }
     return {
       bestanden: bestanden,
       darfAbschliessen: bestanden,
       hinweise: hinweise,
+      traegt: traegt,
+      naechsterBlick: naechsterBlick,
       entscheidung: entscheidung,
       begruendung: begruendung,
       antwort: antwort
@@ -271,6 +302,8 @@
         bestanden: false,
         darfAbschliessen: false,
         hinweise: ["Öffne zuerst die Ausbildungsakte. Dort stehen Alter und Unterrichtsstunden."].concat(ergebnis.hinweise),
+        traegt: ergebnis.traegt,
+        naechsterBlick: ["Öffne zuerst die Ausbildungsakte."].concat(ergebnis.bestanden ? [] : ergebnis.naechsterBlick),
         entscheidung: ergebnis.entscheidung,
         begruendung: ergebnis.begruendung,
         antwort: ergebnis.antwort
