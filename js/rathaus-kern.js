@@ -204,6 +204,40 @@
     return nenntFreistellung && nenntRichtung;
   }
 
+  function klauseln(text) {
+    return String(text || "").toLowerCase()
+      .split(/[.!?;:\n]|,|\bund\b|\baber\b|\bsondern\b|\bdoch\b/)
+      .map(function (teil) { return teil.trim(); })
+      .filter(function (teil) { return teil.length > 0; });
+  }
+
+  function verneint(klausel) {
+    return /\b(nicht|kein|keine|keinen|keiner|keinem|ohne|nie|niemals)\b/.test(klausel);
+  }
+
+  // Ein späterer Satz, der Freistellung oder Berufsschulbesuch wieder aufhebt.
+  function widerspricht(text) {
+    return klauseln(text).some(function (k) {
+      if (/schule\s+nicht\s+(zu\s+)?(besuchen|gehen)|nicht\s+(in\s+die|zur|zum)\s+(berufs)?schule|nicht\s+(die\s+)?(berufs)?schule\s+(zu\s+)?besuchen|nicht\s+am\s+(berufsschul)?unterricht\s+teil/.test(k)) {
+        return true;
+      }
+      if (verneint(k)) return false;
+      var ort = /in der dienststelle|in die dienststelle|im bürgerbüro|im buergerbuero|am schalter|im amt\b/.test(k);
+      var tut = /arbeiten|aushelfen|einsetzen|eingesetzt|erscheinen|anwesend|dienst leisten|dienst antreten/.test(k);
+      if (ort && tut) return true;
+      return /eingeteilt|einteilen|zum dienst/.test(k);
+    });
+  }
+
+  function sagtVorrangOhneDienst(text) {
+    var t = String(text || "").toLowerCase();
+    var vorrang = /berufsschul\w*[^.!?]*\bvorrang\b|\bvorrang\b[^.!?]*berufsschul|(unterricht|schulbesuch)[^.!?]*\bvorrang\b|berufsschul\w*[^.!?]*geht\w*\s+vor\b/.test(t);
+    var keinDienst = klauseln(t).some(function (k) {
+      return /einteilung|eingeteilt|einsatz|eingesetzt|zum dienst|dienststelle|schalter/.test(k) && verneint(k);
+    });
+    return vorrang && keinDienst;
+  }
+
   function istUnsachlich(text) {
     return /\b(idiot|blöd|bloed|dumm|unfähig|unfaehig|verarsch)\b/i.test(String(text || ""));
   }
@@ -220,11 +254,13 @@
     }
     if (drehtRichtung(gekuerzt)) {
       hinweise.push("Die Formulierung dreht die Richtung. Freistellung meint hier von der Arbeit zur Berufsschule, nicht von der Berufsschule weg.");
-    } else if (!sagtFreistellung(gekuerzt)) {
-      hinweise.push("Schreibe klar, dass Luca für die Berufsschule freigestellt wird.");
+    } else if (!sagtFreistellung(gekuerzt) && !sagtVorrangOhneDienst(gekuerzt)) {
+      hinweise.push("Schreibe klar, dass Luca für die Berufsschule freigestellt wird. Gleichwertig ist: Der Schulbesuch hat Vorrang und Luca wird an diesem Tag nicht zum Dienst eingeteilt.");
     }
     if (verlangtAusfall(gekuerzt)) {
       hinweise.push("Die Antwort darf nicht verlangen, dass Luca die Berufsschule ausfallen lässt oder in die Dienststelle kommt.");
+    } else if (widerspricht(gekuerzt)) {
+      hinweise.push("Ein späterer Satz hebt auf, was vorher gilt: Luca soll doch arbeiten oder die Schule nicht besuchen. Lies deine Antwort bis zum Ende und lass nur eine Aussage stehen.");
     }
     return {
       ok: hinweise.length === 0,
@@ -269,6 +305,8 @@
       traegt.push("Die Antwort ist sachlich und nennt die richtige Richtung.");
     } else if (gedreht) {
       naechsterBlick.push("Du verwechselst die Richtung der Freistellung. Sie gilt von der Arbeit zur Berufsschule, nicht von der Berufsschule weg.");
+    } else if (widerspricht(daten.antwort)) {
+      naechsterBlick.push("Lies deine Antwort bis zum Ende: Ein späterer Satz nimmt zurück, was vorher gilt. Soll am Berufsschultag der Unterricht oder die Arbeit Vorrang haben?");
     } else if (antwort.laenge < 40) {
       naechsterBlick.push("Schreibe die Antwort an Herrn Holm in ganzen, sachlichen Sätzen.");
     } else {
