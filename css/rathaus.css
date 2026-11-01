@@ -264,6 +264,12 @@
   color: var(--farbe-text);
 }
 
+/* Bürgerbüro: Antwortentwurf größer, nur in der Höhe veränderbar. */
+.rathaus-form textarea.rathaus-freitext-gross {
+  min-height: 12rem;
+  resize: vertical;
+}
+
 /* Lehrkraftansicht: Fallwahl und Rückfrage vor dem Zurücksetzen. */
 .rathaus-fallwahl {
   display: flex;

@@ -14,7 +14,7 @@
 
   var FALL_ID = 'b01';
   var SPEICHER_SCHLUESSEL = 'verwaltung-ausbildung.rathaus.buergerbuero.b01.v1';
-  var BEWERTUNGSSTAND = 'b01-2026-11-01';
+  var BEWERTUNGSSTAND = 'b01-2026-11-01-r2';
   var QUELLEN_DATEI = 'quellen/bmg-b01-2026-11-01.md';
   var UEBUNGSANNAHME = 'Das Bürgerbüro Sonnenthal nimmt in dieser Übung Meldesachen entgegen. ' +
     'Das ist keine geprüfte Landesnorm.';
@@ -225,55 +225,76 @@
     return { status: status, hinweise: hinweise || [], sperren: sperren || [] };
   }
 
+  function istUngueltig(ungueltig, keys) {
+    return ungueltig.some(function (k) { return keys.indexOf(k) >= 0; });
+  }
+
+  /* Gemeinsame Auswertung eines Bereichs mit den Zuständen offen / unvollständig / falsch / richtig.
+   * Die Hinweise nennen nur den Abschnitt, nie die richtige Lösung. */
+  function bewerteBereich(name, abschnitt, angaben, unvollstaendig, falsch, sperren) {
+    var beantwortet = angaben.filter(Boolean).length;
+    if (!beantwortet) return bereich('offen', ['Im Abschnitt ' + abschnitt + ' (' + name + ') ist noch nichts ausgewählt.']);
+    if (unvollstaendig) {
+      return bereich('unvollstaendig', ['Im Abschnitt ' + abschnitt + ' (' + name + ') fehlen noch Angaben.'], sperren);
+    }
+    if (falsch) {
+      return bereich('falsch', ['Im Abschnitt ' + abschnitt + ' (' + name + ') ist alles beantwortet, aber mindestens eine Einordnung stimmt noch nicht. Prüfe diesen Abschnitt erneut.'], sperren);
+    }
+    return bereich('richtig', ['Der Abschnitt ' + abschnitt + ' (' + name + ') ist richtig bearbeitet.']);
+  }
+
+  /* Bereich Unterlagen: nur die vier Dokumente. */
   function pruefeUnterlagen(n, ungueltig) {
-    var keys = ['anliegen', 'einzug', 'weitereWohnung', 'dokumente', 'regeln', 'fallen'];
-    var gewaehlt = n.anliegen || n.einzug || n.weitereWohnung || n.regeln.length ||
-      n.fallen.length || Object.keys(n.dokumente).length;
-    if (ungueltig.some(function (k) { return keys.indexOf(k) >= 0; })) {
+    if (istUngueltig(ungueltig, ['dokumente'])) {
       return bereich('ungueltig', ['Mindestens eine Angabe bei den Unterlagen ist ungültig.']);
     }
-    if (!gewaehlt) return bereich('offen', ['Noch nichts ausgewählt.']);
-    var hin = [];
+    var dok = KATALOG.dokumente.optionen;
+    var angaben = dok.map(function (o) { return n.dokumente[o.id]; });
+    var unvollstaendig = angaben.some(function (v) { return !v; });
+    var falsch = dok.some(function (o) { return n.dokumente[o.id] !== o.erwartet; });
     var sperren = [];
-    var fehlt = [];
-    if (!n.anliegen) fehlt.push('Anliegen');
-    if (!n.einzug) fehlt.push('Einzugsdatum');
-    if (!n.weitereWohnung) fehlt.push('weitere Wohnung');
-    ids(KATALOG.dokumente).forEach(function (id) {
-      if (!n.dokumente[id]) fehlt.push('Unterlage ' + id);
-    });
-    ['bmg17', 'bmg19', 'bmg23', 'ortskarte'].forEach(function (r) {
-      if (n.regeln.indexOf(r) < 0) fehlt.push('Regel ' + r);
-    });
-    if (fehlt.length) {
-      return bereich('unvollstaendig', ['Es fehlen noch Angaben bei den Unterlagen.']);
-    }
     if (n.dokumente.mietvertrag === 'passt') {
-      sperren.push('Der Mietvertrag ersetzt die Bestätigung des Wohnungsgebers nicht.');
+      sperren.push('Eine Unterlage wurde so eingeordnet, dass der Nachweis fälschlich als erbracht gilt.');
     }
-    if (n.dokumente.mietvertrag !== 'kein-ersatz') hin.push('Der Mietvertrag ist hier kein ausreichender Nachweis.');
-    if (n.dokumente.ausweis !== 'passt') hin.push('Der Ausweis liegt vor.');
-    if (n.dokumente.bestaetigung !== 'fehlt') hin.push('Die Bestätigung des Wohnungsgebers liegt nicht vor.');
-    if (n.dokumente.merkmal !== 'fehlt') hin.push('Ein Zuordnungsmerkmal liegt nicht vor.');
-    if (n.anliegen !== 'zuzug') hin.push('Das Anliegen ist eine Anmeldung nach Zuzug.');
-    if (n.einzug !== 'datum-09-11') hin.push('Für die Frist zählt der Einzug, nicht der Vertragsbeginn.');
-    if (n.weitereWohnung !== 'keine') hin.push('Im Gespräch wurde nur diese eine Wohnung genannt.');
-    if (n.fallen.length) hin.push('Eine der ausgewählten Aussagen ist eine Falle und stimmt nicht.');
-    if (hin.length || sperren.length) return bereich('falsch', hin, sperren);
-    return bereich('richtig', ['Die Unterlagen sind richtig eingeordnet.']);
+    return bewerteBereich('Unterlagen', '2', angaben, unvollstaendig, falsch, sperren);
+  }
+
+  /* Bereich Anliegen: Anliegen, Einzugsdatum, weitere Wohnung. */
+  function pruefeAnliegen(n, ungueltig) {
+    if (istUngueltig(ungueltig, ['anliegen', 'einzug', 'weitereWohnung'])) {
+      return bereich('ungueltig', ['Mindestens eine Angabe beim Anliegen ist ungültig.']);
+    }
+    var angaben = [n.anliegen, n.einzug, n.weitereWohnung];
+    var unvollstaendig = angaben.some(function (v) { return !v; });
+    var falsch = n.anliegen !== 'zuzug' || n.einzug !== 'datum-09-11' || n.weitereWohnung !== 'keine';
+    return bewerteBereich('Anliegen', '1', angaben, unvollstaendig, falsch);
+  }
+
+  /* Bereich Regeln: die vier richtigen Regeln, keine angekreuzte Falle. */
+  function pruefeRegeln(n, ungueltig) {
+    if (istUngueltig(ungueltig, ['regeln', 'fallen'])) {
+      return bereich('ungueltig', ['Mindestens eine Angabe bei den Regeln ist ungültig.']);
+    }
+    var soll = KATALOG.regeln.optionen.filter(function (o) { return o.richtig; });
+    var angaben = n.regeln.concat(n.fallen);
+    var unvollstaendig = soll.some(function (o) { return n.regeln.indexOf(o.id) < 0; });
+    var falsch = n.fallen.length > 0 || n.regeln.some(function (r) {
+      return !soll.some(function (o) { return o.id === r; });
+    });
+    return bewerteBereich('Regeln', '3', angaben, unvollstaendig, falsch);
   }
 
   function pruefeVorbereitung(n, ungueltig) {
     if (ungueltig.indexOf('vorbereitung') >= 0) return bereich('ungueltig', ['Die Auswahl ist ungültig.']);
     if (!n.vorbereitung) return bereich('offen', ['Noch nichts ausgewählt.']);
     if (n.vorbereitung === 'mitteilung-klaerung') {
-      return bereich('richtig', ['Die Mitteilung wird aufgenommen und der Fall zur Klärung vorbereitet.']);
+      return bereich('richtig', ['Der Abschnitt 4 (Vorbereitung) ist richtig bearbeitet.']);
     }
     var sperren = [];
     if (n.vorbereitung === 'abgelehnt' || n.vorbereitung === 'erledigt') {
       sperren.push('Der Fall darf nicht als abgelehnt oder erledigt eingetragen werden.');
     }
-    return bereich('falsch', ['Diese Vorbereitung passt nicht: Die Mitteilung muss aufgenommen werden.'], sperren);
+    return bereich('falsch', ['Die gewählte Vorbereitung stimmt noch nicht mit dem Fall überein. Prüfe den Abschnitt 4 (Vorbereitung) erneut.'], sperren);
   }
 
   function pruefeAntwort(n, ungueltig) {
@@ -302,13 +323,18 @@
     var ungueltig = ungueltigeWerte(eingabe);
     var n = normalisiere(eingabe);
     var b = {
+      anliegen: pruefeAnliegen(n, ungueltig),
       unterlagen: pruefeUnterlagen(n, ungueltig),
+      regeln: pruefeRegeln(n, ungueltig),
       vorbereitung: pruefeVorbereitung(n, ungueltig),
       antwort: pruefeAntwort(n, ungueltig)
     };
-    var sperren = [].concat(b.unterlagen.sperren, b.vorbereitung.sperren, b.antwort.sperren);
-    var bestanden = b.unterlagen.status === 'richtig' && b.vorbereitung.status === 'richtig' &&
-      b.antwort.status === 'richtig';
+    var sperren = [];
+    var bestanden = true;
+    Object.keys(b).forEach(function (k) {
+      sperren = sperren.concat(b[k].sperren);
+      if (b[k].status !== 'richtig') bestanden = false;
+    });
     return {
       fallId: FALL_ID,
       bewertungsstand: BEWERTUNGSSTAND,
@@ -366,6 +392,7 @@
         'ich auf und bereite die weitere Bearbeitung vor. Bitte bitten Sie Ihren Wohnungsgeber um die ' +
         'Bestätigung. Die Anmeldung ist mit dieser Beratung noch nicht abgeschlossen.',
       kriterien: [
+        'Anliegen und Regeln: Zuzug, Einzugsdatum, eine Wohnung; vier Regeln, keine Falle.',
         'Unterlagen: Ausweis passt, Mietvertrag kein Ersatz, Bestätigung und Merkmal fehlen.',
         'Vorbereitung: Mitteilung aufnehmen und zur Klärung vorbereiten.',
         'Antwort: alle erforderlichen Teile, keine verbotene Aussage.',

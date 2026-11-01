@@ -19,7 +19,7 @@ function gut() {
   };
 }
 
-test('Erfolgsweg: drei Bereiche richtig und Abschluss erlaubt', () => {
+test('Erfolgsweg: alle Bereiche richtig und Abschluss erlaubt', () => {
   const a = B.auswertung(gut());
   assert.strictEqual(a.bereiche.unterlagen.status, 'richtig');
   assert.strictEqual(a.bereiche.vorbereitung.status, 'richtig');
@@ -27,7 +27,8 @@ test('Erfolgsweg: drei Bereiche richtig und Abschluss erlaubt', () => {
   assert.strictEqual(a.bestanden, true);
   assert.strictEqual(a.darfAbschliessen, true);
   assert.strictEqual(a.fallId, 'b01');
-  assert.strictEqual(a.bewertungsstand, 'b01-2026-11-01');
+  assert.strictEqual(a.bewertungsstand, B.BEWERTUNGSSTAND);
+  assert.notStrictEqual(a.bewertungsstand, 'b01-2026-11-01');
   assert.ok(a.eingabeVersion.length > 0);
 });
 

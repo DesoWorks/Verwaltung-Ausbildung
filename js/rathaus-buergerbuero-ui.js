@@ -9,7 +9,9 @@
 
   var ETAPPEN = ["Anliegen", "Unterlagen", "Regeln", "Vorbereitung", "Antwort", "Auswertung"];
   var BEREICHE = [
+    { key: "anliegen", name: "Anliegen" },
     { key: "unterlagen", name: "Unterlagen" },
+    { key: "regeln", name: "Regeln" },
     { key: "vorbereitung", name: "Vorbereitung" },
     { key: "antwort", name: "Antwort" }
   ];
@@ -251,7 +253,7 @@
   }
 
   function ergebnisSatz(a) {
-    if (a.darfAbschliessen) return "Alle drei Bereiche sind richtig. Du kannst den Übungsfall abschließen.";
+    if (a.darfAbschliessen) return "Alle Bereiche sind richtig. Du kannst den Übungsfall abschließen.";
     var offen = BEREICHE.filter(function (b) { return a.bereiche[b.key].status !== "richtig"; })
       .map(function (b) { return b.name; });
     if (!offen.length) return "Der Abschluss ist gesperrt.";
@@ -571,7 +573,8 @@
     var feld = document.createElement("textarea");
     feld.id = "bb-freitext";
     feld.name = "freitext";
-    feld.rows = 6;
+    feld.rows = 12;
+    feld.className = "rathaus-freitext-gross";
     feld.maxLength = 2000;
     feld.value = modell.eingaben.freitext;
     feld.setAttribute("aria-describedby", "bb-freitext-hilfe");
