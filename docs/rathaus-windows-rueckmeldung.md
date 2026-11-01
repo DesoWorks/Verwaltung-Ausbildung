@@ -166,3 +166,29 @@ Für Dennis und Nexus, nicht für die Crew:
 5. Unverändert offen aus Phase D: benannte Lehrbuchfirmen oder nur Sonnenthal, und der Tippfehler im Notion-Titel „Verwaltug-Ausbildung“.
 
 Die Notion-Planungsseite vom 01.11.2026 kennt diese neue Reihenfolge nicht. Diese Datei ist der aktuelle Abgleich.
+
+## 7. Interne Angaben aus der Oberfläche
+
+Verbindliche Ergänzung vom 01.11.2026, noch nicht gebaut.
+
+Interne Projektinformationen dürfen weder in der Lernansicht noch in der Lehrkraftansicht stehen. Insbesondere nicht:
+
+- Hinweise auf gescannte Unterrichtsmaterialien und deren Auswertungsstand
+- interne Datei- und Verzeichnisnamen
+- VPS-Pfade
+- interne Entwicklungs- und Agenteninformationen
+
+Solche Angaben bleiben in der internen Projektdokumentation. Fachlich öffentliche Quellen bleiben: Gesetze, KMK-Rahmenlehrplan, Rechtsstand.
+
+Heute sichtbar, nur in der Lehrkraftansicht, `js/rathaus-ui.js` gibt `lehrkraftLoesung().quellen` und `unsicherheit` aus:
+
+- Quelle in `js/rathaus-kern.js`: „Scans unter /home/starnet/unterrichtsmaterial/verwaltung/, nicht ins Repository kopiert. LS03, LS04 und LS06 sind auf den geprüften Seiten nicht als solche beschriftet und nicht vollständig eingearbeitet.“
+- Unsicherheitstext: „Die gescannten Unterlagen sind da, aber nicht vollständig ausgewertet …“
+
+Die Lernansicht zeigt diese beiden Texte nicht. Sie zeigt die Fallkennung `berufsschule-statt-dienststelle`. Das ist eine interne Kennung, kein Gesetz. Sie gehört bei der Überarbeitung aus der sichtbaren Zeile.
+
+Nicht entfernen, solange niemand das ausdrücklich ändert: der Warnbanner „Nur lokaler Test. Keine echte Rollenprüfung. Nicht produktiv. Keine Schülerdaten.“ Das ist die verlangte Absicherung des lokalen Lehrkraftmodus, kein Scan-Hinweis und kein Pfad.
+
+Beim späteren Bau ein Regressionstest: die an die Oberfläche gegebenen Quellen und der Unsicherheitstext dürfen `/home/starnet`, `unterrichtsmaterial`, `VPS` und Scan-Auswertungsstand nicht enthalten. BBiG, JArbSchG, KMK und der Rechtsstand 01.11.2026 müssen bleiben.
+
+Diese Regel rückt in dasselbe Korrekturpaket wie die sechs Punkte. Sie ist keine neue Funktion.

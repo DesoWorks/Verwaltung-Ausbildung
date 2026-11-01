@@ -2,7 +2,7 @@
 
 Stand: 01.11.2026. Analyse, keine neue Funktion. Keine Unterrichtsfreigabe.
 
-Nachtrag nach dem Windows-Durchlauf: Die sechs Sprach- und Bewertungsbefunde und die geänderte Reihenfolge stehen in `docs/rathaus-windows-rueckmeldung.md`. Die Scan-Auswertung in dieser Datei gilt weiter. Der Ausbauvorschlag in Abschnitt 4 ist dadurch überholt, nicht die Seitenbezüge.
+Nachtrag nach dem Windows-Durchlauf: Die sechs Sprach- und Bewertungsbefunde, die geänderte Reihenfolge und das Verbot interner Angaben in der Lern- und Lehrkraftoberfläche stehen in `docs/rathaus-windows-rueckmeldung.md`. Die Scan-Auswertung in dieser Datei gilt weiter. Der Ausbauvorschlag in Abschnitt 4 ist dadurch überholt, nicht die Seitenbezüge.
 
 Worktree: `/home/starnet/projects/Verwaltung-Ausbildung-rathaus`  
 Branch: `feature/operation-rathaus-mvp1`  
