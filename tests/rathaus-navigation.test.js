@@ -1,0 +1,101 @@
+"use strict";
+const test = require("node:test");
+const assert = require("node:assert");
+const nav = require("../js/rathaus-navigation.js");
+
+const labels = (liste) => liste.map((k) => k.label);
+
+test("Hash #stadt und #vorgang werden erkannt", () => {
+  assert.strictEqual(nav.hashZuAnsicht("#stadt"), "stadt");
+  assert.strictEqual(nav.hashZuAnsicht("#vorgang"), "vorgang");
+  assert.strictEqual(nav.hashZuAnsicht("#personal"), "personal");
+  assert.strictEqual(nav.hashZuAnsicht("#post"), "post");
+  assert.strictEqual(nav.hashZuAnsicht("#akte"), "akte");
+});
+
+test("#lehrkraft und unbekannte Hashes werden abgelehnt", () => {
+  ["#lehrkraft", "lehrkraft", "#", "", "#müll", "#__proto__", "#stadt/../x", null, undefined, 5, {}].forEach((h) => {
+    assert.strictEqual(nav.hashZuAnsicht(h), null, String(h));
+  });
+});
+
+test("Hash-Auswertung ist rein und verändert keine Falldaten", () => {
+  const fall = { gelesen: true, entscheidung: "B", gruende: ["x"], antwort: "text", abgeschlossen: true };
+  const vorher = JSON.stringify(fall);
+  nav.hashZuAnsicht("#vorgang");
+  nav.hashZuAnsicht("#stadt");
+  nav.hashZuAnsicht("#lehrkraft");
+  assert.strictEqual(JSON.stringify(fall), vorher);
+  assert.strictEqual(typeof nav.hashZuAnsicht("#vorgang"), "string");
+});
+
+test("Brotkrumen von post, akte und vorgang enthalten Stadt und Personalamt, nie Lehrkraft", () => {
+  ["post", "akte", "vorgang"].forEach((a) => {
+    const k = nav.brotkrumen(a);
+    assert.deepStrictEqual(labels(k).slice(0, 2), ["Stadtverwaltung", "Personalamt"]);
+    assert.strictEqual(k.length, 3);
+    assert.strictEqual(k[0].ziel, "stadt");
+    assert.strictEqual(k[1].ziel, "personal");
+    assert.strictEqual(k[2].ziel, null, "letztes Glied nur Text");
+    assert.ok(!labels(k).some((l) => /Lehrkraft/.test(l)));
+  });
+});
+
+test("Brotkrumen von stadt und personal", () => {
+  assert.deepStrictEqual(nav.brotkrumen("stadt"), [{ label: "Stadtverwaltung", ziel: null }]);
+  const p = nav.brotkrumen("personal");
+  assert.deepStrictEqual(labels(p), ["Stadtverwaltung", "Personalamt"]);
+  assert.strictEqual(p[0].ziel, "stadt");
+  assert.strictEqual(p[1].ziel, null);
+});
+
+test("Brotkrumen der Lehrkraftansicht ohne Personalamt", () => {
+  const k = nav.brotkrumen("lehrkraft");
+  assert.deepStrictEqual(labels(k), ["Stadtverwaltung", "Lehrkraftansicht"]);
+  assert.strictEqual(k[0].ziel, "stadt");
+  assert.strictEqual(k[1].ziel, null);
+});
+
+test("Rückziel jeder Nicht-Stadt-Ansicht ist stadt", () => {
+  nav.ANSICHTEN.filter((a) => a !== "stadt").forEach((a) => {
+    assert.deepStrictEqual(nav.rueckziel(a), { ansicht: "stadt", label: "Zur Stadtübersicht" }, a);
+  });
+  assert.strictEqual(nav.rueckziel("stadt"), null);
+});
+
+test("Vorschauämter haben keine Aktion, Personalamt ist benutzbar", () => {
+  const liste = nav.aemter();
+  assert.deepStrictEqual(liste.map((a) => a.titel), ["Personalamt", "Bürgerbüro", "Ordnungsamt", "Stadtkasse"]);
+  liste.forEach((a) => {
+    if (a.id === "personal") {
+      assert.strictEqual(a.benutzbar, true);
+      assert.strictEqual(a.ansicht, "personal");
+    } else {
+      assert.strictEqual(a.benutzbar, false);
+      assert.strictEqual(a.ansicht, null);
+    }
+  });
+});
+
+test("Personalamt-Unternavigation nur in Personalamt-Ansichten", () => {
+  assert.deepStrictEqual(nav.personalUnternavigation("stadt"), []);
+  assert.deepStrictEqual(nav.personalUnternavigation("lehrkraft"), []);
+  assert.deepStrictEqual(nav.personalUnternavigation("unbekannt"), []);
+  ["personal", "post", "akte", "vorgang"].forEach((a) => {
+    const u = nav.personalUnternavigation(a);
+    assert.deepStrictEqual(labels(u), ["Übersicht Personalamt", "Posteingang", "Ausbildungsakte", "Vorgang"]);
+    assert.deepStrictEqual(u.filter((e) => e.aktuell).map((e) => e.ansicht), [a]);
+  });
+});
+
+test("Leistenebene: Personalamt gilt auf post, akte, vorgang; Lehrkraft hat keine Amtsebene", () => {
+  assert.strictEqual(nav.leistenEbene("stadt"), "stadt");
+  ["personal", "post", "akte", "vorgang"].forEach((a) => assert.strictEqual(nav.leistenEbene(a), "personal"));
+  assert.strictEqual(nav.leistenEbene("lehrkraft"), null);
+});
+
+test("Lehrkraft ist kein Kind des Personalamts", () => {
+  assert.ok(nav.istAnsicht("lehrkraft"));
+  assert.ok(!nav.HASH_ANSICHTEN.includes("lehrkraft"));
+  assert.ok(!nav.personalUnternavigation("personal").some((e) => e.ansicht === "lehrkraft"));
+});
