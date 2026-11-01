@@ -59,6 +59,21 @@ test("Widerspruch, umgekehrte Freistellung und leere Antwort scheitern", () => {
   });
 });
 
+test("Besuch ohne Aussage zur Einteilung besteht nicht, vollständige Antworten bestehen", () => {
+  const nurBesuch = "Noelle Kranz geht in den nächsten drei Wochen weiter zur Berufsschule und nimmt am Unterricht teil.";
+  const nurFrei = "Noelle Kranz wird für die Berufsschule freigestellt und besucht den Unterricht.";
+  const freistellung = "Noelle Kranz wird in den drei Wochen sachlich für die Berufsschule freigestellt, ohne Arbeitseinsatz statt des Unterrichts.";
+  const andererWeg = "Noelle Kranz geht weiter zur Berufsschule. Sie wird in dieser Zeit nicht in der Dienststelle eingeteilt.";
+  assert.equal(hb.bewerteAntwort(nurBesuch).ok, false);
+  assert.equal(hb.bewerteAntwort(nurFrei).ok, false);
+  assert.match(hb.bewerteAntwort(nurBesuch).hinweise.join(" "), /Einteilung|Dienststelle/);
+  assert.equal(hb.auswertung({ entscheidung: "B", gruende: ["bbig15"], antwort: nurBesuch }).bestanden, false);
+  [MUSTERSATZ, freistellung, andererWeg].forEach((satz) => {
+    const b = hb.bewerteAntwort(satz);
+    assert.equal(b.ok, true, satz + " :: " + b.hinweise.join(" | "));
+  });
+});
+
 test("Ausfall, nur erste Woche und Altersfalle in der Antwort scheitern", () => {
   assert.equal(hb.bewerteAntwort(AUSFALL).ok, false);
   assert.equal(hb.bewerteAntwort(NUR_ERSTE_WOCHE).ok, false);
@@ -109,6 +124,22 @@ test("Gespeicherter Stand mit anderem Bewertungsstand wird verworfen, Eingaben b
   const frisch = hb.bereinigeGespeichert({ abgeschlossen: true, bewertungsstand: hb.BEWERTUNGSSTAND, letzteAuswertung: { bewertungsstand: hb.BEWERTUNGSSTAND } });
   assert.equal(frisch.abgeschlossen, true);
   assert.equal(hb.bereinigeGespeichert(null).verworfen, true);
+});
+
+test("Alte grüne Auswertung des Vorgangs wird verworfen, Entwurf bleibt, Luca-Stand unverändert", () => {
+  assert.equal(hb.BEWERTUNGSSTAND, "2026-11-01-hochbetrieb2");
+  assert.equal(luca.BEWERTUNGSSTAND, "2026-11-01-brief2");
+  const alt = {
+    entscheidung: "B", gruende: ["bbig15"], antwort: "Noelle Kranz geht in den nächsten drei Wochen weiter zur Berufsschule und nimmt am Unterricht teil.",
+    abgeschlossen: true, bewertungsstand: "2026-11-01-hochbetrieb1",
+    letzteAuswertung: { bestanden: true, darfAbschliessen: true, bewertungsstand: "2026-11-01-hochbetrieb1" }
+  };
+  const b = hb.bereinigeGespeichert(alt);
+  assert.equal(b.letzteAuswertung, null);
+  assert.equal(b.abgeschlossen, false);
+  assert.equal(b.verworfen, true);
+  assert.equal(b.antwort, alt.antwort);
+  assert.equal(b.entscheidung, "B");
 });
 
 test("Hilfe verrät in keiner Stufe den Mustertext und nennt Richtung statt Lösung", () => {

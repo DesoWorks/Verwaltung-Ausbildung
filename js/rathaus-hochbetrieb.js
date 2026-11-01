@@ -14,7 +14,7 @@
 
   var RECHTSSTAND = "01.11.2026";
   // Wird bei jeder inhaltlichen Änderung dieser Bewertung erhöht.
-  var BEWERTUNGSSTAND = "2026-11-01-hochbetrieb1";
+  var BEWERTUNGSSTAND = "2026-11-01-hochbetrieb2";
   var SPEICHERSCHLUESSEL = "verwaltung-ausbildung.rathaus.hochbetrieb.v1";
   var QUELLEN = [
     "Berufsbildungsgesetz (BBiG) § 14 und § 15, nichtamtliche Fassung auf gesetze-im-internet.de, abgerufen am 01.11.2026"
@@ -201,6 +201,16 @@
     });
   }
 
+  // Eine Klausel, die ausdrücklich sagt: keine Einteilung oder Arbeit in der Dienststelle statt des Unterrichts.
+  function sagtKeineEinteilung(text) {
+    return klauseln(text).some(function (k) {
+      return /\b(keine|keinen|kein)\s+(einteilung|einsatz|arbeitseinsatz|dienst|arbeit|dienstleistung)\b/.test(k) ||
+        /\bohne\s+(einteilung|einsatz|arbeitseinsatz|dienst|arbeit|dienstleistung)/.test(k) ||
+        /\bnicht\s+(in\s+der|in\s+die|im)\s+(dienststelle|buergerbuero|bürgerbüro|amt)\b/.test(k) ||
+        /\bnicht\s+(eingeteilt|einzuteilen|zum\s+dienst|arbeiten|im\s+dienst)\b/.test(k);
+    });
+  }
+
   // Klauseln, die den Unterricht ausfallen lassen oder die Freistellung aufheben.
   function verlangtAusfall(text) {
     return klauseln(text).some(function (k) {
@@ -246,6 +256,8 @@
       hinweise.push("Die Formulierung dreht die Richtung. Freistellung meint hier von der Arbeit zum Unterricht, nicht vom Unterricht weg.");
     } else if (!sagtBesuch(gekuerzt)) {
       hinweise.push("Schreibe klar, dass Noelle die Berufsschule weiter besucht und dafür freigestellt wird.");
+    } else if (!sagtKeineEinteilung(gekuerzt)) {
+      hinweise.push("Schreibe auch, dass Noelle in dieser Zeit nicht statt des Unterrichts in der Dienststelle eingeteilt wird.");
     }
     if (verlangtAusfall(gekuerzt)) {
       hinweise.push("Die Antwort darf nicht verlangen, dass der Unterricht ausfällt oder Noelle nicht zur Berufsschule geht.");
@@ -292,6 +304,8 @@
       naechsterBlick.push("Du verwechselst die Richtung der Freistellung. Sie gilt von der Arbeit zum Unterricht, nicht vom Unterricht weg.");
     } else if (widerspricht(daten.antwort)) {
       naechsterBlick.push("Lies deine Antwort bis zum Ende: Eine Aussage nimmt zurück, was an anderer Stelle gilt. Soll in den drei Wochen der Unterricht oder die Arbeit Vorrang haben?");
+    } else if (sagtBesuch(String(daten.antwort || "")) && !sagtKeineEinteilung(String(daten.antwort || ""))) {
+      naechsterBlick.push("Deine Antwort sagt, dass Noelle zur Schule geht. Sagt sie auch, was für die Dienststelle in dieser Zeit gilt?");
     } else if (antwort.laenge < 40) {
       naechsterBlick.push("Schreibe die Antwort an Herrn Pfeil in ganzen, sachlichen Sätzen.");
     } else {

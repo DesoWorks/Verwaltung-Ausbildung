@@ -114,18 +114,36 @@
     if (aktiverFall === "noelle" || (rohLesen(KEY) || {}).aktiverFall) merkeAktivenFall();
   }
 
-  function wechsleFall(id) {
-    if (!kernHochbetrieb || (id === "noelle") === (aktiverFall === "noelle")) return;
+  // Speichert den aktiven Vorgang und lädt den gewählten. Die Lehrkraftwahl bleibt.
+  function aktiviereFall(id) {
     speichern();
     var lehrkraft = state.lehrkraft;
     setzeFall(id);
     neuerZustand();
     anwenden(rohLesen(schluessel()));
     state.lehrkraft = lehrkraft;
+  }
+
+  function wechsleFall(id) {
+    if (!kernHochbetrieb || (id === "noelle") === (aktiverFall === "noelle")) return;
+    aktiviereFall(id);
     state.ansicht = "personal";
     speichern();
     zeichnen();
     fokus("ansicht-titel");
+  }
+
+  // Öffnet die Nachricht genau eines Vorgangs. Der andere Vorgang bleibt unverändert.
+  function oeffneNachricht(id) {
+    if (kernHochbetrieb && (id === "noelle") !== (aktiverFall === "noelle")) aktiviereFall(id);
+    state.gelesen = true;
+    zeige("vorgang");
+  }
+
+  function nachrichtGelesen(id) {
+    if ((id === "noelle") === (aktiverFall === "noelle")) return state.gelesen;
+    var roh = rohLesen(id === "noelle" ? KEY_HOCHBETRIEB : KEY);
+    return Boolean(roh && roh.gelesen === true);
   }
 
   function el(tag, klasse, text) {
@@ -257,18 +275,21 @@
     titel.id = "ansicht-titel";
     titel.tabIndex = -1;
     ziel.appendChild(titel);
-    var karte = el("article", "rathaus-vorgangskarte");
-    karte.appendChild(el("p", "rathaus-meta", "Neu · " + fall.betreff));
-    karte.appendChild(el("p", "", "Von: " + fall.von));
-    karte.appendChild(el("p", "", "An: " + fall.an));
-    var lesen = el("button", "knopf knopf-haupt", state.gelesen ? "Nachricht erneut lesen" : "Nachricht lesen");
-    lesen.type = "button";
-    lesen.addEventListener("click", function () {
-      state.gelesen = true;
-      zeige("vorgang");
+    var eintraege = kernHochbetrieb ? [["luca", kernLuca], ["noelle", kernHochbetrieb]] : [["luca", kernLuca]];
+    eintraege.forEach(function (paar) {
+      var daten = paar[1].fallDaten();
+      var gelesen = nachrichtGelesen(paar[0]);
+      var karte = el("article", "rathaus-vorgangskarte");
+      karte.appendChild(el("p", "rathaus-meta", (gelesen ? "Gelesen · " : "Neu · ") + daten.betreff));
+      karte.appendChild(el("p", "", "Von: " + daten.von));
+      karte.appendChild(el("p", "", "An: " + daten.an));
+      var lesen = el("button", "knopf knopf-haupt", gelesen ? "Nachricht erneut lesen" : "Nachricht lesen");
+      lesen.type = "button";
+      lesen.setAttribute("aria-label", (gelesen ? "Nachricht erneut lesen: " : "Nachricht lesen: ") + daten.betreff);
+      lesen.addEventListener("click", function () { oeffneNachricht(paar[0]); });
+      karte.appendChild(lesen);
+      ziel.appendChild(karte);
     });
-    karte.appendChild(lesen);
-    ziel.appendChild(karte);
     var zurueck = el("button", "knopf", "Zurück zum Personalamt");
     zurueck.type = "button";
     zurueck.addEventListener("click", function () { zeige("personal"); });
@@ -553,7 +574,13 @@
     loesung.kriterien.forEach(function (punkt) { ul.appendChild(el("li", "", punkt)); });
     ziel.appendChild(ul);
     ziel.appendChild(el("h3", "", "Vorhandene Übungsfälle"));
-    ziel.appendChild(el("p", "", fall.betreff));
+    var faelleListe = el("ul", "");
+    [kernLuca, kernHochbetrieb].forEach(function (k) {
+      if (!k) return;
+      var d = k.fallDaten();
+      faelleListe.appendChild(el("li", "", d.betreff + " (" + d.person.name + ")"));
+    });
+    ziel.appendChild(faelleListe);
     ziel.appendChild(el("h3", "", "Quellen und Rechtsstand " + loesung.rechtsstand));
     var quellen = el("ul", "");
     loesung.quellen.forEach(function (quelle) { quellen.appendChild(el("li", "", quelle)); });
