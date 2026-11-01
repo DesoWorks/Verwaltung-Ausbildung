@@ -1,0 +1,198 @@
+/* Virtuelles Rathaus: freundliche Übersicht, sachlicher Vorgang. Keine externen Schriften. */
+
+.rathaus-leiste,
+.rathaus-inhalt,
+#rathaus-fortschritt {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.rathaus-leiste {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.rathaus-ansichten {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.rathaus-warnbanner {
+  margin: 0;
+  padding: 0.7rem 1rem;
+  background: #fff4d6;
+  color: #6a3b00;
+  border-bottom: 3px solid #c47b00;
+  font-weight: 700;
+}
+
+.rathaus-fortschritt {
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  background: var(--farbe-flaeche);
+  border: 1px solid var(--farbe-rahmen);
+  border-radius: var(--radius);
+}
+
+.rathaus-fortschritt-text {
+  margin: 0 0 0.4rem;
+  font-weight: 700;
+}
+
+.rathaus-schritte {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rathaus-schritte li {
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: var(--farbe-geplant-flaeche);
+  color: var(--farbe-text-leise);
+  font-size: 0.85rem;
+}
+
+.rathaus-schritte li.ist-fertig {
+  background: var(--farbe-ok-flaeche);
+  color: var(--farbe-ok);
+}
+
+.rathaus-einleitung {
+  font-size: 1.05rem;
+}
+
+.rathaus-skyline {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4rem;
+  height: 7rem;
+  margin: 0.5rem 0 1rem;
+  padding: 0 0.4rem;
+  border-bottom: 4px solid #7ea0c8;
+}
+
+.gebaeude {
+  display: block;
+  flex: 1 1 0;
+  background: #1d5fb4;
+  border-radius: 0.3rem 0.3rem 0 0;
+}
+
+.gebaeude-haus { height: 45%; background: #3d7cc9; }
+.gebaeude-turm { height: 70%; background: #164a8c; }
+.gebaeude-rathaus { height: 88%; background: #0f6b4c; }
+
+.rathaus-raster {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 0.8rem;
+}
+
+.rathaus-karte,
+.rathaus-vorgangskarte,
+.rathaus-sachlich,
+.rathaus-auswertung {
+  background: var(--farbe-flaeche);
+  border: 1px solid var(--farbe-rahmen);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--schatten);
+}
+
+.rathaus-karte.ist-aktiv { border-color: #0f6b4c; }
+.rathaus-karte.ist-vorschau { background: var(--farbe-geplant-flaeche); }
+
+.rathaus-status {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.rathaus-karte.ist-vorschau .rathaus-status { color: var(--farbe-warn); }
+.rathaus-karte.ist-aktiv .rathaus-status { color: var(--farbe-ok); }
+
+.rathaus-meta,
+.rathaus-hinweis {
+  color: var(--farbe-text-leise);
+}
+
+.rathaus-akte {
+  display: grid;
+  grid-template-columns: minmax(8rem, 14rem) 1fr;
+  gap: 0.35rem 0.8rem;
+  margin: 0 0 1rem;
+}
+
+.rathaus-akte dt { font-weight: 700; }
+.rathaus-akte dd { margin: 0; }
+
+.rathaus-form {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+
+.rathaus-option {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  padding: 0.75rem;
+  border: 2px solid var(--farbe-rahmen);
+  border-radius: 0.7rem;
+  background: #fff;
+}
+
+.rathaus-option:focus-within {
+  outline: 3px solid var(--farbe-akzent);
+  outline-offset: 2px;
+}
+
+.rathaus-form textarea {
+  width: 100%;
+  min-height: 8rem;
+  font: inherit;
+  padding: 0.7rem;
+  border: 2px solid var(--farbe-rahmen);
+  border-radius: 0.7rem;
+}
+
+.rathaus-ok {
+  padding: 0.7rem 0.8rem;
+  background: var(--farbe-ok-flaeche);
+  color: var(--farbe-ok);
+  border-radius: 0.5rem;
+}
+
+.rathaus-fehler {
+  padding: 0.7rem 0.8rem;
+  background: var(--farbe-fehler-flaeche);
+  color: var(--farbe-fehler);
+  border-radius: 0.5rem;
+}
+
+.rathaus-begriffe {
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .rathaus-akte { grid-template-columns: 1fr; }
+  .rathaus-leiste,
+  .rathaus-ansichten,
+  .knopf-reihe {
+    width: 100%;
+  }
+  .rathaus-ansichten .knopf,
+  #lehrkraft-schalter {
+    width: 100%;
+  }
+}

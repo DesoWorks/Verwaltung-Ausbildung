@@ -76,6 +76,15 @@
               datei: "module/lf1-rechte.html"
             },
             {
+              id: "lf1-rathaus",
+              typ: "lektion",
+              titel: "Virtuelles Rathaus: Berufsschule oder Dienststelle",
+              beschreibung: "Übungsvorgang im Personalamt. Lokal testen, nur fiktive Personen.",
+              page: "rathaus",
+              status: "verfuegbar",
+              datei: "module/rathaus.html"
+            },
+            {
               id: "lf1-betrieb",
               typ: "lektion",
               titel: "Den Betrieb verständlich zeigen",
