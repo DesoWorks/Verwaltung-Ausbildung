@@ -235,7 +235,7 @@
     titel.id = "ansicht-titel";
     titel.tabIndex = -1;
     ziel.appendChild(titel);
-    ziel.appendChild(el("p", "rathaus-meta", "Fall " + fall.id + " · nur Übung · Rechtsstand " + kern.RECHTSSTAND));
+    ziel.appendChild(el("p", "rathaus-meta", "Fall " + fall.id + " · fiktive Beispieldaten · vorläufig, nicht verbindlich · Rechtsstand " + kern.RECHTSSTAND));
     if (!state.gelesen) {
       ziel.appendChild(el("p", "rathaus-hinweis", "Lies zuerst die Nachricht im Posteingang."));
       var zurPost = el("button", "knopf knopf-haupt", "Zum Posteingang");
@@ -323,6 +323,11 @@
         gruende: state.gruende,
         antwort: state.antwort
       });
+      if (!state.akteGelesen) {
+        state.letzteAuswertung.bestanden = false;
+        state.letzteAuswertung.darfAbschliessen = false;
+        state.letzteAuswertung.hinweise.unshift("Öffne zuerst die Ausbildungsakte. Dort stehen Alter und Unterrichtsstunden.");
+      }
       if (!state.letzteAuswertung.bestanden) state.abgeschlossen = false;
       speichern();
       zeichnen();
@@ -361,7 +366,8 @@
       speichern();
       zeichnen();
     });
-    ziel.appendChild(hilfe);
+    var aktionen = el("div", "knopf-reihe");
+    aktionen.appendChild(hilfe);
     if (state.hilfeStufe > 0) {
       ziel.appendChild(el("p", "rathaus-hinweis", kern.hilfe(state.hilfeStufe)));
     }
@@ -376,12 +382,15 @@
       zeichnen();
       fokus("abschluss-titel");
     });
-    ziel.appendChild(abschluss);
+    aktionen.appendChild(abschluss);
+    ziel.appendChild(aktionen);
     if (state.abgeschlossen) {
       var fertig = el("p", "rathaus-ok", "Vorgang abgeschlossen. Du kannst ihn in der Lehrkraftansicht für einen neuen Durchlauf zurücksetzen.");
       fertig.id = "abschluss-titel";
       fertig.tabIndex = -1;
       ziel.appendChild(fertig);
+    } else if (state.letzteAuswertung && state.letzteAuswertung.darfAbschliessen) {
+      ziel.appendChild(el("p", "rathaus-ok", "Du kannst den Vorgang jetzt abschließen. Zur Korrektur änderst du die Felder und prüfst erneut."));
     } else {
       ziel.appendChild(el("p", "rathaus-meta", "Abschließen geht erst nach einer tragfähigen Auswertung. Zur Korrektur änderst du die Felder und prüfst erneut."));
     }
@@ -398,7 +407,7 @@
       return;
     }
     var loesung = kern.lehrkraftLoesung();
-    ziel.appendChild(el("h3", "", "Musterlösung"));
+    ziel.appendChild(el("h3", "", "Vorläufige Übungslösung, nicht verbindlich"));
     ziel.appendChild(el("p", "", "Entscheidung: " + loesung.entscheidung));
     ziel.appendChild(el("p", "", loesung.mustertext));
     ziel.appendChild(el("h3", "", "Bewertungskriterien"));

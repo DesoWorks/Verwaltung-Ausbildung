@@ -262,7 +262,7 @@
     return {
       fallId: "berufsschule-statt-dienststelle",
       rechtsstand: RECHTSSTAND,
-      unsicherheit: "Länderregeln zur Berufsschulpflicht können abweichen. Die Übung stützt sich auf BBiG § 15 und, weil Luca 17 ist, zusätzlich auf JArbSchG § 9. Das ist keine Rechtsberatung und keine gesicherte Einzelfallentscheidung.",
+      unsicherheit: "Vorläufige Übungslösung, nicht verbindlich. Die Unterrichts-PDFs LS03, LS04 und LS06 fehlen. Länderregeln zur Berufsschulpflicht können abweichen. Die Übung stützt sich nur auf die genannten Gesetzestexte, nicht auf eine geprüfte Unterrichtsvorlage. Das ist keine Rechtsberatung und keine gesicherte Rechtslage.",
       entscheidung: "B",
       pflichtgrund: "bbig15",
       stuetzendeGruende: ["bbig14-4", "bbig14-3", "jarbschg9"],

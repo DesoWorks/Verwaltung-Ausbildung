@@ -32,7 +32,17 @@ Der Zustand liegt nur in `localStorage` unter `verwaltung-ausbildung.rathaus.v1`
 
 ## Fachliche Grenze
 
-Die Unterrichts-PDFs LS03 Ausbildungsvertrag, LS04 Rechte und Pflichten und LS06 Jugendarbeitsschutz waren auf diesem Rechner nicht vorhanden. Sie sind nicht eingearbeitet.
+Die Unterrichts-PDFs lagen nicht vor und wurden nicht erfunden. Ablageort, sobald sie da sind:
+
+`quellen/unterricht/` im Worktree, absolut `/home/starnet/projects/Verwaltung-Ausbildung-rathaus/quellen/unterricht/`
+
+Fehlend:
+
+- `LS03-Ausbildungsvertrag.pdf`
+- `LS04-Rechte-und-Pflichten.pdf`
+- `LS06-Jugendarbeitsschutz.pdf`
+
+Die Übungslösung im Lehrkraftmodus ist vorläufig und nicht verbindlich.
 
 Benutzt wurden die vorhandene Lektion `module/lf1-rechte.html`, der KMK-Rahmenlehrplan vom 20.03.2025, Lernfeld 1 Seite 9, sowie die nichtamtlichen Fassungen von BBiG § 14, BBiG § 15 und JArbSchG § 9 auf gesetze-im-internet.de, abgerufen am 01.11.2026.
 
