@@ -199,6 +199,24 @@ test("Freitext wird gespeichert und als Entwurf, nicht automatisch geprüft geze
 });
 
 test("Reset-Abbruch lässt den Speicher unverändert, Bestätigung löscht nur B01", () => {
+  const u = umgebung({});
+  u.zeichne("fall");
+  fuelleGut(u);
+  u.klick("Auswertung prüfen");
+  assert.equal(u.knopf("Übungsfall abschließen").disabled, false);
+  const feld = alle(u.haupt).find((k) => k.tag === "textarea");
+  feld.value = "Nachträglicher Entwurf";
+  feld.handlers.input();
+  assert.equal(u.knopf("Übungsfall abschließen").disabled, true, "Freitextänderung sperrt den Abschluss");
+  assert.equal(gespeichert(u).letzteAuswertung, null);
+  assert.equal(gespeichert(u).abgeschlossen, false);
+  assert.ok(u.sicht().includes("erneut prüfen"));
+  u.klick("Auswertung prüfen");
+  assert.equal(u.knopf("Übungsfall abschließen").disabled, false, "nach erneuter Prüfung wieder möglich");
+  assert.ok(u.sicht().includes("Entwurf, nicht automatisch geprüft"));
+});
+
+test("Reset-Abbruch lässt den Speicher unverändert, Bestätigung löscht nur B01", () => {
   const luca1 = JSON.stringify({ ansicht: "post", bewertungsstand: luca.BEWERTUNGSSTAND });
   const u = umgebung({ [KEY]: luca1 }, { bestaetigen: false });
   u.zeichne("fall");

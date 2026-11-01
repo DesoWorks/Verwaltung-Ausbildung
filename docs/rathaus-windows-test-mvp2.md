@@ -1,6 +1,6 @@
 # Rathaus MVP 2: Windows-Testanleitung für den Commander
 
-Stand: Bürgerbüro B01 (Samira Yilmaz, Anmeldung nach Zuzug), Commit-ID: `<COMMIT-ID, trägt Rick nach dem Commit ein>`
+Stand: Bürgerbüro B01 (Samira Yilmaz, Anmeldung nach Zuzug). Die Commit-ID steht im Abschlussbericht von Rick, Branch feature/operation-rathaus-mvp1.
 
 Diese Anleitung ist eine Prüfliste für den manuellen Test. Sie behauptet keine bestandene Abnahme. Eine NVDA-Abnahme und eine Windows-Abnahme sind mit dieser Datei **nicht** erfolgt.
 

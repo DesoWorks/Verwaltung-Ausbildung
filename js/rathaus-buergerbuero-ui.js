@@ -577,7 +577,7 @@
     feld.setAttribute("aria-describedby", "bb-freitext-hilfe");
     feld.addEventListener("input", function () {
       modell.eingaben.freitext = String(feld.value).slice(0, 2000);
-      speichern();
+      eingabeGeaendert();
       if (refs.entwurfText) refs.entwurfText.textContent = modell.eingaben.freitext;
       if (refs.entwurfBox) refs.entwurfBox.hidden = !modell.eingaben.freitext.trim();
     });

@@ -99,8 +99,28 @@ test('Freitext wird nie automatisch als richtig geprüft', () => {
   assert.deepStrictEqual(a.freitext, { text: 'Mein eigener Entwurf', automatischGeprueft: false });
   const e2 = gut();
   e2.freitext = 'ganz anderer Text';
-  assert.strictEqual(B.auswertung(e2).eingabeVersion, a.eingabeVersion);
+  assert.notStrictEqual(B.auswertung(e2).eingabeVersion, a.eingabeVersion);
   assert.strictEqual(B.auswertung(e2).darfAbschliessen, true);
+  assert.strictEqual(B.auswertung(e2).bereiche.antwort.status, 'richtig');
+  assert.strictEqual(B.auswertung(e2).freitext.automatischGeprueft, false);
+});
+
+test('Gespeicherter Abschluss mit anderem Freitext wird verworfen, passender bleibt', () => {
+  const alt = gut();
+  alt.freitext = 'erster Entwurf';
+  const a = B.auswertung(alt);
+  const geaendert = gut();
+  geaendert.freitext = 'zweiter Entwurf';
+  const verworfen = B.bereinigeGespeichert({ fallId: 'b01', bewertungsstand: B.BEWERTUNGSSTAND, eingaben: geaendert, letzteAuswertung: a, abgeschlossen: true });
+  assert.strictEqual(verworfen.letzteAuswertung, null);
+  assert.strictEqual(verworfen.abgeschlossen, false);
+  assert.strictEqual(verworfen.eingaben.freitext, 'zweiter Entwurf');
+  const passt = B.bereinigeGespeichert({ fallId: 'b01', bewertungsstand: B.BEWERTUNGSSTAND, eingaben: alt, letzteAuswertung: a, abgeschlossen: true });
+  assert.ok(passt.letzteAuswertung);
+  assert.strictEqual(passt.abgeschlossen, true);
+  // Widersprüchlicher Freitext sperrt die strukturierte Bewertung nicht automatisch.
+  geaendert.freitext = 'Die Anmeldung ist erledigt.';
+  assert.strictEqual(B.auswertung(geaendert).darfAbschliessen, true);
 });
 
 test('Gespeichertes mit abweichendem Bewertungsstand oder fremdem Fall wird verworfen', () => {

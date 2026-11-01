@@ -189,7 +189,8 @@
       'regeln=' + n.regeln.slice().sort().join(','),
       'fallen=' + n.fallen.slice().sort().join(','),
       'vorb=' + (n.vorbereitung || '-'),
-      'bausteine=' + n.bausteine.slice().sort().join(',')
+      'bausteine=' + n.bausteine.slice().sort().join(','),
+      'freitext=' + n.freitext
     ].join('|');
   }
 
@@ -408,6 +409,9 @@
       return leereSicht(true, eingaben);
     }
     var neu = obj.letzteAuswertung ? auswertung(eingaben) : null;
+    // Eine gespeicherte Auswertung gilt nur für genau die Eingaben (inkl. Freitext), für die sie erstellt wurde.
+    var gespeicherteVersion = obj.letzteAuswertung && obj.letzteAuswertung.eingabeVersion;
+    if (neu && istText(gespeicherteVersion) && gespeicherteVersion !== neu.eingabeVersion) neu = null;
     return {
       verworfen: false,
       eingaben: eingaben,
