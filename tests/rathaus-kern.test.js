@@ -101,3 +101,74 @@ test("Oberfläche zieht keine externen Skripte und ruft kein fetch auf", () => {
     assert.equal(/href\s*=\s*["']https?:/i.test(text), false, datei + " verlinkt extern");
   });
 });
+
+function alteAbschlussLogik(zustand) {
+  const ergebnis = kern.auswertung({
+    entscheidung: zustand.entscheidung,
+    gruende: zustand.gruende,
+    antwort: zustand.antwort
+  });
+  let abgeschlossen = zustand.abgeschlossen;
+  if (!ergebnis.bestanden) abgeschlossen = false;
+  return { abgeschlossen: abgeschlossen, letzteAuswertung: ergebnis };
+}
+
+test("Regression: neue bestandene Auswertung hebt einen früheren Abschluss auf", () => {
+  const vorher = {
+    abgeschlossen: true,
+    akteGelesen: true,
+    entscheidung: "B",
+    gruende: ["bbig15"],
+    antwort: PASSENDE_ANTWORT,
+    versuche: 2
+  };
+  const alt = alteAbschlussLogik(vorher);
+  assert.equal(alt.letzteAuswertung.bestanden, true);
+  assert.equal(alt.abgeschlossen, true, "Die Nachstellung von 024f82c muss den alten Fehler noch zeigen");
+
+  const neu = kern.nachPruefung(vorher);
+  assert.equal(neu.letzteAuswertung.bestanden, true);
+  assert.equal(neu.letzteAuswertung.darfAbschliessen, true);
+  assert.equal(neu.abgeschlossen, false);
+  assert.equal(neu.versuche, 3);
+  assert.equal(vorher.abgeschlossen, true, "Der Ausgangszustand darf nicht verändert werden");
+});
+
+test("Regression: neue nicht bestandene Auswertung lässt den Abschluss ebenfalls fallen", () => {
+  const neu = kern.nachPruefung({
+    abgeschlossen: true,
+    akteGelesen: true,
+    entscheidung: "A",
+    gruende: ["bbig15"],
+    antwort: PASSENDE_ANTWORT,
+    versuche: 1
+  });
+  assert.equal(neu.letzteAuswertung.bestanden, false);
+  assert.equal(neu.abgeschlossen, false);
+});
+
+test("Regression: ohne gelesene Akte bleibt der Vorgang offen", () => {
+  const neu = kern.nachPruefung({
+    abgeschlossen: true,
+    akteGelesen: false,
+    entscheidung: "B",
+    gruende: ["bbig15"],
+    antwort: PASSENDE_ANTWORT,
+    versuche: 4
+  });
+  assert.equal(neu.letzteAuswertung.bestanden, false);
+  assert.equal(neu.letzteAuswertung.darfAbschliessen, false);
+  assert.equal(neu.abgeschlossen, false);
+  assert.match(neu.letzteAuswertung.hinweise[0], /Ausbildungsakte/);
+});
+
+test("Oberfläche übernimmt den zurückgesetzten Abschluss", () => {
+  const ui = fs.readFileSync(path.join(__dirname, "../js/rathaus-ui.js"), "utf8");
+  const start = ui.indexOf('pruefen.addEventListener("click"');
+  const ende = ui.indexOf('fokus("auswertung-titel")', start);
+  const handler = ui.slice(start, ende);
+  assert.notEqual(start, -1);
+  assert.match(handler, /kern\.nachPruefung\(state\)/);
+  assert.match(handler, /state\.abgeschlossen\s*=\s*naechster\.abgeschlossen/);
+  assert.equal(/if\s*\(\s*!state\.letzteAuswertung\.bestanden\s*\)\s*state\.abgeschlossen/.test(handler), false);
+});

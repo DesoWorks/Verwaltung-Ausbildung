@@ -247,6 +247,30 @@
     };
   }
 
+  function nachPruefung(zustand) {
+    var daten = zustand || {};
+    var ergebnis = auswertung({
+      entscheidung: daten.entscheidung,
+      gruende: daten.gruende,
+      antwort: daten.antwort
+    });
+    if (!daten.akteGelesen) {
+      ergebnis = {
+        bestanden: false,
+        darfAbschliessen: false,
+        hinweise: ["Öffne zuerst die Ausbildungsakte. Dort stehen Alter und Unterrichtsstunden."].concat(ergebnis.hinweise),
+        entscheidung: ergebnis.entscheidung,
+        begruendung: ergebnis.begruendung,
+        antwort: ergebnis.antwort
+      };
+    }
+    return {
+      versuche: (Number(daten.versuche) || 0) + 1,
+      abgeschlossen: false,
+      letzteAuswertung: ergebnis
+    };
+  }
+
   function hilfe(stufe) {
     var n = Number(stufe) || 1;
     if (n <= 1) {
@@ -303,6 +327,7 @@
     bewerteBegruendung: bewerteBegruendung,
     bewerteAntwort: bewerteAntwort,
     auswertung: auswertung,
+    nachPruefung: nachPruefung,
     hilfe: hilfe,
     lehrkraftLoesung: lehrkraftLoesung,
     katalog: katalog

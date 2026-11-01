@@ -317,19 +317,10 @@
     var pruefen = el("button", "knopf knopf-haupt", "6. Auswertung anzeigen");
     pruefen.type = "button";
     pruefen.addEventListener("click", function () {
-      state.versuche += 1;
-      state.abgeschlossen = false;
-      state.letzteAuswertung = kern.auswertung({
-        entscheidung: state.entscheidung,
-        gruende: state.gruende,
-        antwort: state.antwort
-      });
-      if (!state.akteGelesen) {
-        state.letzteAuswertung.bestanden = false;
-        state.letzteAuswertung.darfAbschliessen = false;
-        state.letzteAuswertung.hinweise.unshift("Öffne zuerst die Ausbildungsakte. Dort stehen Alter und Unterrichtsstunden.");
-      }
-      if (!state.letzteAuswertung.bestanden) state.abgeschlossen = false;
+      var naechster = kern.nachPruefung(state);
+      state.versuche = naechster.versuche;
+      state.abgeschlossen = naechster.abgeschlossen;
+      state.letzteAuswertung = naechster.letzteAuswertung;
       speichern();
       zeichnen();
       fokus("auswertung-titel");
