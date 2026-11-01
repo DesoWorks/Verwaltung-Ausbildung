@@ -129,7 +129,7 @@
   box-shadow: var(--schatten);
 }
 
-.rathaus-karte.ist-aktiv { border-color: #0f6b4c; }
+.rathaus-karte.ist-aktiv { border-color: var(--farbe-ok); }
 .rathaus-karte.ist-vorschau { background: var(--farbe-geplant-flaeche); }
 
 .rathaus-status {
@@ -192,7 +192,7 @@
   padding: 0.75rem;
   border: 2px solid var(--farbe-rahmen);
   border-radius: 0.7rem;
-  background: #fff;
+  background: var(--farbe-flaeche);
 }
 
 .rathaus-option:focus-within,
@@ -260,7 +260,30 @@
   padding: 0.7rem;
   border: 2px solid var(--farbe-rahmen);
   border-radius: 0.7rem;
+  background: var(--farbe-flaeche);
+  color: var(--farbe-text);
 }
+
+/* Lehrkraftansicht: Fallwahl und Rückfrage vor dem Zurücksetzen. */
+.rathaus-fallwahl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.6rem 0;
+}
+.rathaus-fallwahl .knopf[aria-pressed="true"] { border-width: 3px; font-weight: 700; }
+.rathaus-bestaetigung {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+  padding: 0.9rem 1rem;
+  background: var(--farbe-flaeche);
+  color: var(--farbe-text);
+  border: 3px solid var(--farbe-warn);
+  border-radius: var(--radius);
+}
+.rathaus-bestaetigung p { margin: 0; }
+.rathaus-bestaetigung .knopf:focus-visible { outline: 3px solid var(--farbe-akzent); outline-offset: 2px; }
 
 .rathaus-ok {
   padding: 0.7rem 0.8rem;
@@ -293,13 +316,16 @@
   #lehrkraft-schalter {
     width: 100%;
   }
-  /* Kompakte Navigation: zwei Spalten, damit der Inhalt auf einem 360-px-Bildschirm nicht unter der Leiste verschwindet. */
+  /* Kompakte Navigation: Beschriftungen bleiben sichtbar, die Leisten brauchen aber weniger Zeilen.
+     Amtsnavigation in drei Spalten (fünf Einträge in zwei statt drei Zeilen). */
   .rathaus-ansichten,
   .rathaus-unterleiste {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.4rem;
+    gap: 0.3rem;
   }
+  .rathaus-ansichten { grid-template-columns: 1fr 1fr; }
+  .rathaus-unterleiste { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 0.3rem; }
+  .rathaus-leiste { gap: 0.3rem; margin-top: 0.5rem; }
   .rathaus-ansichten .knopf,
   .rathaus-unterleiste .knopf {
     min-height: 44px;
@@ -309,7 +335,14 @@
     overflow-wrap: break-word;
     hyphens: auto;
   }
-  .rathaus-krumenliste { width: 100%; }
+  .rathaus-unterleiste .knopf { font-size: 0.85rem; }
+  #lehrkraft-schalter { font-size: 0.85rem; }
+  /* Position und Zurück in einer Zeile: der Knopf "Zur Stadtübersicht" ersetzt die erste Brotkrume. */
+  .rathaus-brotkrumen { flex-wrap: nowrap; gap: 0.5rem; margin-top: 0.3rem; }
+  .rathaus-krumenliste { width: auto; flex: 1 1 auto; min-width: 0; }
+  .rathaus-krumenliste li:first-child { display: none; }
+  .rathaus-krumenliste li:nth-child(2)::before { content: none; }
+  .rathaus-brotkrumen .rathaus-zur-stadt { width: auto; flex: 0 0 auto; max-width: 45%; min-height: 44px; font-size: 0.85rem; }
 }
 
 /* Einzelbewertungen: Wort und Symbol tragen die Aussage, Farbe und Rahmen unterstützen nur. */
@@ -354,7 +387,7 @@
 .rathaus-abschluss .knopf:not(:disabled):focus-visible {
   outline: 4px solid var(--farbe-akzent);
   outline-offset: 4px;
-  box-shadow: 0 0 0 2px #ffffff;
+  box-shadow: 0 0 0 2px var(--farbe-hintergrund);
 }
 
 @media (prefers-reduced-motion: reduce) {

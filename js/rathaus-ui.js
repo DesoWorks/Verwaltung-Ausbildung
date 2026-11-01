@@ -6,6 +6,7 @@
   var KEY_HOCHBETRIEB = "verwaltung-ausbildung.rathaus.hochbetrieb.v1";
   var kernLuca = window.RATHAUS_KERN;
   var kernHochbetrieb = window.RATHAUS_HOCHBETRIEB || null;
+  var lehrkraftAnsicht = window.RATHAUS_LEHRKRAFT;
   var kern = kernLuca;
   // Ohne gespeicherte Wahl gilt der erste Vorgang.
   var aktiverFall = "luca";
@@ -750,6 +751,72 @@
     };
   }
 
+  function lehrListe(ziel, eintraege) {
+    var ul = el("ul", "");
+    eintraege.forEach(function (text) { ul.appendChild(el("li", "", text)); });
+    ziel.appendChild(ul);
+  }
+
+  function lehrAbschnitt(ziel, titel, eintraege, leerText) {
+    ziel.appendChild(el("h3", "", titel));
+    if (eintraege.length) lehrListe(ziel, eintraege);
+    else ziel.appendChild(el("p", "rathaus-meta", leerText));
+  }
+
+  function setzeVorgangZurueck() {
+    window.localStorage.removeItem(schluessel());
+    state.ansicht = "lehrkraft";
+    state.gelesen = false;
+    state.akteGelesen = false;
+    state.entscheidung = "";
+    state.gruende = [];
+    state.antwort = "";
+    state.letzteAuswertung = null;
+    state.abgeschlossen = false;
+    state.veraltetHinweis = false;
+    state.eingabenGeaendert = false;
+    state.hilfeStufe = 0;
+    state.lehrkraft = true;
+    state.versuche = 0;
+    speichern();
+  }
+
+  // Rückfrage vor dem Zurücksetzen: nennt den gewählten Fall, Abbrechen ändert nichts.
+  function zeigeResetFrage(host, ansichtDaten) {
+    leeren(host);
+    var box = el("div", "rathaus-bestaetigung");
+    box.id = "reset-bestaetigung";
+    box.setAttribute("role", "group");
+    box.setAttribute("aria-labelledby", "reset-frage");
+    var frage = el("p", "", lehrkraftAnsicht.resetFrage(ansichtDaten.fallName, ansichtDaten.betreff));
+    frage.id = "reset-frage";
+    frage.tabIndex = -1;
+    var ja = el("button", "knopf knopf-warn", "Ja, Fall " + ansichtDaten.fallName + " zurücksetzen");
+    ja.id = "reset-bestaetigen";
+    ja.type = "button";
+    var nein = el("button", "knopf", "Abbrechen");
+    nein.id = "reset-abbrechen";
+    nein.type = "button";
+    function abbrechen() {
+      leeren(host);
+      fokus("reset-knopf");
+      ansage("Zurücksetzen abgebrochen. Es wurde nichts geändert.");
+    }
+    nein.addEventListener("click", abbrechen);
+    box.addEventListener("keydown", function (ereignis) {
+      if (ereignis && ereignis.key === "Escape") abbrechen();
+    });
+    ja.addEventListener("click", function () {
+      setzeVorgangZurueck();
+      zeichnen();
+      fokus("ansicht-titel");
+      ansage("Der Vorgang " + ansichtDaten.fallName + " wurde für einen neuen Durchlauf zurückgesetzt.");
+    });
+    box.append(frage, ja, nein);
+    host.appendChild(box);
+    fokus("reset-frage");
+  }
+
   function zeichneLehrkraft(ziel) {
     var titel = el("h2", "", "Lehrkraftansicht");
     titel.id = "ansicht-titel";
@@ -760,15 +827,48 @@
       ziel.appendChild(el("p", "", "Die Musterlösung ist ausschließlich in der lokalen Lehrkraftansicht verfügbar. Lernende sehen sie in der Lernansicht nicht."));
       return;
     }
-    var loesung = kern.lehrkraftLoesung();
-    ziel.appendChild(el("h3", "", "Vorläufige Übungslösung, nicht verbindlich"));
+    var daten = lehrkraftAnsicht.fallAnsicht(kern);
+    titel.textContent = daten.ueberschrift;
+
+    var wahl = el("div", "rathaus-fallwahl");
+    wahl.setAttribute("role", "group");
+    wahl.setAttribute("aria-label", "Fall für die Lehrkraftansicht wählen");
+    [["luca", kernLuca], ["noelle", kernHochbetrieb]].forEach(function (paar) {
+      if (!paar[1]) return;
+      var knopf = el("button", "knopf", paar[1].fallDaten().person.name);
+      knopf.type = "button";
+      knopf.setAttribute("aria-pressed", String(paar[0] === aktiverFall));
+      knopf.addEventListener("click", function () {
+        if (paar[0] === aktiverFall) return;
+        aktiviereFall(paar[0]);
+        state.ansicht = "lehrkraft";
+        speichern();
+        zeichnen();
+        fokus("ansicht-titel");
+        ansage("Lehrkraftansicht zeigt jetzt den Fall " + paar[1].fallDaten().person.name + ".");
+      });
+      wahl.appendChild(knopf);
+    });
+    ziel.appendChild(wahl);
+    ziel.appendChild(el("p", "rathaus-meta", "Angezeigter Fall: " + daten.fallZeile + ". Bewertungskriterien, Antwortvorschlag und Rechtsquellen gelten nur für diesen Fall."));
+
+    lehrAbschnitt(ziel, "Sachverhalt", daten.sachverhalt, daten.fehlt);
+    lehrAbschnitt(ziel, "Besondere Lernziele dieses Falls", daten.lernziele, daten.fehlt);
+    if (daten.lernziele.length) ziel.appendChild(el("p", "rathaus-meta", daten.lernzieleHinweis));
+    lehrAbschnitt(ziel, "Typische Fehler in diesem Fall", daten.typischeFehler, daten.fehlt);
+
+    ziel.appendChild(el("h3", "", "Musterantwort (vorläufige Übungslösung, nicht verbindlich)"));
     ziel.appendChild(el("p", "rathaus-meta", "Diese Musterlösung ist ausschließlich in der lokalen Lehrkraftansicht verfügbar. In der Lernansicht erscheint sie nicht."));
-    ziel.appendChild(el("p", "", "Entscheidung: " + loesung.entscheidung));
-    ziel.appendChild(el("p", "", loesung.mustertext));
-    ziel.appendChild(el("h3", "", "Bewertungskriterien"));
-    var ul = el("ul", "");
-    loesung.kriterien.forEach(function (punkt) { ul.appendChild(el("li", "", punkt)); });
-    ziel.appendChild(ul);
+    ziel.appendChild(el("p", "", "Entscheidung: " + daten.musterantwort.entscheidung + ". " + daten.musterantwort.entscheidungText));
+    ziel.appendChild(el("p", "", daten.musterantwort.mustertext));
+
+    lehrAbschnitt(ziel, "Bewertungskriterien", daten.kriterien, daten.fehlt);
+
+    ziel.appendChild(el("h3", "", "Rechtsquellen und Rechtsstand " + daten.rechtsstand));
+    if (daten.quellen.length) lehrListe(ziel, daten.quellen);
+    else ziel.appendChild(el("p", "rathaus-meta", daten.fehlt));
+    ziel.appendChild(el("p", "rathaus-hinweis", daten.unsicherheit));
+
     ziel.appendChild(el("h3", "", "Vorhandene Übungsfälle"));
     var faelleListe = el("ul", "");
     [kernLuca, kernHochbetrieb].forEach(function (k) {
@@ -777,36 +877,16 @@
       faelleListe.appendChild(el("li", "", d.betreff + " (" + d.person.name + ")"));
     });
     ziel.appendChild(faelleListe);
-    ziel.appendChild(el("h3", "", "Quellen und Rechtsstand " + loesung.rechtsstand));
-    var quellen = el("ul", "");
-    loesung.quellen.forEach(function (quelle) { quellen.appendChild(el("li", "", quelle)); });
-    ziel.appendChild(quellen);
-    ziel.appendChild(el("p", "rathaus-hinweis", loesung.unsicherheit));
-    var reset = el("button", "knopf knopf-warn", "Fall für einen neuen Durchlauf zurücksetzen");
+
+    ziel.appendChild(el("h3", "", "Zurücksetzen"));
+    var reset = el("button", "knopf knopf-warn", "Fall " + daten.fallName + " für einen neuen Durchlauf zurücksetzen");
     reset.id = "reset-knopf";
     reset.type = "button";
-    reset.addEventListener("click", function () {
-      var lehrkraft = true;
-      window.localStorage.removeItem(schluessel());
-      state.ansicht = "lehrkraft";
-      state.gelesen = false;
-      state.akteGelesen = false;
-      state.entscheidung = "";
-      state.gruende = [];
-      state.antwort = "";
-      state.letzteAuswertung = null;
-      state.abgeschlossen = false;
-      state.veraltetHinweis = false;
-      state.eingabenGeaendert = false;
-      state.hilfeStufe = 0;
-      state.lehrkraft = lehrkraft;
-      state.versuche = 0;
-      speichern();
-      zeichnen();
-      fokus("ansicht-titel");
-      ansage("Der Vorgang wurde für einen neuen Durchlauf zurückgesetzt.");
-    });
+    var resetHost = el("div", "");
+    resetHost.id = "reset-bereich";
+    reset.addEventListener("click", function () { zeigeResetFrage(resetHost, daten); });
     ziel.appendChild(reset);
+    ziel.appendChild(resetHost);
   }
 
   function fortschrittNur() {

@@ -66,6 +66,7 @@ function start(speicher) {
     RATHAUS_KERN: luca,
     RATHAUS_HOCHBETRIEB: hb,
     RATHAUS_NAVIGATION: navi,
+    RATHAUS_LEHRKRAFT: require("../js/rathaus-lehrkraft.js"),
     RATHAUS_NACHSCHLAGEN: karte,
     localStorage: {
       getItem: (k) => (k in store ? store[k] : null),
@@ -299,10 +300,12 @@ test("Musterlösung: Lernende lesen, dass sie nur in der lokalen Lehrkraftansich
   assert.ok(an.sicht().includes(luca.lehrkraftLoesung().mustertext), "Lehrkraft sieht die Lösung");
 });
 
-test("Reset in der Lehrkraftansicht setzt zurück, setzt den Fokus und sagt einmal an", () => {
+test("Reset in der Lehrkraftansicht fragt nach, setzt dann zurück, setzt den Fokus und sagt einmal an", () => {
   const s = start({ [KEY]: JSON.stringify({ ansicht: "lehrkraft", lehrkraft: true, gelesen: true, antwort: FAELLE[0].gut, bewertungsstand: luca.BEWERTUNGSSTAND }) });
   s.fokusLog.length = 0;
-  s.knopf("Fall für einen neuen Durchlauf zurücksetzen").handlers.click();
+  s.knopf("Fall Luca Berger für einen neuen Durchlauf zurücksetzen").handlers.click();
+  assert.equal(s.ansagen.length, 0, "vor der Bestätigung ändert sich nichts");
+  s.knopf("Ja, Fall Luca Berger zurücksetzen").handlers.click();
   assert.equal(s.ansagen.length, 1);
   assert.ok(s.ansagen[0].includes("zurückgesetzt"));
   assert.equal(s.fokusLog[s.fokusLog.length - 1], "ansicht-titel");
@@ -321,7 +324,7 @@ test("Seite und Stilregeln: Statusregion, Nur-Lesen-Klasse, Fokus und schmale Fe
   assert.match(css, /\.rathaus-gruppe\s*\{[^}]*min-width: 0/);
   assert.match(css, /@media \(max-width: 640px\)/);
   const schmal = css.slice(css.indexOf("@media (max-width: 640px)"));
-  assert.match(schmal, /\.rathaus-unterleiste\s*\{[^}]*grid-template-columns: 1fr 1fr/, "kompakte Unterleiste");
+  assert.match(schmal, /\.rathaus-unterleiste\s*\{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/, "kompakte Unterleiste in drei Spalten");
   assert.match(schmal, /\.rathaus-ansichten,\s*\.rathaus-unterleiste\s*\{[^}]*display: grid/);
   assert.match(schmal, /min-height: 44px/, "Mindest-Zielgröße");
   assert.equal(/overflow-wrap: anywhere[^}]*\}\s*\.rathaus-krumenliste/.test(schmal), false, "Knöpfe brechen Wörter nicht mitten im Wort");

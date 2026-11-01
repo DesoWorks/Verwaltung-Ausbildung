@@ -55,6 +55,7 @@ function start(speicher, hash) {
     RATHAUS_KERN: luca,
     RATHAUS_HOCHBETRIEB: hb,
     RATHAUS_NAVIGATION: navi,
+    RATHAUS_LEHRKRAFT: require("../js/rathaus-lehrkraft.js"),
     RATHAUS_NACHSCHLAGEN: karte,
     localStorage: {
       getItem: (k) => (k in store ? store[k] : null),
