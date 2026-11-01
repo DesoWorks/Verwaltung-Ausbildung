@@ -3,7 +3,12 @@
   "use strict";
 
   var KEY = "verwaltung-ausbildung.rathaus.v1";
-  var kern = window.RATHAUS_KERN;
+  var KEY_HOCHBETRIEB = "verwaltung-ausbildung.rathaus.hochbetrieb.v1";
+  var kernLuca = window.RATHAUS_KERN;
+  var kernHochbetrieb = window.RATHAUS_HOCHBETRIEB || null;
+  var kern = kernLuca;
+  // Ohne gespeicherte Wahl gilt der erste Vorgang.
+  var aktiverFall = "luca";
   var navi = window.RATHAUS_NAVIGATION;
   var fall = kern.fallDaten();
   var katalog = kern.katalog();
@@ -25,12 +30,58 @@
     veraltetHinweis: false
   };
 
-  function laden() {
+  function schluessel() {
+    return aktiverFall === "noelle" ? KEY_HOCHBETRIEB : KEY;
+  }
+
+  function setzeFall(id) {
+    aktiverFall = (id === "noelle" && kernHochbetrieb) ? "noelle" : "luca";
+    kern = aktiverFall === "noelle" ? kernHochbetrieb : kernLuca;
+    fall = kern.fallDaten();
+    katalog = kern.katalog();
+  }
+
+  function rohLesen(key) {
     try {
-      var roh = window.localStorage.getItem(KEY);
-      if (!roh) return;
+      var roh = window.localStorage.getItem(key);
+      if (!roh) return null;
       var daten = JSON.parse(roh);
-      if (!daten || typeof daten !== "object") return;
+      return (daten && typeof daten === "object") ? daten : null;
+    } catch (fehler) {
+      return null;
+    }
+  }
+
+  // Der alte Schlüssel behält den Zustand des ersten Vorgangs. Er trägt zusätzlich die Wahl des aktiven Vorgangs.
+  function merkeAktivenFall() {
+    var alt = rohLesen(KEY) || {};
+    if (aktiverFall === "noelle") alt.aktiverFall = "noelle";
+    else delete alt.aktiverFall;
+    window.localStorage.setItem(KEY, JSON.stringify(alt));
+  }
+
+  function neuerZustand() {
+    state.gelesen = false;
+    state.akteGelesen = false;
+    state.entscheidung = "";
+    state.gruende = [];
+    state.antwort = "";
+    state.letzteAuswertung = null;
+    state.abgeschlossen = false;
+    state.veraltetHinweis = false;
+    state.hilfeStufe = 0;
+    state.versuche = 0;
+  }
+
+  function laden() {
+    var alt = rohLesen(KEY);
+    setzeFall(alt && alt.aktiverFall === "noelle" ? "noelle" : "luca");
+    anwenden(aktiverFall === "noelle" ? rohLesen(KEY_HOCHBETRIEB) : alt);
+  }
+
+  function anwenden(daten) {
+    try {
+      if (!daten) return;
       var bereinigt = kern.bereinigeGespeichert(daten);
       ["ansicht", "gelesen", "akteGelesen", "entscheidung", "antwort", "abgeschlossen", "hilfeStufe", "lehrkraft", "versuche"].forEach(function (feld) {
         if (bereinigt[feld] !== undefined) state[feld] = bereinigt[feld];
@@ -59,7 +110,22 @@
       lehrkraft: state.lehrkraft,
       versuche: state.versuche
     };
-    window.localStorage.setItem(KEY, JSON.stringify(kopie));
+    window.localStorage.setItem(schluessel(), JSON.stringify(kopie));
+    if (aktiverFall === "noelle" || (rohLesen(KEY) || {}).aktiverFall) merkeAktivenFall();
+  }
+
+  function wechsleFall(id) {
+    if (!kernHochbetrieb || (id === "noelle") === (aktiverFall === "noelle")) return;
+    speichern();
+    var lehrkraft = state.lehrkraft;
+    setzeFall(id);
+    neuerZustand();
+    anwenden(rohLesen(schluessel()));
+    state.lehrkraft = lehrkraft;
+    state.ansicht = "personal";
+    speichern();
+    zeichnen();
+    fokus("ansicht-titel");
   }
 
   function el(tag, klasse, text) {
@@ -167,6 +233,23 @@
     });
     reihe.append(post, akte);
     ziel.appendChild(reihe);
+    if (kernHochbetrieb) {
+      ziel.appendChild(el("h3", "", "Vorgang wählen"));
+      ziel.appendChild(el("p", "rathaus-meta", "Jeder Vorgang hat einen eigenen Stand. Beim Wechsel geht nichts verloren."));
+      var wahl = el("div", "knopf-reihe");
+      wahl.setAttribute("role", "group");
+      wahl.setAttribute("aria-label", "Vorgang wählen");
+      [["luca", kernLuca], ["noelle", kernHochbetrieb]].forEach(function (paar, index) {
+        var daten = paar[1].fallDaten();
+        var knopf = el("button", "knopf" + (aktiverFall === paar[0] ? " knopf-haupt" : ""), "Vorgang " + (index + 1) + ": " + daten.person.name);
+        knopf.type = "button";
+        knopf.setAttribute("aria-pressed", aktiverFall === paar[0] ? "true" : "false");
+        knopf.addEventListener("click", function () { wechsleFall(paar[0]); });
+        wahl.appendChild(knopf);
+      });
+      ziel.appendChild(wahl);
+      ziel.appendChild(el("p", "", "Aktueller Vorgang: " + fall.betreff));
+    }
   }
 
   function zeichnePost(ziel) {
@@ -206,7 +289,8 @@
     zeile("Name", fall.person.name + " (fiktiv)");
     zeile("Alter", String(fall.person.alter) + " Jahre");
     zeile("Ausbildung", fall.person.beruf + ", " + fall.person.lehrjahr + ". Lehrjahr");
-    zeile("Berufsschultag", fall.person.schultag + ", " + fall.person.stunden + " Unterrichtsstunden zu je " + fall.person.stundenlaenge + " Minuten");
+    if (fall.person.schule) zeile("Berufsschule", fall.person.schule);
+    else zeile("Berufsschultag", fall.person.schultag + ", " + fall.person.stunden + " Unterrichtsstunden zu je " + fall.person.stundenlaenge + " Minuten");
     zeile("Vertragsauszug", fall.akte.vertrag);
     ziel.appendChild(liste);
     ziel.appendChild(el("p", "rathaus-hinweis", fall.akte.hinweis));
@@ -237,7 +321,7 @@
   }
 
   function zeichneVorgang(ziel) {
-    var titel = el("h2", "", "Vorgang: Berufsschule oder Dienststelle");
+    var titel = el("h2", "", fall.vorgangTitel || "Vorgang: Berufsschule oder Dienststelle");
     titel.id = "ansicht-titel";
     titel.tabIndex = -1;
     ziel.appendChild(titel);
@@ -316,7 +400,7 @@
     erklaerDetails.appendChild(el("p", "rathaus-meta", erklaerung.hinweis));
     form.appendChild(erklaerDetails);
 
-    form.appendChild(el("h3", "", "5. Sachliche Antwort an Sven Holm"));
+    form.appendChild(el("h3", "", "5. Sachliche Antwort an " + (fall.antwortAn || "Sven Holm")));
     var feld = document.createElement("textarea");
     feld.id = "antwort-text";
     feld.rows = 6;
@@ -479,7 +563,7 @@
     reset.type = "button";
     reset.addEventListener("click", function () {
       var lehrkraft = true;
-      window.localStorage.removeItem(KEY);
+      window.localStorage.removeItem(schluessel());
       state.ansicht = "lehrkraft";
       state.gelesen = false;
       state.akteGelesen = false;
