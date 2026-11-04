@@ -40,7 +40,7 @@ function text(k) {
 function start(speicher, hash) {
   const store = Object.assign({}, speicher);
   const ids = {};
-  ["hauptinhalt", "rathaus-fortschritt", "lehrkraft-banner", "lehrkraft-schalter", "rathaus-unterleiste", "rathaus-brotkrumen"].forEach((id) => {
+  ["hauptinhalt", "rathaus-fortschritt", "lehrkraft-banner", "lehrkraft-schalter", "rathaus-bereiche", "lehrkraft-status", "rathaus-unterleiste", "rathaus-brotkrumen"].forEach((id) => {
     ids[id] = knoten("div");
     ids[id].id = id;
   });
@@ -155,7 +155,7 @@ test("Brotkrumen der Karte führen über Stadt und Personalamt, Rückziel zur St
   assert.equal(k[0].ziel, "stadt");
   assert.equal(k[1].ziel, "personal");
   assert.equal(k[2].ziel, null);
-  assert.deepEqual(navi.rueckziel("nachschlagen"), { ansicht: "stadt", label: "Zur Stadtübersicht" });
+  assert.deepEqual(navi.rueckziel("nachschlagen"), { ansicht: "personal", modus: null, label: "Zurück zum Personalamt" });
 });
 
 test("Lehrkraft bleibt ohne Personalamt-Kind, geschlossene Ämter ohne Aktion", () => {
@@ -215,11 +215,12 @@ test("Kartenansicht: Überschrift fokussierbar, Knöpfe sind button, Unternaviga
   assert.ok(h2);
   assert.equal(h2.id, "ansicht-titel");
   assert.equal(h2.tabIndex, -1);
-  assert.ok(s.knoepfe().length >= 7, "Sprungknöpfe plus Zurück");
+  assert.ok(s.knoepfe().length >= 6, "Sprungknöpfe der Karte");
   s.knoepfe().forEach((k) => assert.equal(k.type, "button"));
   assert.ok(alle(s.ids.hauptinhalt).filter((k) => k.tag === "h3").length >= 6);
   assert.ok(s.unter().includes("Nachschlagen"));
-  assert.ok(s.knoepfe().some((k) => k.textContent === "Zurück zum Personalamt"));
+  assert.equal(s.knoepfe().some((k) => k.textContent === "Zurück zum Personalamt"), false, "kein zweiter Rücksprung im Inhalt");
+  assert.ok(alle(s.ids["rathaus-brotkrumen"]).some((k) => k.id === "rathaus-zurueck" && k.textContent === "Zurück zum Personalamt"));
 });
 
 test("Kartenansicht in der Oberfläche zeigt keine Pfade, Kennungen oder Lösungen", () => {
@@ -233,7 +234,7 @@ test("Kartenansicht in der Oberfläche zeigt keine Pfade, Kennungen oder Lösung
 
 test("Zurück zum Personalamt führt zur Übersicht", () => {
   const s = start(personal(), "#nachschlagen");
-  s.klick("Zurück zum Personalamt");
+  alle(s.ids["rathaus-brotkrumen"]).find((k) => k.id === "rathaus-zurueck").handlers.click();
   assert.equal(JSON.parse(s.store[KEY]).ansicht, "personal");
 });
 
@@ -243,8 +244,10 @@ test("rathaus.html bindet die Karte vor der Oberfläche ein", () => {
   assert.ok(html.indexOf("rathaus-nachschlagen.js") < html.indexOf("rathaus-ui.js"));
 });
 
-test("Plattformdateien sind gegenüber 85e0e3c unverändert", () => {
-  const dateien = ["js/navigation.js", "js/module-daten.js", "js/startseite.js", "js/fortschritt.js", "js/plattform-navigation.js"];
+test("Katalog und Fortschritt sind gegenüber 85e0e3c unverändert", () => {
+  // Navigation, Startseite und Plattformmodell wurden im NAVIGATION REBUILD bewusst umgebaut
+  // (siehe tests/navigation-rebuild.test.js). Katalog-IDs und Fortschrittsspeicher bleiben geschützt.
+  const dateien = ["js/module-daten.js", "js/fortschritt.js"];
   const diff = execFileSync("git", ["diff", "--name-only", "85e0e3cc694bd0574c7f5fc1f6b4145e5165abbd", "--"].concat(dateien), { cwd: wurzel }).toString().trim();
   assert.equal(diff, "");
 });

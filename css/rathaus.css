@@ -493,3 +493,51 @@ textarea.rathaus-freitext-gross {
 }
 .rathaus-krumenliste li { min-width: 0; max-width: 100%; }
 .rathaus-etappe, .rathaus-karte, .rathaus-dokument, .rathaus-teil { min-width: 0; max-width: 100%; box-sizing: border-box; }
+
+/* ===== NAVIGATION REBUILD: Ämtermenü, Fallübersicht, Orientierung, Lehrkraftbereich =====
+   Nur vorhandene Farbvariablen: Dark Mode und Anzeige & Lesen wirken unverändert. Maße in rem (Reflow bei großer Schrift). */
+.rathaus-leiste { flex-direction: column; align-items: stretch; gap: 0.4rem; }
+.rathaus-bereiche, .rathaus-unterleiste { max-width: none; margin: 0; padding: 0; }
+.rathaus-menue { position: relative; min-width: 0; }
+.rathaus-menue-schalter {
+  display: flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; align-items: baseline; list-style: none;
+  width: 100%; box-sizing: border-box; text-align: left; overflow-wrap: anywhere;
+}
+.rathaus-menue-schalter::-webkit-details-marker { display: none; }
+.rathaus-menue-schalter::after { content: "▾"; margin-left: auto; }
+.rathaus-menue[open] > .rathaus-menue-schalter::after { content: "▴"; }
+.rathaus-menue-name { font-weight: 400; }
+.rathaus-menue-wert { font-weight: 700; }
+.rathaus-menue-schalter:focus-visible { outline: 3px solid var(--farbe-akzent); outline-offset: 2px; }
+.rathaus-menue-liste {
+  list-style: none; margin: 0.3rem 0 0; padding: 0.4rem; display: grid; gap: 0.3rem;
+  border: 2px solid var(--farbe-rahmen); border-radius: var(--radius); background: var(--farbe-flaeche);
+}
+.rathaus-menue-liste .knopf { width: 100%; text-align: left; min-height: 44px; }
+.rathaus-menue-liste .knopf[aria-current="page"] { border-width: 3px; font-weight: 700; }
+.rathaus-menue-geplant {
+  display: block; padding: 0.6rem 0.8rem; border: 2px dashed var(--farbe-rahmen); border-radius: var(--radius);
+  color: var(--farbe-geplant-tekst); background: var(--farbe-geplant-flaeche); overflow-wrap: anywhere;
+}
+/* Breadcrumb: Text, kein Knopf. Der eine Zurück-Knopf steht davor. */
+.rathaus-brotkrumen { gap: 0.5rem 1rem; padding: 0.5rem 1rem; border-radius: var(--radius); background: var(--farbe-rueckzeile); }
+.rathaus-zurueck { min-height: 44px; padding: 0.5rem 0.9rem; font-size: 0.95rem; }
+.rathaus-pfad { display: flex; flex-wrap: wrap; gap: 0.2rem 0.5rem; align-items: baseline; min-width: 0; flex: 1 1 14rem; }
+.rathaus-pfad-label { color: var(--farbe-text-leise); font-size: 0.85rem; }
+.rathaus-krume {
+  border: 0; padding: 0; background: none; font: inherit; cursor: pointer; min-height: 0;
+  color: var(--farbe-akzent-dunkel); text-decoration: underline;
+}
+.rathaus-krume:focus-visible { outline: 3px solid var(--farbe-akzent); outline-offset: 2px; }
+/* Lehrkraft: eigener, abgesetzter Bedienbereich unter dem Inhalt. */
+.rathaus-lehrkraftbereich {
+  max-width: 960px; margin: 2rem auto 1rem; padding: 0.8rem 1rem; box-sizing: border-box;
+  border: 2px dashed var(--farbe-warn); border-radius: var(--radius); background: var(--farbe-hinweis-flaeche);
+}
+.rathaus-lehrkraftbereich h2 { margin: 0 0 0.3rem; font-size: 1.05rem; }
+.rathaus-lehrkraftbereich p { margin: 0.3rem 0; }
+.rathaus-lehrkraft-zeile { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; }
+@media (max-width: 640px) {
+  .rathaus-menue-schalter, .rathaus-lehrkraftbereich .knopf { width: 100%; }
+  .rathaus-brotkrumen .rathaus-zurueck { width: 100%; }
+}

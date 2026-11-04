@@ -40,7 +40,7 @@ window.__hat = (text) => document.getElementById('hauptinhalt').innerText.toLowe
     await b.oeffne("module/rathaus.html#buerger");
     await b.ev("localStorage.clear()");
     await b.neuLaden();
-    await b.ev("document.querySelector('[data-ansicht=\"buerger\"]').click()");
+    await b.ev("[...document.querySelectorAll('#rathaus-bereiche button')].find((k) => k.textContent === 'Bürgerbüro').click()");
     await b.warte(250);
     await b.ev(HELFER);
 
@@ -116,14 +116,14 @@ window.__hat = (text) => document.getElementById('hauptinhalt').innerText.toLowe
     await b.ev("__knopf('Bürgerbüro')");
     for (const breite of [320, 360, 400]) {
       await b.call("Emulation.setDeviceMetricsOverride", { width: breite, height: 800, deviceScaleFactor: 1, mobile: false });
-      await b.ev("document.querySelector('[data-ansicht=\"buerger\"]').click()");
+      await b.ev("[...document.querySelectorAll('#rathaus-bereiche button')].find((k) => k.textContent === 'Bürgerbüro').click()");
       await b.warte(200);
       await b.ev(HELFER);
       await b.ev("__knopf('Fall B02 öffnen')");
       await b.warte(300);
       const ueber = await b.ev("document.documentElement.scrollWidth - document.documentElement.clientWidth");
       check("Kein horizontaler Überlauf bei " + breite + " px (emuliert) in B02", ueber <= 0, ueber);
-      await b.ev("document.querySelector('[data-ansicht=\"buerger\"]').click()");
+      await b.ev("[...document.querySelectorAll('#rathaus-bereiche button')].find((k) => k.textContent === 'Bürgerbüro').click()");
     }
 
     check("Keine JavaScript-Ausnahmen", b.konsole.length === 0, b.konsole);

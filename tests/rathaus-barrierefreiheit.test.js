@@ -44,7 +44,7 @@ function start(speicher) {
     };
   }
   const ids = {};
-  ["hauptinhalt", "rathaus-fortschritt", "lehrkraft-banner", "lehrkraft-schalter", "rathaus-unterleiste", "rathaus-brotkrumen", "rathaus-ansage"].forEach((id) => {
+  ["hauptinhalt", "rathaus-fortschritt", "lehrkraft-banner", "lehrkraft-schalter", "rathaus-bereiche", "lehrkraft-status", "rathaus-unterleiste", "rathaus-brotkrumen", "rathaus-ansage"].forEach((id) => {
     ids[id] = knoten("div");
     ids[id].id = id;
   });
@@ -246,7 +246,7 @@ test("Ansichtswechsel setzt den Fokus auf die Überschrift der neuen Ansicht", (
   s.fokusLog.length = 0;
   s.knopf("Nachschlagekarte öffnen").handlers.click();
   assert.equal(s.fokusLog[s.fokusLog.length - 1], "ansicht-titel");
-  s.knopf("Zurück zum Personalamt").handlers.click();
+  alle(s.ids["rathaus-brotkrumen"]).find((k) => k.id === "rathaus-zurueck").handlers.click();
   assert.equal(s.fokusLog[s.fokusLog.length - 1], "ansicht-titel");
 });
 
@@ -272,7 +272,7 @@ test("Jede Ansicht hat genau eine fokussierbare Hauptüberschrift mit der id ans
 test("Zurück zur Stadtübersicht blendet die Schrittanzeige aus", () => {
   const s = start(speicher(FAELLE[0]));
   assert.equal(s.ids["rathaus-fortschritt"].hidden, false);
-  const zurStadt = alle(s.ids["rathaus-brotkrumen"]).find((k) => k.id === "zur-stadt");
+  const zurStadt = alle(s.ids["rathaus-brotkrumen"]).find((k) => k.id === "rathaus-zurueck");
   assert.ok(zurStadt, "Knopf zur Stadt fehlt");
   zurStadt.handlers.click();
   assert.equal(s.ids["rathaus-fortschritt"].hidden, true);

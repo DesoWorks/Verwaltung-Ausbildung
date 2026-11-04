@@ -18,7 +18,7 @@ window.__hat = (text) => document.getElementById('hauptinhalt').innerText.toLowe
     await b.oeffne("module/rathaus.html");
     await b.ev("localStorage.clear()");
     await b.neuLaden();
-    await b.ev("document.querySelector('[data-ansicht=\"buerger\"]').click()");
+    await b.ev("[...document.querySelectorAll('#rathaus-bereiche button')].find((k) => k.textContent === 'Bürgerbüro').click()");
     await b.warte(250);
     await b.ev(HELFER);
     check("B01 öffnen", await b.ev("__knopf('Fall B01 öffnen')"));

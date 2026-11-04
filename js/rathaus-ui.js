@@ -353,10 +353,6 @@
       ziel.appendChild(el("p", "rathaus-hinweis", daten.quelle));
       ziel.appendChild(el("p", "rathaus-meta", daten.grenze));
     }
-    var zurueck = el("button", "knopf", "Zurück zum Personalamt");
-    zurueck.type = "button";
-    zurueck.addEventListener("click", function () { zeige("personal"); });
-    ziel.appendChild(zurueck);
   }
 
   function zeichnePost(ziel) {
@@ -379,10 +375,6 @@
       karte.appendChild(lesen);
       ziel.appendChild(karte);
     });
-    var zurueck = el("button", "knopf", "Zurück zum Personalamt");
-    zurueck.type = "button";
-    zurueck.addEventListener("click", function () { zeige("personal"); });
-    ziel.appendChild(zurueck);
   }
 
   function zeichneAkte(ziel) {
@@ -914,43 +906,81 @@
     return knopf;
   }
 
-  function zeichneNavigation() {
-    var ebene = navi.leistenEbene(state.ansicht);
-    document.querySelectorAll("[data-ansicht]").forEach(function (knopf) {
-      var aktiv = knopf.getAttribute("data-ansicht") === ebene;
-      if (aktiv) knopf.setAttribute("aria-current", "page");
-      else knopf.removeAttribute("aria-current");
-    });
+  // Name der aktiven Person im Personalamt (reiner Anzeigekontext, ändert keinen Zustand).
+  function aktivePerson() {
+    return fall && fall.person && fall.person.name ? fall.person.name : "";
+  }
 
+  function zeichneNavigation() {
+    // Kompaktes Aufklappmenü (natives details): Beim Neuzeichnen ist es zu. Escape schließt es (siehe init).
+    // Die Auswahl öffnet eine Ansicht; der Fokus geht dann wie bisher auf die Ansichtsüberschrift.
+    function auswahlMenue(klasse, name, wert, eintraege, gruppe) {
+      var menue = el("details", "rathaus-menue " + klasse);
+      var schalter = el("summary", "knopf rathaus-menue-schalter");
+      schalter.appendChild(el("span", "rathaus-menue-name", name));
+      schalter.appendChild(el("span", "rathaus-menue-wert", wert));
+      menue.appendChild(schalter);
+      var liste = el("ul", "rathaus-menue-liste");
+      liste.setAttribute("aria-label", gruppe);
+      eintraege.forEach(function (eintrag) {
+        var li = el("li", "");
+        if (eintrag.benutzbar === false || eintrag.ansicht === null) {
+          var geplant = el("span", "rathaus-menue-geplant", eintrag.label + " – In Kürze");
+          geplant.setAttribute("aria-disabled", "true");
+          li.appendChild(geplant);
+        } else {
+          var knopf = navKnopf(eintrag.label, "knopf", eintrag.ansicht, eintrag.modus || undefined);
+          if (eintrag.aktuell) knopf.setAttribute("aria-current", "page");
+          li.appendChild(knopf);
+        }
+        liste.appendChild(li);
+      });
+      menue.appendChild(liste);
+      return menue;
+    }
+
+    var bereiche = document.getElementById("rathaus-bereiche");
+    if (bereiche) {
+      leeren(bereiche);
+      bereiche.appendChild(auswahlMenue("rathaus-menue-aemter", "Ämter: ", navi.bereichsMenueTitel(state.ansicht),
+        navi.bereichsMenue(state.ansicht), "Ämter der Stadtverwaltung"));
+    }
+
+    // Innerhalb eines Amts: eine kompakte Fallübersicht statt dauerhafter Knopfreihe.
     var unter = document.getElementById("rathaus-unterleiste");
     if (unter) {
       leeren(unter);
-      var eintraege = navi.personalUnternavigation(state.ansicht);
-      var unterName = "Personalamt";
-      if (!eintraege.length) {
-        eintraege = navi.buergerUnternavigation(state.ansicht, buergerModus);
-        if (eintraege.length) unterName = "Bürgerbüro";
+      var uebersicht = navi.fallUebersicht(state.ansicht, buergerModus);
+      unter.hidden = !uebersicht;
+      if (uebersicht) {
+        unter.setAttribute("aria-label", "Fallübersicht " + uebersicht.amt);
+        var person = uebersicht.amt === "Personalamt" ? aktivePerson() : "";
+        unter.appendChild(auswahlMenue("rathaus-menue-faelle", "Fälle und Seiten: ",
+          uebersicht.aktuellLabel + (person ? " · " + person : ""),
+          uebersicht.eintraege, "Fälle und Seiten im " + uebersicht.amt));
       }
-      unter.setAttribute("aria-label", unterName);
-      unter.hidden = eintraege.length === 0;
-      eintraege.forEach(function (eintrag) {
-        var knopf = navKnopf(eintrag.label, "knopf", eintrag.ansicht, eintrag.modus || undefined);
-        if (eintrag.aktuell) knopf.setAttribute("aria-current", "page");
-        unter.appendChild(knopf);
-      });
     }
 
+    // Orientierung: Breadcrumb (Text mit Trennern) plus genau ein Zurück zur Elternebene.
     var krumen = document.getElementById("rathaus-brotkrumen");
     if (krumen) {
       leeren(krumen);
-      var rueck = navi.rueckziel(state.ansicht);
+      var rueck = navi.rueckziel(state.ansicht, buergerModus);
       krumen.hidden = !rueck;
       if (rueck) {
+        var zurueck = navKnopf(rueck.label, "knopf rathaus-zurueck", rueck.ansicht, rueck.modus || undefined);
+        zurueck.id = "rathaus-zurueck";
+        krumen.appendChild(zurueck);
+        var pfad = el("div", "rathaus-pfad");
+        pfad.appendChild(el("span", "rathaus-pfad-label", "Du bist hier:"));
         var liste = el("ol", "rathaus-krumenliste");
-        navi.brotkrumen(state.ansicht, buergerModus).forEach(function (krume) {
+        var krumenListe = navi.brotkrumen(state.ansicht, buergerModus);
+        var person = navi.amtTitel(state.ansicht) === "Personalamt" ? aktivePerson() : "";
+        if (person && krumenListe.length > 2) krumenListe[krumenListe.length - 1].label += " (" + person + ")";
+        krumenListe.forEach(function (krume) {
           var li = el("li", "");
           if (krume.ziel) {
-            li.appendChild(navKnopf(krume.label, "knopf rathaus-krume", krume.ziel, krume.modus));
+            li.appendChild(navKnopf(krume.label, "rathaus-krume", krume.ziel, krume.modus));
           } else {
             var text = el("span", "rathaus-krume-text", krume.label);
             text.setAttribute("aria-current", "page");
@@ -958,10 +988,8 @@
           }
           liste.appendChild(li);
         });
-        krumen.appendChild(liste);
-        var zurStadt = navKnopf(rueck.label, "knopf knopf-haupt rathaus-zur-stadt", rueck.ansicht);
-        zurStadt.id = "zur-stadt";
-        krumen.appendChild(zurStadt);
+        pfad.appendChild(liste);
+        krumen.appendChild(pfad);
       }
     }
   }
@@ -991,6 +1019,8 @@
     zeichneNavigation();
     var lehrknopf = document.getElementById("lehrkraft-schalter");
     if (lehrknopf) lehrknopf.setAttribute("aria-pressed", state.lehrkraft ? "true" : "false");
+    var lehrstatus = document.getElementById("lehrkraft-status");
+    if (lehrstatus) lehrstatus.textContent = state.lehrkraft ? "Lehrkraftmodus ist an." : "Lehrkraftmodus ist aus.";
     leeren(haupt);
     if (state.ansicht === "personal") zeichnePersonal(haupt);
     else if (state.ansicht === "post") zeichnePost(haupt);
@@ -1033,10 +1063,15 @@
     laden();
     state.ansicht = navi.ansichtNachLaden(state.ansicht, state.lehrkraft);
     var vomHash = hashAnwenden();
-    document.querySelectorAll("[data-ansicht]").forEach(function (knopf) {
-      knopf.addEventListener("click", function () {
-        zeige(knopf.getAttribute("data-ansicht"));
-      });
+    // Escape schließt ein offenes Navigationsmenü und gibt den Fokus an dessen Schalter zurück.
+    // Nur das Menü, das den Fokus enthält, wird geschlossen; fremde Escape-Tasten bleiben unberührt.
+    document.addEventListener("keydown", function (ereignis) {
+      if (ereignis.key !== "Escape" || !ereignis.target || typeof ereignis.target.closest !== "function") return;
+      var menue = ereignis.target.closest("details.rathaus-menue[open]");
+      if (!menue) return;
+      menue.removeAttribute("open");
+      var schalter = menue.querySelector("summary");
+      if (schalter) schalter.focus();
     });
     var schalter = document.getElementById("lehrkraft-schalter");
     if (schalter) {

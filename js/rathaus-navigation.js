@@ -18,10 +18,12 @@
   var STADT_LABEL = "Stadtverwaltung";
   var RUECK_LABEL = "Zur Stadtübersicht";
 
+  // Ämter stehen alphabetisch nach sichtbarem Titel (deutsche Sortierung). Neue Ämter einfach ergänzen:
+  // aemter() sortiert selbst. Geplante und benutzbare Ämter werden nicht getrennt vorsortiert.
   var AEMTER = [
-    { id: "personal", titel: "Personalamt", benutzbar: true, ansicht: "personal", beschreibung: "Ausbildungsverhältnisse, Akten und der erste bearbeitbare Vorgang." },
     { id: "buergerbuero", titel: "Bürgerbüro", benutzbar: true, ansicht: "buerger", beschreibung: "Schalter und Anliegen der Einwohnerschaft. Erster Fall: Anmeldung nach einem Zuzug." },
     { id: "ordnungsamt", titel: "Ordnungsamt", benutzbar: false, ansicht: null, beschreibung: "Ordnung und Genehmigungen." },
+    { id: "personal", titel: "Personalamt", benutzbar: true, ansicht: "personal", beschreibung: "Ausbildungsverhältnisse, Akten und der erste bearbeitbare Vorgang." },
     { id: "stadtkasse", titel: "Stadtkasse", benutzbar: false, ansicht: null, beschreibung: "Zahlungen und Gebühren." }
   ];
 
@@ -48,7 +50,10 @@
   }
 
   function aemter() {
-    return AEMTER.map(function (amt) {
+    var vergleich = typeof Intl === "object" && Intl.Collator
+      ? new Intl.Collator("de", { numeric: true, sensitivity: "base" }).compare
+      : function (a, b) { return a < b ? -1 : (a > b ? 1 : 0); };
+    return AEMTER.slice().sort(function (a, b) { return vergleich(a.titel, b.titel); }).map(function (amt) {
       return {
         id: amt.id,
         titel: amt.titel,
@@ -79,9 +84,55 @@
     return [{ label: STADT_LABEL, ziel: null }];
   }
 
-  function rueckziel(ansicht) {
+  // Genau ein Zurück: immer die Elternebene, unabhängig vom Browserverlauf.
+  // Fall, Karte und Posteingang gehen zum Amt, das Amt geht zur Stadt. Zweites Argument wie bei brotkrumen().
+  function rueckziel(ansicht, modus) {
     if (!istAnsicht(ansicht) || ansicht === "stadt") return null;
-    return { ansicht: "stadt", label: RUECK_LABEL };
+    if (PERSONAL_ANSICHTEN.indexOf(ansicht) !== -1 && ansicht !== "personal") {
+      return { ansicht: "personal", modus: null, label: "Zurück zum Personalamt" };
+    }
+    if (ansicht === "buerger-karte" || (ansicht === "buerger" && (modus === "fall" || modus === "fall-b02"))) {
+      return { ansicht: "buerger", modus: "uebersicht", label: "Zurück zum Bürgerbüro" };
+    }
+    return { ansicht: "stadt", modus: null, label: RUECK_LABEL };
+  }
+
+  // Name des Amts, in dem die Ansicht liegt, sonst null.
+  function amtTitel(ansicht) {
+    var ebene = leistenEbene(ansicht);
+    if (ebene === "personal") return TITEL.personal;
+    if (ebene === "buerger") return TITEL.buerger;
+    return null;
+  }
+
+  // Eintraege des kompakten Ämtermenüs: Stadtübersicht, dann die Ämter alphabetisch. Nicht benutzbare
+  // Ämter haben ansicht null und werden als "In Kürze" angezeigt, nicht als Knopf.
+  function bereichsMenue(ansicht) {
+    var ebene = leistenEbene(ansicht);
+    var menue = [{ id: "stadt", label: "Stadtübersicht", ansicht: "stadt", benutzbar: true, aktuell: ebene === "stadt" }];
+    aemter().forEach(function (amt) {
+      var ziel = amt.ansicht;
+      menue.push({
+        id: amt.id, label: amt.titel, ansicht: ziel, benutzbar: amt.benutzbar,
+        aktuell: amt.benutzbar && ((ziel === "personal" && ebene === "personal") || (ziel === "buerger" && ebene === "buerger"))
+      });
+    });
+    return menue;
+  }
+
+  // Beschriftung der Menüschaltfläche: wo bin ich gerade?
+  function bereichsMenueTitel(ansicht) {
+    return amtTitel(ansicht) || (ansicht === "lehrkraft" ? TITEL.lehrkraft : TITEL.stadt);
+  }
+
+  // Kompakte Fallübersicht des aktuellen Amts oder null (Stadt, Lehrkraft). Zweites Argument wie bei brotkrumen().
+  function fallUebersicht(ansicht, modus) {
+    var amt = amtTitel(ansicht);
+    if (!amt) return null;
+    var eintraege = personalUnternavigation(ansicht);
+    if (!eintraege.length) eintraege = buergerUnternavigation(ansicht, modus);
+    var aktuell = eintraege.filter(function (e) { return e.aktuell; })[0];
+    return { amt: amt, eintraege: eintraege, aktuellLabel: aktuell ? aktuell.label : "" };
   }
 
   function personalUnternavigation(ansicht) {
@@ -147,6 +198,10 @@
     aemter: aemter,
     brotkrumen: brotkrumen,
     rueckziel: rueckziel,
+    amtTitel: amtTitel,
+    bereichsMenue: bereichsMenue,
+    bereichsMenueTitel: bereichsMenueTitel,
+    fallUebersicht: fallUebersicht,
     personalUnternavigation: personalUnternavigation,
     buergerUnternavigation: buergerUnternavigation,
     leistenEbene: leistenEbene,

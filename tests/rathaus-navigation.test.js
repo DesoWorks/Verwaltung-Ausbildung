@@ -56,11 +56,15 @@ test("Brotkrumen der Lehrkraftansicht ohne Personalamt", () => {
   assert.strictEqual(k[1].ziel, null);
 });
 
-test("Rückziel jeder Nicht-Stadt-Ansicht ist stadt", () => {
-  nav.ANSICHTEN.filter((a) => a !== "stadt").forEach((a) => {
-    assert.deepStrictEqual(nav.rueckziel(a), { ansicht: "stadt", label: "Zur Stadtübersicht" }, a);
+test("Rückziel ist immer die Elternebene: Amtsseiten zum Amt, Ämter und Lehrkraft zur Stadt", () => {
+  ["post", "akte", "vorgang", "nachschlagen"].forEach((a) => {
+    assert.deepStrictEqual(nav.rueckziel(a), { ansicht: "personal", modus: null, label: "Zurück zum Personalamt" }, a);
+  });
+  ["personal", "lehrkraft", "buerger"].forEach((a) => {
+    assert.deepStrictEqual(nav.rueckziel(a, "uebersicht"), { ansicht: "stadt", modus: null, label: "Zur Stadtübersicht" }, a);
   });
   assert.strictEqual(nav.rueckziel("stadt"), null);
+  assert.strictEqual(nav.rueckziel("unbekannt"), null);
 });
 
 test("Hashes #buerger und #buerger-karte werden erkannt, #lehrkraft bleibt abgelehnt", () => {
@@ -75,9 +79,13 @@ test("Bürgerbüro: Brotkrumen, Rückziel und Unternavigation", () => {
   assert.deepStrictEqual(labels(nav.brotkrumen("buerger", "fall")), ["Stadtverwaltung", "Bürgerbüro", "Fall B01"]);
   assert.deepStrictEqual(labels(nav.brotkrumen("buerger-karte")), ["Stadtverwaltung", "Bürgerbüro", "Nachschlagen"]);
   ["buerger", "buerger-karte"].forEach((a) => {
-    assert.deepStrictEqual(nav.rueckziel(a), { ansicht: "stadt", label: "Zur Stadtübersicht" });
     assert.strictEqual(nav.leistenEbene(a), "buerger");
   });
+  const zumAmt = { ansicht: "buerger", modus: "uebersicht", label: "Zurück zum Bürgerbüro" };
+  assert.deepStrictEqual(nav.rueckziel("buerger-karte"), zumAmt);
+  assert.deepStrictEqual(nav.rueckziel("buerger", "fall"), zumAmt);
+  assert.deepStrictEqual(nav.rueckziel("buerger", "fall-b02"), zumAmt);
+  assert.deepStrictEqual(nav.rueckziel("buerger", "uebersicht"), { ansicht: "stadt", modus: null, label: "Zur Stadtübersicht" });
   const u = nav.buergerUnternavigation("buerger", "fall");
   assert.deepStrictEqual(labels(u), ["Übersicht", "Fall B01", "Fall B02", "Nachschlagen"]);
   assert.deepStrictEqual(u.filter((e) => e.aktuell).map((e) => e.label), ["Fall B01"]);
@@ -90,7 +98,7 @@ test("Bürgerbüro: Brotkrumen, Rückziel und Unternavigation", () => {
 
 test("Vorschauämter haben keine Aktion, Personalamt und Bürgerbüro sind benutzbar", () => {
   const liste = nav.aemter();
-  assert.deepStrictEqual(liste.map((a) => a.titel), ["Personalamt", "Bürgerbüro", "Ordnungsamt", "Stadtkasse"]);
+  assert.deepStrictEqual(liste.map((a) => a.titel), ["Bürgerbüro", "Ordnungsamt", "Personalamt", "Stadtkasse"]);
   liste.forEach((a) => {
     if (a.id === "personal" || a.id === "buergerbuero") {
       assert.strictEqual(a.benutzbar, true);

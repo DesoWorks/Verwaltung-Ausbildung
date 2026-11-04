@@ -577,7 +577,6 @@
     reset.appendChild(el("h3", "", "Zurücksetzen"));
     reset.appendChild(knopf("Fall B02 zurücksetzen", "knopf knopf-warn", zuruecksetzen));
     host.appendChild(reset);
-    host.appendChild(knopf("Zur Bürgerbüro-Übersicht", "knopf", function () { ctx.wechsle("buerger", "uebersicht"); }));
 
     aktualisiere();
   }

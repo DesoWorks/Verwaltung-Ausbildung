@@ -23,18 +23,21 @@
   </header>
   <p id="lehrkraft-banner" class="rathaus-warnbanner" hidden>Nur lokaler Test. Keine echte Rollenprüfung. Nicht produktiv. Keine Schülerdaten.</p>
   <div class="rathaus-leiste">
-    <nav class="rathaus-ansichten" aria-label="Bereiche der Stadtverwaltung">
-      <button type="button" class="knopf" data-ansicht="stadt">Stadtübersicht</button>
-      <button type="button" class="knopf" data-ansicht="personal">Personalamt</button>
-      <button type="button" class="knopf" data-ansicht="buerger">Bürgerbüro</button>
-    </nav>
-    <button type="button" class="knopf" id="lehrkraft-schalter" aria-pressed="false">Lehrkraftmodus lokal ein oder aus</button>
+    <nav id="rathaus-bereiche" class="rathaus-bereiche" aria-label="Ämter der Stadtverwaltung"></nav>
+    <nav id="rathaus-unterleiste" class="rathaus-unterleiste" aria-label="Fallübersicht" hidden></nav>
   </div>
-  <nav id="rathaus-unterleiste" class="rathaus-unterleiste" aria-label="Personalamt" hidden></nav>
   <nav id="rathaus-brotkrumen" class="rathaus-brotkrumen" aria-label="Du bist hier" hidden></nav>
   <div id="rathaus-fortschritt" hidden></div>
   <div id="rathaus-ansage" class="nur-lesen" role="status" aria-live="polite" aria-atomic="true"></div>
   <main id="hauptinhalt" class="inhalt rathaus-inhalt" tabindex="-1"></main>
+  <aside id="rathaus-lehrkraftbereich" class="rathaus-lehrkraftbereich" aria-labelledby="lehrkraftbereich-titel">
+    <h2 id="lehrkraftbereich-titel">Lehrkraftbereich</h2>
+    <p>Nur für Lehrkräfte. Der Schalter wirkt lokal in diesem Browser und ist keine echte Rollenprüfung.</p>
+    <p class="rathaus-lehrkraft-zeile">
+      <button type="button" class="knopf" id="lehrkraft-schalter" aria-pressed="false">Lehrkraftmodus lokal ein oder aus</button>
+      <span id="lehrkraft-status" class="rathaus-lehrkraft-status">Lehrkraftmodus ist aus.</span>
+    </p>
+  </aside>
   <footer class="fuss"><p>Virtuelles Rathaus · lokale Testfassung · Version <span data-version></span> · kein Cloud-Dienst</p></footer>
   <script src="../js/module-daten.js"></script>
   <script src="../js/fortschritt.js"></script>

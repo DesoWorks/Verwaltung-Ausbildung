@@ -22,12 +22,27 @@
     return Array.isArray(wert) ? wert : [];
   }
 
+  // Gleichrangige freie Einträge (Praxiswelten, Werkzeuge) alphabetisch nach sichtbarem Titel, deutsch und
+  // mit natürlicher Ziffernsortierung. Sortiert immer eine Kopie; Katalog und IDs bleiben unverändert.
+  function sortiereNachTitel(eintraege) {
+    var kopie = liste(eintraege).slice();
+    var vergleich = typeof Intl === "object" && Intl.Collator
+      ? new Intl.Collator("de", { numeric: true, sensitivity: "base" }).compare
+      : function (a, b) { return a < b ? -1 : (a > b ? 1 : 0); };
+    return kopie
+      .map(function (e, index) { return { e: e, index: index }; })
+      .sort(function (a, b) {
+        return vergleich(String(a.e.titel || ""), String(b.e.titel || "")) || a.index - b.index;
+      })
+      .map(function (x) { return x.e; });
+  }
+
   function praxisEintraege(einstieg) {
-    return liste(einstieg)
+    return sortiereNachTitel(liste(einstieg)
       .filter(function (e) { return e && e.status === "verfuegbar" && e.datei; })
       .map(function (e) {
-        return { id: e.id, titel: e.titel, datei: e.datei, page: e.page, rolle: "praxiswelt", zaehltFortschritt: false };
-      });
+        return { id: e.id, titel: e.titel, beschreibung: e.beschreibung || "", datei: e.datei, page: e.page, rolle: "praxiswelt", zaehltFortschritt: false };
+      }));
   }
 
   function unterrichtEintraege(module) {
@@ -54,9 +69,9 @@
   }
 
   function werkzeugEintraege(tools) {
-    var ergebnis = liste(tools).map(function (t) {
+    var ergebnis = sortiereNachTitel(liste(tools).map(function (t) {
       return { id: t.id, titel: t.titel, datei: t.datei, page: t.page, rolle: "werkzeug", zaehltFortschritt: true };
-    });
+    }));
     ergebnis.push({ id: "glossary", titel: "Wörter & Begriffe", datei: "glossar.html", page: "glossary", rolle: "glossar", zaehltFortschritt: true });
     return ergebnis;
   }
@@ -72,5 +87,5 @@
     ];
   }
 
-  return { BEREICH_LABELS: BEREICH_LABELS, bereiche: bereiche };
+  return { BEREICH_LABELS: BEREICH_LABELS, bereiche: bereiche, sortiereNachTitel: sortiereNachTitel };
 });

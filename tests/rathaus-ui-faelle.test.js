@@ -41,7 +41,7 @@ function text(k) {
 function start(speicher) {
   const store = Object.assign({}, speicher);
   const ids = {};
-  ["hauptinhalt", "rathaus-fortschritt", "lehrkraft-banner", "lehrkraft-schalter", "rathaus-unterleiste", "rathaus-brotkrumen"].forEach((id) => {
+  ["hauptinhalt", "rathaus-fortschritt", "lehrkraft-banner", "lehrkraft-schalter", "rathaus-bereiche", "lehrkraft-status", "rathaus-unterleiste", "rathaus-brotkrumen"].forEach((id) => {
     ids[id] = knoten("div");
     ids[id].id = id;
   });

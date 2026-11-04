@@ -31,9 +31,9 @@ const MESSEN = `(() => {
         await b.neuLaden();
         const ansichten = [
           ["Stadt", ""],
-          ["Bürgerbüro-Übersicht", "document.querySelector('[data-ansicht=\"buerger\"]').click()"],
+          ["Bürgerbüro-Übersicht", "[...document.querySelectorAll('#rathaus-bereiche button')].find((k) => k.textContent === 'Bürgerbüro').click()"],
           ["Fall B01", "Array.from(document.querySelectorAll('button')).find(k=>k.textContent==='Fall B01 öffnen').click()"],
-          ["Fall B02", "document.querySelector('[data-ansicht=\"buerger\"]').click()"],
+          ["Fall B02", "[...document.querySelectorAll('#rathaus-bereiche button')].find((k) => k.textContent === 'Bürgerbüro').click()"],
           ["Fall B02 offen", "Array.from(document.querySelectorAll('button')).find(k=>k.textContent==='Fall B02 öffnen').click()"],
           ["Lehrkraft", "document.getElementById('lehrkraft-schalter').click()"]
         ];

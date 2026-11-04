@@ -112,11 +112,14 @@
     var state = readState();
     var returningField = "";
     try { returningField = sessionStorage.getItem(RETURN_KEY) || ""; } catch (_) {}
-    var entry = window.MODULE_EINSTIEG || [];
+    var entry = window.PLATTFORM_NAVIGATION
+      ? window.PLATTFORM_NAVIGATION.bereiche({ einstieg: window.MODULE_EINSTIEG, module: years, tools: window.MODULE_TOOLS }).filter(function (b) { return b.id === "praxiswelten"; })[0].eintraege
+      : (window.MODULE_EINSTIEG || []);
     if (entry.length) {
       var section = erzeuge("section", "overview-entry");
-      section.setAttribute("aria-labelledby", "einstieg-titel");
-      var h = erzeuge("h2", null, "Einstieg"); h.id = "einstieg-titel"; section.appendChild(h);
+      section.setAttribute("aria-labelledby", "praxiswelten-titel");
+      var h = erzeuge("h2", null, "Praxiswelten"); h.id = "praxiswelten-titel"; section.appendChild(h);
+      section.appendChild(erzeuge("p", "overview-entry-hinweis", "Übungswelten zum Anwenden. Sie sind keine Lektionen und zählen keinen Lernfortschritt."));
       var list = erzeuge("ul", "modul-liste"); entry.forEach(function (m) { list.appendChild(makeEntry(m)); }); section.appendChild(list); target.appendChild(section);
     }
     years.forEach(function (year) {

@@ -25,7 +25,7 @@ window.__fallHinweis = () => { const h = document.getElementById('b2-verworfen-h
     await b.warte(800);
     check("Rathaus geöffnet (file://)", await b.ev("location.protocol === 'file:' && /rathaus\\.html/.test(location.pathname)"));
     await b.ev(HELFER);
-    await b.ev("document.querySelector('[data-ansicht=\"buerger\"]').click()");
+    await b.ev("[...document.querySelectorAll('#rathaus-bereiche button')].find((k) => k.textContent === 'Bürgerbüro').click()");
     await b.warte(250);
     await b.ev(HELFER);
     check("Sauberer Start: kein Hinweis in der Übersicht", await b.ev("!__hinweis()"));
@@ -59,7 +59,7 @@ window.__fallHinweis = () => { const h = document.getElementById('b2-verworfen-h
     await b.warte(300);
     check("Nach Reset kein B02-Schlüssel", await b.ev("localStorage.getItem(" + JSON.stringify(SCHLUESSEL) + ") === null"));
     check("Nach Reset Hinweis im Fall weg", !(await b.ev("__fallHinweis()")));
-    await b.ev("__knopf('Zur Bürgerbüro-Übersicht')");
+    check("Zurück zum Bürgerbüro (einziger Rücksprung)", await b.ev("__knopf('Zurück zum Bürgerbüro')"));
     await b.warte(250);
     await b.ev(HELFER);
     check("Nach Reset Hinweis in der Übersicht weg", await b.ev("!__hinweis()"));
