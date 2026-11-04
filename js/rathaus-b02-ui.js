@@ -27,6 +27,8 @@
     { id: "register", text: "Übungsregisterauszug", inhalt: "Übungsregisterauszug (fiktiv). Alex Weber, geboren 14.02.1997, alleinige Wohnung Lindenweg 8, 00000 Sonnenthal. Kein Doktorgrad gespeichert. Alle Angaben stimmen mit Ausweis und Antrag überein." }
   ];
   var LESEFEHLER = "Der gespeicherte Stand konnte nicht gelesen werden. Du startest mit einem leeren Fall.";
+  var VERWORFEN_HINWEIS = "Hinweis: Der gespeicherte Stand von B02 konnte nicht gelesen werden oder passt nicht mehr zur aktuellen Bewertung. " +
+    "Es wird kein alter Abschluss und keine alte Auswertung übernommen. Bitte prüfe deine Eingaben und lass sie erneut auswerten.";
   var SCHREIBFEHLER = "Speichern nicht möglich. Dein Stand gilt nur, bis du diese Seite verlässt. Prüfe, ob der Browser das Speichern erlaubt.";
 
   var modell = null;
@@ -359,6 +361,7 @@
   }
 
   function aktualisiere() {
+    if (refs.verworfen) refs.verworfen.hidden = !modell.verworfen;
     if (refs.schritte) fuelleSchritte(refs.schritte);
     if (refs.auswertung) fuelleAuswertung(refs.auswertung);
   }
@@ -468,6 +471,12 @@
     refs.fehler.setAttribute("role", "alert");
     zeigeFehler();
     host.appendChild(refs.fehler);
+
+    refs.verworfen = el("p", "rathaus-hinweis", VERWORFEN_HINWEIS);
+    refs.verworfen.id = "b2-verworfen-hinweis";
+    refs.verworfen.setAttribute("role", "status");
+    refs.verworfen.hidden = !modell.verworfen;
+    host.appendChild(refs.verworfen);
 
     refs.status = el("p", "nur-lesen");
     refs.status.setAttribute("role", "status");

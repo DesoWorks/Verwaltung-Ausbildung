@@ -457,19 +457,26 @@
     return leer ? "Stand: noch nicht begonnen" : "Stand: in Bearbeitung";
   }
 
+  var B02_VERWORFEN_HINWEIS = "Hinweis zu Fall B02: Der gespeicherte Stand konnte nicht gelesen werden oder passt nicht mehr zur aktuellen Bewertung. " +
+    "Es wird kein alter Abschluss und keine alte Auswertung übernommen. Es wurde nichts gelöscht; beim nächsten Speichern " +
+    "oder über „Fall B02 zurücksetzen“ im Fall wird der alte Stand ersetzt.";
+
   // Stand von B02 nur lesend aus dem B02-eigenen Speicher; schreibt nie.
-  function standTextB02() {
+  // Liefert Text und das Flag "verworfen" (defekter oder nicht mehr passender gespeicherter Stand).
+  function zustandB02() {
     var b2 = window.RATHAUS_B02;
-    if (!b2) return "Stand: nicht verfügbar";
+    if (!b2) return { text: "Stand: nicht verfügbar", verworfen: false };
     var roh = null;
-    try { roh = window.localStorage.getItem(b2.SPEICHER_SCHLUESSEL); } catch (fehler) { return "Stand: nicht lesbar"; }
-    if (!roh) return "Stand: noch nicht begonnen";
+    try { roh = window.localStorage.getItem(b2.SPEICHER_SCHLUESSEL); } catch (fehler) { return { text: "Stand: nicht lesbar", verworfen: false }; }
+    if (!roh) return { text: "Stand: noch nicht begonnen", verworfen: false };
     var s = b2.bereinigeGespeichert(roh);
-    if (s.abgeschlossen) return "Stand: Übungsfall abgeschlossen";
-    if (s.letzteAuswertung) return "Stand: ausgewertet, noch nicht abgeschlossen";
+    var verworfen = s.verworfen === true;
+    if (s.abgeschlossen) return { text: "Stand: Übungsfall abgeschlossen", verworfen: verworfen };
+    if (s.letzteAuswertung) return { text: "Stand: ausgewertet, noch nicht abgeschlossen", verworfen: verworfen };
     var leer = b2.eingabeVersion({}) === b2.eingabeVersion(s.eingaben);
-    return leer ? "Stand: noch nicht begonnen" : "Stand: in Bearbeitung";
+    return { text: leer ? "Stand: noch nicht begonnen" : "Stand: in Bearbeitung", verworfen: verworfen };
   }
+  function standTextB02() { return zustandB02().text; }
 
   function zeichneUebersicht(host, ctx) {
     titel(host, "Bürgerbüro Sonnenthal");
@@ -480,6 +487,12 @@
     refs.fehler.setAttribute("role", "alert");
     zeigeFehler();
     host.appendChild(refs.fehler);
+    if (zustandB02().verworfen) {
+      var verworfenHinweis = el("p", "rathaus-hinweis", B02_VERWORFEN_HINWEIS);
+      verworfenHinweis.id = "b02-verworfen-hinweis";
+      verworfenHinweis.setAttribute("role", "status");
+      host.appendChild(verworfenHinweis);
+    }
     host.appendChild(el("h3", "", "Fallübersicht"));
     var raster = el("div", "rathaus-raster");
     bb.fallListe().forEach(function (f) {
