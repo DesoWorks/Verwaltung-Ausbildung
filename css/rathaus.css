@@ -114,7 +114,7 @@
 
 .rathaus-raster {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
   gap: 0.8rem;
 }
 
@@ -319,7 +319,7 @@ textarea.rathaus-freitext-gross {
 }
 
 @media (max-width: 640px) {
-  .rathaus-akte { grid-template-columns: 1fr; }
+  .rathaus-akte { grid-template-columns: minmax(0, 1fr); }
   .rathaus-leiste,
   .rathaus-ansichten,
   .knopf-reihe {
@@ -338,8 +338,9 @@ textarea.rathaus-freitext-gross {
     display: grid;
     gap: 0.3rem;
   }
-  .rathaus-ansichten { grid-template-columns: 1fr 1fr; }
-  .rathaus-unterleiste { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 0.3rem; }
+  /* Spalten in rem: sie wachsen mit der Textgröße (Anzeige & Lesen), die Leiste wird dann einspaltig statt breiter. */
+  .rathaus-ansichten { grid-template-columns: repeat(auto-fit, minmax(min(100%, 8.5rem), 1fr)); }
+  .rathaus-unterleiste { grid-template-columns: repeat(auto-fit, minmax(min(100%, 5.5rem), 1fr)); margin-top: 0.3rem; }
   .rathaus-leiste { gap: 0.3rem; margin-top: 0.5rem; }
   .rathaus-ansichten .knopf,
   .rathaus-unterleiste .knopf {
@@ -353,11 +354,11 @@ textarea.rathaus-freitext-gross {
   .rathaus-unterleiste .knopf { font-size: 0.85rem; }
   #lehrkraft-schalter { font-size: 0.85rem; }
   /* Position und Zurück in einer Zeile: der Knopf "Zur Stadtübersicht" ersetzt die erste Brotkrume. */
-  .rathaus-brotkrumen { flex-wrap: nowrap; gap: 0.5rem; margin-top: 0.3rem; }
+  .rathaus-brotkrumen { flex-wrap: wrap; gap: 0.5rem; margin-top: 0.3rem; }
   .rathaus-krumenliste { width: auto; flex: 1 1 auto; min-width: 0; }
   .rathaus-krumenliste li:first-child { display: none; }
   .rathaus-krumenliste li:nth-child(2)::before { content: none; }
-  .rathaus-brotkrumen .rathaus-zur-stadt { width: auto; flex: 0 0 auto; max-width: 45%; min-height: 44px; font-size: 0.85rem; }
+  .rathaus-brotkrumen .rathaus-zur-stadt { width: auto; flex: 0 1 auto; max-width: 100%; min-height: 44px; font-size: 0.85rem; }
 }
 
 /* Einzelbewertungen: Wort und Symbol tragen die Aussage, Farbe und Rahmen unterstützen nur. */
@@ -473,9 +474,22 @@ textarea.rathaus-freitext-gross {
 
 @media (max-width: 640px) {
   /* Bürgerbüro: drei Textlabels in einer Zeile, Schrittknöpfe in zwei Spalten. */
-  .rathaus-unterleiste[aria-label="Bürgerbüro"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .rathaus-schritte { display: grid; grid-template-columns: 1fr 1fr; }
+  .rathaus-unterleiste[aria-label="Bürgerbüro"] { grid-template-columns: repeat(auto-fit, minmax(min(100%, 5.5rem), 1fr)); }
+  .rathaus-schritte { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr)); }
   .rathaus-schritte .rathaus-schritt { width: 100%; font-size: 0.88rem; padding-left: 0.3rem; padding-right: 0.3rem; }
   .rathaus-etappe { padding: 0.7rem 0.7rem; }
-  .rathaus-raster { grid-template-columns: 1fr; }
+  .rathaus-raster { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Reflow: lange Wörter und Knopfbeschriftungen brechen um, statt die Seite breiter als den Bildschirm zu machen.
+   Ursache des früheren horizontalen Scrollens: Gitterspalten "1fr" und Mindestbreiten in px/rem, Knöpfe
+   mit unteilbarem Langwort und eine nicht umbrechende Brotkrumenleiste. Kein overflow-x: hidden. */
+.rathaus-inhalt, .rathaus-leiste, .rathaus-unterleiste, .rathaus-brotkrumen, #rathaus-fortschritt {
+  overflow-wrap: anywhere;
+}
+.rathaus-inhalt .knopf, .rathaus-leiste .knopf, .rathaus-unterleiste .knopf, .rathaus-brotkrumen .knopf {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.rathaus-krumenliste li { min-width: 0; max-width: 100%; }
+.rathaus-etappe, .rathaus-karte, .rathaus-dokument, .rathaus-teil { min-width: 0; max-width: 100%; box-sizing: border-box; }

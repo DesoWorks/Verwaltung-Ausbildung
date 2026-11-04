@@ -505,7 +505,7 @@ html.ruhige-ansicht *, html.bewegung-reduziert * { animation: none !important; t
 .nav-options { max-width: 1200px; margin: .4rem auto 0; }
 .nav-options .leseoptionen { max-width: none; margin: 0; padding: 0; }
 .nav-options .leseoptionen-inhalt { max-width: 36rem; }
-.glossar-liste { display: grid; grid-template-columns: 1fr; gap: 0 1.5rem; align-items: start; margin-top: 1rem; }
+.glossar-liste { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 1.5rem; align-items: start; margin-top: 1rem; }
 .glossar-liste .glossar-eintrag { border-top: 1px solid var(--farbe-rahmen); }
 /* Eine Spalte unter 1100px. Drei ab Desktop, vier nur wenn die Erklärungen noch lesbar bleiben.
    Raster statt Spalten: ein aufgeklapptes Wort bleibt in seiner Spalte. */
@@ -592,3 +592,14 @@ input:focus-visible,
   outline: 3px solid var(--farbe-akzent);
   outline-offset: 2px;
 }
+
+/* Reflow bei schmalen Ansichten und großer Schrift: Fieldsets haben standardmäßig min-width: min-content
+   und machten Quizseiten breiter als den Bildschirm. Lange Wörter dürfen als letzte Möglichkeit umbrechen.
+   Kein overflow-x: hidden, damit nichts abgeschnitten wird. */
+fieldset { min-width: 0; max-width: 100%; box-sizing: border-box; }
+main p, main li, main strong, main h2, main h3, main h4, main td, main th, main label, .quiz-frage legend { overflow-wrap: break-word; }
+.quiz-option, .quiz-optionen { min-width: 0; max-width: 100%; box-sizing: border-box; overflow-wrap: anywhere; }
+.quiz-option .markierung { margin-left: auto; overflow-wrap: normal; }
+summary, legend, .glossar-eintrag p { overflow-wrap: anywhere; max-width: 100%; box-sizing: border-box; }
+/* Knöpfe mit flex-basis 100% liefen wegen content-box um Polster und Rahmen über den Rand hinaus. */
+.knopf { box-sizing: border-box; max-width: 100%; overflow-wrap: anywhere; }

@@ -457,6 +457,20 @@
     return leer ? "Stand: noch nicht begonnen" : "Stand: in Bearbeitung";
   }
 
+  // Stand von B02 nur lesend aus dem B02-eigenen Speicher; schreibt nie.
+  function standTextB02() {
+    var b2 = window.RATHAUS_B02;
+    if (!b2) return "Stand: nicht verfügbar";
+    var roh = null;
+    try { roh = window.localStorage.getItem(b2.SPEICHER_SCHLUESSEL); } catch (fehler) { return "Stand: nicht lesbar"; }
+    if (!roh) return "Stand: noch nicht begonnen";
+    var s = b2.bereinigeGespeichert(roh);
+    if (s.abgeschlossen) return "Stand: Übungsfall abgeschlossen";
+    if (s.letzteAuswertung) return "Stand: ausgewertet, noch nicht abgeschlossen";
+    var leer = b2.eingabeVersion({}) === b2.eingabeVersion(s.eingaben);
+    return leer ? "Stand: noch nicht begonnen" : "Stand: in Bearbeitung";
+  }
+
   function zeichneUebersicht(host, ctx) {
     titel(host, "Bürgerbüro Sonnenthal");
     var daten = bb.fallDaten();
@@ -472,8 +486,9 @@
       var karte = el("article", "rathaus-karte " + (f.startbar ? "ist-aktiv" : "ist-vorschau"));
       karte.appendChild(el("h4", "", "Fall " + f.id.toUpperCase() + ": " + f.titel));
       if (f.startbar) {
-        karte.appendChild(el("p", "rathaus-status", standText()));
-        karte.appendChild(knopf("Fall B01 öffnen", "knopf knopf-haupt", function () { ctx.wechsle("buerger", "fall"); }));
+        var istB02 = f.id === "b02";
+        karte.appendChild(el("p", "rathaus-status", istB02 ? standTextB02() : standText()));
+        karte.appendChild(knopf("Fall " + f.id.toUpperCase() + " öffnen", "knopf knopf-haupt", function () { ctx.wechsle("buerger", istB02 ? "fall-b02" : "fall"); }));
       } else {
         var gesperrt = knopf("geplant, noch nicht startbar", "knopf", null);
         gesperrt.disabled = true;

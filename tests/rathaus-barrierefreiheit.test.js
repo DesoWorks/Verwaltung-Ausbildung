@@ -324,10 +324,11 @@ test("Seite und Stilregeln: Statusregion, Nur-Lesen-Klasse, Fokus und schmale Fe
   assert.match(css, /\.rathaus-gruppe\s*\{[^}]*min-width: 0/);
   assert.match(css, /@media \(max-width: 640px\)/);
   const schmal = css.slice(css.indexOf("@media (max-width: 640px)"));
-  assert.match(schmal, /\.rathaus-unterleiste\s*\{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/, "kompakte Unterleiste in drei Spalten");
+  assert.match(schmal, /\.rathaus-unterleiste\s*\{[^}]*grid-template-columns: repeat\(auto-fit, minmax\(min\(100%, 5\.5rem\), 1fr\)\)/, "Unterleiste: responsive Spalten statt fester Spaltenzahl (Reflow bei 320 px und großer Schrift)");
+  assert.equal(/overflow-x:\s*hidden/.test(css.replace(/\/\*[\s\S]*?\*\//g, "")), false, "Reflow wird nicht durch overflow-x: hidden verdeckt");
   assert.match(schmal, /\.rathaus-ansichten,\s*\.rathaus-unterleiste\s*\{[^}]*display: grid/);
   assert.match(schmal, /min-height: 44px/, "Mindest-Zielgröße");
-  assert.equal(/overflow-wrap: anywhere[^}]*\}\s*\.rathaus-krumenliste/.test(schmal), false, "Knöpfe brechen Wörter nicht mitten im Wort");
+  assert.match(css, /\.rathaus-inhalt \.knopf[^{]*\{[^}]*overflow-wrap: anywhere/, "unteilbare Langwörter in Knöpfen brechen als letzte Möglichkeit um, statt die Seite zu verbreitern");
   assert.match(schmal, /hyphens: auto/, "Silbentrennung statt Wortbruch");
   assert.match(css, /\.rathaus-unterleiste\[hidden\]/, "verborgene Unterleiste bleibt verborgen");
 });

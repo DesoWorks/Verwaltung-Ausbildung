@@ -67,6 +67,7 @@
     if (ansicht === "personal") return [stadt, { label: TITEL.personal, ziel: null }];
     if (ansicht === "buerger") {
       if (modus === "uebersicht") return [stadt, { label: TITEL.buerger, ziel: null }];
+      if (modus === "fall-b02") return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: "Fall B02", ziel: null }];
       return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: "Fall B01", ziel: null }];
     }
     if (ansicht === "buerger-karte") {
@@ -100,10 +101,12 @@
   // Kompakte Unternavigation des Bürgerbüros mit Textlabels. Zweites Argument wie bei brotkrumen().
   function buergerUnternavigation(ansicht, modus) {
     if (BUERGER_ANSICHTEN.indexOf(ansicht) === -1) return [];
-    var fall = ansicht === "buerger" && modus !== "uebersicht";
+    var fallB02 = ansicht === "buerger" && modus === "fall-b02";
+    var fall = ansicht === "buerger" && modus !== "uebersicht" && !fallB02;
     return [
       { ansicht: "buerger", modus: "uebersicht", label: "Übersicht", aktuell: ansicht === "buerger" && modus === "uebersicht" },
       { ansicht: "buerger", modus: "fall", label: "Fall B01", aktuell: fall },
+      { ansicht: "buerger", modus: "fall-b02", label: "Fall B02", aktuell: fallB02 },
       { ansicht: "buerger-karte", modus: null, label: "Nachschlagen", aktuell: ansicht === "buerger-karte" }
     ];
   }

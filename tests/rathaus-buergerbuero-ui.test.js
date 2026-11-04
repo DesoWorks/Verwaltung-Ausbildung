@@ -264,15 +264,16 @@ test("Speicherfehler: sichtbare Meldung, keine Erfolgsmeldung", () => {
   assert.equal(u.sicht().includes("✓ Übungsfall abgeschlossen"), false, "kein Erfolg ohne Speicherstand");
 });
 
-test("Übersicht: B02 und B03 sind gesperrt mit Text „geplant, noch nicht startbar“", () => {
+test("Übersicht: nur B03 ist gesperrt mit Text „geplant, noch nicht startbar“, B01 und B02 sind offen", () => {
   const u = umgebung({});
   u.zeichne("uebersicht");
   const gesperrt = u.knoepfe().filter((k) => k.textContent === "geplant, noch nicht startbar");
-  assert.equal(gesperrt.length, 2);
+  assert.equal(gesperrt.length, 1);
   gesperrt.forEach((k) => assert.equal(k.disabled, true));
   assert.ok(u.sicht().includes("Meldebescheinigung"));
   assert.ok(u.sicht().includes("Führungszeugnis"));
   assert.ok(u.knoepfe().some((k) => k.textContent === "Fall B01 öffnen" && !k.disabled));
+  assert.ok(u.knoepfe().some((k) => k.textContent === "Fall B02 öffnen" && !k.disabled));
 });
 
 test("Fallansicht: sechs beschriftete Bereiche, Gruppen mit legend, Hilfe in drei Stufen ohne Musterbrief", () => {

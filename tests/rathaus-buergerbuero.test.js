@@ -151,10 +151,10 @@ test('Gültiger Speicherstand bleibt, Abschluss wird neu geprüft', () => {
   assert.strictEqual(nein.abgeschlossen, false);
 });
 
-test('B02 und B03 sind nicht startbar, B01 schon', () => {
+test('B03 ist nicht startbar, B01 und B02 schon', () => {
   const liste = B.fallListe();
   assert.strictEqual(liste.find((f) => f.id === 'b01').startbar, true);
-  assert.strictEqual(liste.find((f) => f.id === 'b02').startbar, false);
+  assert.strictEqual(liste.find((f) => f.id === 'b02').startbar, true);
   assert.strictEqual(liste.find((f) => f.id === 'b03').startbar, false);
 });
 

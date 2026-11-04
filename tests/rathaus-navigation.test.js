@@ -79,8 +79,11 @@ test("Bürgerbüro: Brotkrumen, Rückziel und Unternavigation", () => {
     assert.strictEqual(nav.leistenEbene(a), "buerger");
   });
   const u = nav.buergerUnternavigation("buerger", "fall");
-  assert.deepStrictEqual(labels(u), ["Übersicht", "Fall B01", "Nachschlagen"]);
+  assert.deepStrictEqual(labels(u), ["Übersicht", "Fall B01", "Fall B02", "Nachschlagen"]);
   assert.deepStrictEqual(u.filter((e) => e.aktuell).map((e) => e.label), ["Fall B01"]);
+  assert.deepStrictEqual(labels(nav.brotkrumen("buerger", "fall-b02")), ["Stadtverwaltung", "Bürgerbüro", "Fall B02"]);
+  const u2 = nav.buergerUnternavigation("buerger", "fall-b02");
+  assert.deepStrictEqual(u2.filter((e) => e.aktuell).map((e) => e.label), ["Fall B02"]);
   assert.deepStrictEqual(nav.buergerUnternavigation("personal"), []);
   assert.deepStrictEqual(nav.buergerUnternavigation("stadt"), []);
 });

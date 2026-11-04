@@ -23,3 +23,5 @@ Der amtliche Landesrechtszugang https://www.landesrecht-bw.de/bsbw/document/jlr-
 - Lehrkraftmuster nur in der ausdrücklich geöffneten Lehrkraftansicht; diese ist lokal offen, kein Zugriffsschutz.
 
 Fachliche Abweichungen vor der Umsetzung abstimmen; keine Bewertungsregel zur Vereinfachung lockern. Die konkrete Implementierung wird anschließend gegen diesen Plan geprüft.
+
+Nachprüfung Praxisquelle am 04.11.2026: [Q6 Baden-Baden](https://www.baden-baden.de/-/dienstleistungen/meldebescheinigung-beantragen/vbid6007001) erneut vollständig lesbar; formfreier Antrag, bei persönlichem Antrag kann Personalausweis/Reisepass verlangt werden, Freigabevermerk 19.05.2026 Innenministerium BW. Lokal dort genannte Gebührenbefreiungen und übliche Sofortbearbeitung werden ausdrücklich **nicht** als Sonnenthal-Regel übernommen. Somit ist auch die Identitätsaufgabe erneut praktisch belegt, ohne eine falsche gesetzliche Verweiskette zu lehren.

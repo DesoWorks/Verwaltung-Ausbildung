@@ -171,7 +171,7 @@
   }
 
   function zeige(ansicht, modus) {
-    if (ansicht === "buerger") buergerModus = modus === "fall" ? "fall" : "uebersicht";
+    if (ansicht === "buerger") buergerModus = modus === "fall" || modus === "fall-b02" ? modus : "uebersicht";
     state.ansicht = ansicht;
     speichern();
     zeichnen();
@@ -897,6 +897,8 @@
 
     // Dritter Fall: Bürgerbüro B01. Nur Lesen, der Bürgerbüro-Speicher wird hier nicht berührt.
     if (window.RATHAUS_BUERGERBUERO_UI) window.RATHAUS_BUERGERBUERO_UI.zeichneLehrkraft(ziel);
+    // Vierter Fall: Bürgerbüro B02, ebenfalls nur Lesen.
+    if (window.RATHAUS_B02_UI) window.RATHAUS_B02_UI.zeichneLehrkraft(ziel);
   }
 
   function fortschrittNur() {
@@ -1003,6 +1005,15 @@
   // Das Bürgerbüro zeichnet seinen Arbeitsplatz selbst und speichert nur unter seinem eigenen Schlüssel.
   function zeichneBuergerbuero(ziel) {
     var ui = window.RATHAUS_BUERGERBUERO_UI;
+    // Fall B02 hat eigene Oberfläche und eigenen Speicher; B01 bleibt unberührt.
+    if (state.ansicht === "buerger" && buergerModus === "fall-b02" && window.RATHAUS_B02_UI) {
+      window.RATHAUS_B02_UI.zeichne(ziel, {
+        ansicht: state.ansicht,
+        modus: buergerModus,
+        wechsle: function (ansicht, modus) { zeige(ansicht, modus); }
+      });
+      return;
+    }
     if (!ui) {
       var titel = el("h2", "", "Bürgerbüro");
       titel.id = "ansicht-titel";
