@@ -126,6 +126,7 @@ function fuelleGut(u) {
   u.eingabe("bb-dok-bestaetigung", "fehlt");
   u.eingabe("bb-dok-merkmal", "fehlt");
   ["bmg17", "bmg19", "bmg23", "ortskarte"].forEach((id) => u.eingabe("bb-regeln", id));
+  u.eingabe("bb-fallen", "keine");
   u.eingabe("bb-vorbereitung", "mitteilung-klaerung");
   ["anliegen", "nachweis-fehlt", "mitteilung-aufgenommen", "naechster-schritt", "nicht-abgeschlossen"].forEach((id) => u.eingabe("bb-bausteine", id));
 }
@@ -369,9 +370,33 @@ test("rathaus.html bindet Kern und Oberfläche vor rathaus-ui.js ein", () => {
 test("Antwortentwurf B01 ist groß und vertikal veränderbar, Personalamt unberührt", () => {
   const fs = require("node:fs");
   const css = fs.readFileSync(require("node:path").join(__dirname, "..", "css", "rathaus.css"), "utf8");
-  assert.match(css, /(^|\n)textarea\.rathaus-freitext-gross\s*\{[^}]*width:\s*100%[^}]*min-height:\s*12rem[^}]*resize:\s*vertical/);
+  assert.match(css, /(^|\n)textarea\.rathaus-freitext-gross\s*\{[^}]*width:\s*100%[^}]*min-height:\s*7\.5rem[^}]*resize:\s*vertical/);
   assert.doesNotMatch(css, /\.rathaus-form textarea\.rathaus-freitext-gross/);
   const ui = fs.readFileSync(require("node:path").join(__dirname, "..", "js", "rathaus-buergerbuero-ui.js"), "utf8");
   assert.match(ui, /rathaus-freitext-gross/);
   assert.doesNotMatch(ui, /rathaus-form/);
+});
+
+test("Regelnfrage zu den Aussagen ist Einfachauswahl mit ausdrücklicher vierter Option; Antwortentwurf hat 4 Zeilen", () => {
+  const u = umgebung({});
+  u.zeichne("fall");
+  const radios = alle(u.haupt).filter((x) => x.tag === "input" && x.name === "bb-fallen");
+  assert.equal(radios.length, 4);
+  assert.ok(radios.every((x) => x.type === "radio"));
+  assert.ok(alle(u.haupt).some((x) => x.tag === "span" && x.textContent === "Keine dieser Aussagen trifft zu."));
+  assert.ok(radios.every((x) => !x.checked), "keine Vorauswahl");
+  assert.equal(alle(u.haupt).find((x) => x.tag === "textarea").rows, 4);
+});
+
+test("Nur die ausdrückliche vierte Option ist richtig; falsche Aussage und fehlende Antwort sperren", () => {
+  const u = umgebung({});
+  u.zeichne("fall");
+  fuelleGut(u);
+  u.eingabe("bb-fallen", "gebuehr");
+  u.klick("Auswertung prüfen");
+  assert.equal(u.knopf("Übungsfall abschließen").disabled, true);
+  u.eingabe("bb-fallen", "keine");
+  assert.equal(u.knopf("Übungsfall abschließen").disabled, true, "Änderung invalidiert die Auswertung");
+  u.klick("Auswertung prüfen");
+  assert.equal(u.knopf("Übungsfall abschließen").disabled, false);
 });

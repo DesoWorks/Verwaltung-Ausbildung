@@ -225,7 +225,7 @@
     return [
       Boolean(e.anliegen && e.einzug && e.weitereWohnung),
       dokIds.every(function (id) { return Boolean(e.dokumente[id]); }),
-      e.regeln.length > 0,
+      e.regeln.length > 0 || Boolean(e.fallen),
       Boolean(e.vorbereitung),
       e.bausteine.length > 0,
       Boolean(modell.letzteAuswertung)
@@ -558,7 +558,7 @@
     // 3 Regeln
     var e3 = etappe(host, 3, "Ordne die Regeln und die Zuständigkeit ein.");
     mehrfachGruppe(e3, "regeln", "Welche Regeln und Zuständigkeiten gehören zum Fall?", "Du kannst mehrere ankreuzen.");
-    mehrfachGruppe(e3, "fallen", "Welche dieser Aussagen treffen im Fall von Frau Yilmaz zu?", "Kreuze nur an, was wirklich gilt. Wenn keine Aussage stimmt, lass alle leer.");
+    einzelGruppe(e3, "fallen", "Welche dieser Aussagen trifft im Fall von Frau Yilmaz zu?", "Wähle genau eine Antwort. Wenn keine Aussage stimmt, wähle ausdrücklich die letzte Option.");
 
     // 4 Vorbereitung
     var e4 = etappe(host, 4, "Entscheide, was du für die weitere Bearbeitung vorbereitest.");
@@ -573,7 +573,7 @@
     var feld = document.createElement("textarea");
     feld.id = "bb-freitext";
     feld.name = "freitext";
-    feld.rows = 12;
+    feld.rows = 4;
     feld.className = "rathaus-freitext-gross";
     feld.maxLength = 2000;
     feld.value = modell.eingaben.freitext;

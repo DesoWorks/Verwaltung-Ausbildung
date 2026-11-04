@@ -403,7 +403,7 @@ main:focus { outline: none; }
   .kopf { align-items: flex-start; }
   .kopf-logo { flex-basis: min(100%, 18rem); }
   .kopf-inhalt { flex-basis: 100%; }
-  html { font-size: 17px; }
+  html { font-size: 17px; font-size: calc(17px * var(--text-scale, 1)); }
   .kopf h1 { font-size: 1.5rem; }
   .knopf-reihe .knopf { flex: 1 1 100%; }
   .karten-raster { grid-template-columns: 1fr; }

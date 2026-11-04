@@ -12,7 +12,7 @@ function gut() {
     weitereWohnung: 'keine',
     dokumente: { ausweis: 'passt', mietvertrag: 'kein-ersatz', bestaetigung: 'fehlt', merkmal: 'fehlt' },
     regeln: ['bmg17', 'bmg19', 'bmg23', 'ortskarte'],
-    fallen: [],
+    fallen: 'keine',
     vorbereitung: 'mitteilung-klaerung',
     bausteine: ['anliegen', 'nachweis-fehlt', 'mitteilung-aufgenommen', 'naechster-schritt', 'nicht-abgeschlossen'],
     freitext: ''

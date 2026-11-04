@@ -14,7 +14,7 @@
 
   var FALL_ID = 'b01';
   var SPEICHER_SCHLUESSEL = 'verwaltung-ausbildung.rathaus.buergerbuero.b01.v1';
-  var BEWERTUNGSSTAND = 'b01-2026-11-01-r2';
+  var BEWERTUNGSSTAND = 'b01-2026-11-04-r3';
   var QUELLEN_DATEI = 'quellen/bmg-b01-2026-11-01.md';
   var UEBUNGSANNAHME = 'Das Bürgerbüro Sonnenthal nimmt in dieser Übung Meldesachen entgegen. ' +
     'Das ist keine geprüfte Landesnorm.';
@@ -80,12 +80,13 @@
       ]
     },
     fallen: {
-      art: 'mehrfach',
-      frage: 'Welche Aussagen sind Fallen und stimmen nicht?',
+      art: 'einzel',
+      frage: 'Welche dieser Aussagen trifft im Fall von Frau Yilmaz zu?',
       optionen: [
         opt('abmeldung-pflicht', 'Frau Yilmaz muss sich zuerst bei ihrer alten Stadt abmelden', false),
         opt('gebuehr', 'Für die Anmeldung muss eine bestimmte Gebühr bezahlt werden', false),
-        opt('ablehnung-ohne-nachweis', 'Ohne Bestätigung kann der Antrag sofort abgelehnt werden', false)
+        opt('ablehnung-ohne-nachweis', 'Ohne Bestätigung kann der Antrag sofort abgelehnt werden', false),
+        opt('keine', 'Keine dieser Aussagen trifft zu.', true)
       ]
     },
     vorbereitung: {
@@ -171,7 +172,8 @@
       weitereWohnung: einzel('weitereWohnung'),
       dokumente: dok,
       regeln: mehrfach('regeln'),
-      fallen: mehrfach('fallen'),
+      // Einfachauswahl; alte Listen (frühere Mehrfachauswahl) ergeben bewusst keine Antwort.
+      fallen: einzel('fallen'),
       vorbereitung: einzel('vorbereitung'),
       bausteine: mehrfach('bausteine'),
       freitext: istText(e.freitext) ? e.freitext.slice(0, FREITEXT_MAX) : ''
@@ -187,7 +189,7 @@
       'weitere=' + (n.weitereWohnung || '-'),
       'dok=' + dok.join(','),
       'regeln=' + n.regeln.slice().sort().join(','),
-      'fallen=' + n.fallen.slice().sort().join(','),
+      'fallen=' + (n.fallen || '-'),
       'vorb=' + (n.vorbereitung || '-'),
       'bausteine=' + n.bausteine.slice().sort().join(','),
       'freitext=' + n.freitext
@@ -198,11 +200,11 @@
   function ungueltigeWerte(eingabe) {
     var e = (eingabe && typeof eingabe === 'object') ? eingabe : {};
     var liste = [];
-    ['anliegen', 'einzug', 'weitereWohnung', 'vorbereitung'].forEach(function (k) {
+    ['anliegen', 'einzug', 'weitereWohnung', 'vorbereitung', 'fallen'].forEach(function (k) {
       if (e[k] !== undefined && e[k] !== null && e[k] !== '' &&
           !(istText(e[k]) && ids(KATALOG[k]).indexOf(e[k]) >= 0)) liste.push(k);
     });
-    ['regeln', 'fallen', 'bausteine'].forEach(function (k) {
+    ['regeln', 'bausteine'].forEach(function (k) {
       if (e[k] === undefined || e[k] === null) return;
       if (!Array.isArray(e[k])) { liste.push(k); return; }
       e[k].forEach(function (v) {
@@ -270,18 +272,34 @@
     return bewerteBereich('Anliegen', '1', angaben, unvollstaendig, falsch);
   }
 
-  /* Bereich Regeln: die vier richtigen Regeln, keine angekreuzte Falle. */
+  /* Bereich Regeln: vier richtige Regeln (Mehrfachauswahl) und die Einfachfrage zu den Aussagen.
+   * Keine Auswahl bei der Einfachfrage bedeutet "noch nicht beantwortet", nie "richtig".
+   * Die Hinweise nennen nur den Abschnitt, nie die richtige Lösung. */
   function pruefeRegeln(n, ungueltig) {
     if (istUngueltig(ungueltig, ['regeln', 'fallen'])) {
       return bereich('ungueltig', ['Mindestens eine Angabe bei den Regeln ist ungültig.']);
     }
     var soll = KATALOG.regeln.optionen.filter(function (o) { return o.richtig; });
-    var angaben = n.regeln.concat(n.fallen);
-    var unvollstaendig = soll.some(function (o) { return n.regeln.indexOf(o.id) < 0; });
-    var falsch = n.fallen.length > 0 || n.regeln.some(function (r) {
+    var regelnFehlen = soll.some(function (o) { return n.regeln.indexOf(o.id) < 0; });
+    var regelnFalsch = n.regeln.some(function (r) {
       return !soll.some(function (o) { return o.id === r; });
     });
-    return bewerteBereich('Regeln', '3', angaben, unvollstaendig, falsch);
+    if (!n.regeln.length && !n.fallen) {
+      return bereich('offen', ['Im Abschnitt 3 (Regeln) ist noch nichts ausgewählt.']);
+    }
+    var hinweise = [];
+    var sperren = [];
+    var falschEingeordnet = Boolean(n.fallen) && n.fallen !== 'keine';
+    if (falschEingeordnet) {
+      hinweise.push('Bei der Frage nach den Aussagen im Abschnitt 3 (Regeln) wurde eine Aussage als zutreffend gewählt, die nicht zutrifft. Prüfe sie noch einmal anhand der Unterlagen und Regeln.');
+      sperren.push('Eine unzutreffende Aussage wurde als zutreffend eingeordnet.');
+    }
+    if (regelnFalsch) hinweise.push('Bei den Regeln im Abschnitt 3 stimmt mindestens eine Einordnung nicht.');
+    if (regelnFehlen) hinweise.push('Bei den Regeln im Abschnitt 3 fehlen noch Angaben.');
+    if (!n.fallen) hinweise.push('Die Frage nach den Aussagen im Abschnitt 3 ist noch nicht beantwortet. Keine Auswahl gilt nicht als Antwort.');
+    if (falschEingeordnet || regelnFalsch) return bereich('falsch', hinweise, sperren);
+    if (regelnFehlen || !n.fallen) return bereich('unvollstaendig', hinweise);
+    return bereich('richtig', ['Der Abschnitt 3 (Regeln) ist richtig bearbeitet.']);
   }
 
   function pruefeVorbereitung(n, ungueltig) {

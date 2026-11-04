@@ -331,3 +331,16 @@ test("Seite und Stilregeln: Statusregion, Nur-Lesen-Klasse, Fokus und schmale Fe
   assert.match(schmal, /hyphens: auto/, "Silbentrennung statt Wortbruch");
   assert.match(css, /\.rathaus-unterleiste\[hidden\]/, "verborgene Unterleiste bleibt verborgen");
 });
+
+test('Anzeige: Textgröße gilt auch auf kleinen Bildschirmen, Warnbanner nutzt Theme-Farben', () => {
+  const fs = require('node:fs');
+  const path = require('node:path');
+  const styles = fs.readFileSync(path.join(__dirname, '..', 'css', 'styles.css'), 'utf8');
+  const rathaus = fs.readFileSync(path.join(__dirname, '..', 'css', 'rathaus.css'), 'utf8');
+  const mobil = styles.match(/@media \(max-width[^)]*\)\s*\{[^@]*?html \{ font-size: 17px;[^}]*\}/);
+  assert.ok(mobil && /var\(--text-scale/.test(mobil[0]), 'mobile Schriftgröße muss --text-scale nutzen');
+  const banner = rathaus.match(/\.rathaus-warnbanner \{[^}]*\}/)[0];
+  assert.doesNotMatch(banner, /#[0-9a-fA-F]{3,6}/);
+  ['index.html', 'glossar.html'].concat(fs.readdirSync(path.join(__dirname, '..', 'module')).filter((f) => f.endsWith('.html')).map((f) => 'module/' + f))
+    .forEach((f) => assert.match(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), /anzeige-lesen\.js/, f));
+});
