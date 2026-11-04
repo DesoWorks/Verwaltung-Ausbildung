@@ -36,7 +36,7 @@ Geänderte Produktdateien: `js/rathaus-buergerbuero.js`, `js/rathaus-buergerbuer
 
 ### Ergänzende Browserprüfung
 
-Dateien unter `.output/`: `foundation-browser.cjs` (ausführbares Testskript), `foundation-browser-results.json` (18 Ergebnisse), `foundation-b01-mobile.png` (390×844). Lokale ignorierte Belege, nicht im Git-Commit.
+Dateien unter `.output/`: `foundation-browser.cjs` (ausführbares Testskript), `foundation-browser-results.json` (18 Ergebnisse), `foundation-b01-mobile.png` (390×844). Lokale untracked Belege, nicht im Git-Commit. `.output/` bleibt als eigenes Prüfmaterial im Arbeitsbaum; fremdes `docs/uebergaben/` bleibt ebenfalls untracked.
 
 B01 vier Radios ohne Vorauswahl; fehlende und falsche Regelnantwort sperren; vollständiger Erfolgsweg und tatsächliche Abschlussmeldung; Freitextänderung invalidiert; Entwurf und Sperre nach Reload/Wiederöffnen erhalten. Alle vier Anzeigeoptionen in B01 geschaltet: Wurzelschrift 27 px Desktop bzw 25,5 px bei 390 px/150 %, Dunkel-/Kontrastflächen, Abstands-/Bewegungsklassen. Anzeige in Stadt/Personalamt/Bürgerbüro/Startseite und nach Reload erhalten. Slider über echtes ArrowLeft-Keyevent 150→140 bedient. Legacy-r2-Array nach Reload ohne Antwort/Abschluss bei erhaltenem Entwurf. B01-Reset leert Fall, andere vorhandene Speicherschlüssel bytegleich erhalten.
 
