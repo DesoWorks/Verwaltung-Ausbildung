@@ -165,7 +165,7 @@
       schritte: b.BEREICHE.map(function (x, i) {
         return { id: x.key, name: x.name, fuellen: function (s) {
           if (i === 0) {
-            s.appendChild(el('p', 'rathaus-gespraech', 'Mira Hoffmann: „' + daten.anliegenText + '“'));
+            s.appendChild(el('p', 'rathaus-meta', 'Die vollständige Aussage von Mira Hoffmann steht in der Fallakte, nicht noch einmal in dieser Karte.'));
             aufklappen(s, 'Rückfrage: Wer hat gefragt und was ist passiert?', 'Mein früherer Partner hat mich bedroht und mir nachgestellt. Eine fiktive Privatperson, Jonas Brandt, hat jetzt eine Melderegisterauskunft über meine Anschrift angefragt. Die polizeiliche Notiz dazu liegt in der Akte.');
             aufklappen(s, 'Rückfrage: Bin ich schon gemeldet? Kostet das etwas?', 'Ich wohne schon in der Lindenstraße 4 und bin gemeldet. Ich möchte nur, dass meine Anschrift nicht herausgegeben wird. Was das kostet, weiß ich nicht.');
           }

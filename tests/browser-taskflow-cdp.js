@@ -20,6 +20,7 @@ const { starteBrowser, pruefer } = require("./browser-cdp-helfer.js");
     await oeffne("Fall B04 öffnen");
     check("B04: Schritt 1 von 5, nicht künstlich sechs Schritte", await b.ev("document.body.innerText.includes('Schritt 1 von 5') && !document.body.innerText.includes('Schritt 1 von 6')"));
     check("B04: nur der erste Arbeitsbereich ist sichtbar", await b.ev("(() => { const panels = [...document.querySelectorAll('.aufgabenfluss-panel > *')]; return panels.filter((p) => !p.hidden).length === 1 && panels[0].innerText.includes('Mira Hoffmann'); })()"));
+    check("B04: Aussage nur in der Fallakte, nicht noch einmal in der Karte", await b.ev("(() => { const satz = 'meine Daten gesperrt werden'; const karte = document.querySelector('.aufgabenfluss-karte'); const akte = document.querySelector('.aufgabenfluss-akte'); return karte && akte && !karte.innerText.includes(satz) && akte.textContent.includes(satz); })()"));
     check("B04: andere Schritte sind nicht im sichtbaren Kartentext", await b.ev("!document.querySelector('.aufgabenfluss-karte').innerText.includes('Welches Anliegen') || document.querySelector('.aufgabenfluss-karte').innerText.includes('Mira Hoffmann')"));
     check("B04: Einordnung steht nicht in der ersten Karte", await b.ev("!document.querySelector('.aufgabenfluss-karte').innerText.includes('Welche Rechtsgrundlage')"));
     check("Weiter ohne Sperre", await b.ev("(() => { const k = [...document.querySelectorAll('button')].find((x) => x.textContent.trim() === 'Weiter'); if (!k || k.disabled) return false; k.click(); return true; })()"));
@@ -40,6 +41,7 @@ const { starteBrowser, pruefer } = require("./browser-cdp-helfer.js");
     await b.oeffne("module/rathaus.html#buerger");
     await oeffne("Fall B03 öffnen");
     check("B03 hat fünf eigene Schritte", await b.ev("document.body.innerText.includes('Schritt 1 von 5') && [...document.querySelectorAll('.aufgabenfluss-chip')].length === 5"));
+    check("B03: Aussage nur in der Fallakte", await b.ev("(() => { const satz = 'für mich persönlich in Papierform'; const karte = document.querySelector('.aufgabenfluss-karte'); const akte = document.querySelector('.aufgabenfluss-akte'); return karte && akte && !karte.innerText.includes(satz) && akte.textContent.includes(satz); })()"));
 
     for (const breite of [390, 1280]) {
       await b.call("Emulation.setDeviceMetricsOverride", { width: breite, height: 800, deviceScaleFactor: 1, mobile: breite < 500 });

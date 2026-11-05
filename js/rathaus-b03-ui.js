@@ -165,7 +165,7 @@
       schritte: b.BEREICHE.map(function (x, i) {
         return { id: x.key, name: x.name, fuellen: function (s) {
           if (i === 0) {
-            s.appendChild(el('p', 'rathaus-gespraech', 'Robin Keller: „' + daten.anliegenText + '“'));
+            s.appendChild(el('p', 'rathaus-meta', 'Die vollständige Aussage von Robin Keller steht in der Fallakte, nicht noch einmal in dieser Karte.'));
             aufklappen(s, 'Rückfrage: Für wen und wofür?', 'Für mich selbst. Die private Sonnental Büroservice GmbH verlangt ein einfaches Führungszeugnis für kaufmännische Sachbearbeitung. Keine Betreuung Minderjähriger.');
             aufklappen(s, 'Rückfrage: Papier oder digital? Gebührenbefreiung?', 'Heute persönlich als Papierfassung. Keine Gebührenbefreiung beantragt; im Übungsfall keine Befreiungsgründe belegt.');
           }
