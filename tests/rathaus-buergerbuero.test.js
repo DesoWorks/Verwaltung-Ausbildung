@@ -156,6 +156,7 @@ test('B01, B02 und B03 sind startbar', () => {
   assert.strictEqual(liste.find((f) => f.id === 'b01').startbar, true);
   assert.strictEqual(liste.find((f) => f.id === 'b02').startbar, true);
   assert.strictEqual(liste.find((f) => f.id === 'b03').startbar, true);
+  assert.strictEqual(liste.find((f) => f.id === 'b04').startbar, true);
 });
 
 test('Hilfe: drei Stufen, Stufe 0 leer, kein Musterbrief, keine Auswahl-ID', () => {

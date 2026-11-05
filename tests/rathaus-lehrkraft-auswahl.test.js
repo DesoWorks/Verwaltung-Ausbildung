@@ -15,6 +15,7 @@ const lk = require("../js/rathaus-lehrkraft.js");
 const b1 = require("../js/rathaus-buergerbuero.js");
 const b2 = require("../js/rathaus-b02.js");
 const b3 = require("../js/rathaus-b03.js");
+const b4 = require("../js/rathaus-b04.js");
 
 const KEY = "verwaltung-ausbildung.rathaus.v1";
 const KEY_H = "verwaltung-ausbildung.rathaus.hochbetrieb.v1";
@@ -25,7 +26,8 @@ const FAELLE = [
   { id: "noelle", label: "Noelle Kranz", gruppe: "Personalamt", muster: () => hb.lehrkraftLoesung().mustertext },
   { id: "b01", label: "B01 – Samira Yilmaz", gruppe: "Bürgerbüro", muster: () => b1.lehrkraft().musterantwort },
   { id: "b02", label: "B02 – Alex Weber", gruppe: "Bürgerbüro", muster: () => b2.lehrkraft().musterantwort },
-  { id: "b03", label: "B03 – Robin Keller", gruppe: "Bürgerbüro", muster: () => b3.lehrkraft().musterantwort }
+  { id: "b03", label: "B03 – Robin Keller", gruppe: "Bürgerbüro", muster: () => b3.lehrkraft().musterantwort },
+  { id: "b04", label: "B04 – Mira Hoffmann", gruppe: "Bürgerbüro", muster: () => b4.lehrkraft().musterantwort }
 ];
 
 function knoten(tag) {
@@ -80,6 +82,7 @@ function start(speicher) {
     RATHAUS_BUERGERBUERO: b1,
     RATHAUS_B02: b2,
     RATHAUS_B03: b3,
+    RATHAUS_B04: b4,
     localStorage,
     confirm: () => false,
     location: { hash: "", pathname: "/rathaus.html", search: "" },
@@ -90,7 +93,7 @@ function start(speicher) {
   };
   const kontext = { window, document, localStorage };
   vm.createContext(kontext);
-  ["rathaus-buergerbuero-ui.js", "rathaus-b02-ui.js", "rathaus-b03-ui.js", "rathaus-ui.js"].forEach((datei) => {
+  ["rathaus-buergerbuero-ui.js", "rathaus-b02-ui.js", "rathaus-b03-ui.js", "rathaus-b04-ui.js", "rathaus-ui.js"].forEach((datei) => {
     vm.runInContext(fs.readFileSync(path.join(wurzel, "js", datei), "utf8"), kontext);
   });
   const haupt = ids.hauptinhalt;
@@ -120,7 +123,7 @@ const noelleAktiv = () => ({
   [FORTSCHRITT]: '{"lf1":true}'
 });
 
-test("Auswahl: ein natives select mit Beschriftung, fünf Optionen in zwei Gruppen", () => {
+test("Auswahl: ein natives select mit Beschriftung, sechs Optionen in zwei Gruppen", () => {
   const s = start(lucaAktiv());
   const auswahl = s.auswahl();
   assert.ok(auswahl, "select#lehrkraft-fall fehlt");
@@ -129,8 +132,8 @@ test("Auswahl: ein natives select mit Beschriftung, fünf Optionen in zwei Grupp
   const gruppen = auswahl.children.filter((k) => k.tag === "optgroup");
   assert.deepEqual(gruppen.map((g) => g.label), ["Personalamt", "Bürgerbüro"]);
   assert.deepEqual(gruppen[0].children.map((o) => o.textContent), ["Luca Berger", "Noelle Kranz"]);
-  assert.deepEqual(gruppen[1].children.map((o) => o.textContent), ["B01 – Samira Yilmaz", "B02 – Alex Weber", "B03 – Robin Keller"]);
-  assert.equal(alle(auswahl).filter((k) => k.tag === "option").length, 5);
+  assert.deepEqual(gruppen[1].children.map((o) => o.textContent), ["B01 – Samira Yilmaz", "B02 – Alex Weber", "B03 – Robin Keller", "B04 – Mira Hoffmann"]);
+  assert.equal(alle(auswahl).filter((k) => k.tag === "option").length, 6);
   assert.equal(auswahl.value, "luca");
   assert.equal(alle(auswahl).filter((k) => k.tag === "option" && k.selected).length, 1, "genau eine Option ist gewählt");
   assert.equal(alle(s.haupt).filter((k) => k.tag === "button" && FAELLE.some((f) => f.label === k.textContent)).length, 0, "keine Buttonwand");
@@ -171,7 +174,7 @@ test("Wechsel schreibt nichts, löscht nichts, wechselt den Lernfall nicht und l
   const vorher = JSON.stringify(s.store);
   const geschriebenVorher = s.geschrieben.length;
   const fokusVorher = knoten.fokussiert.length;
-  ["luca", "b01", "b02", "b03", "noelle"].forEach((id) => s.waehle(id));
+  ["luca", "b01", "b02", "b03", "b04", "noelle"].forEach((id) => s.waehle(id));
   assert.equal(JSON.stringify(s.store), vorher, "Speicher unverändert");
   assert.equal(s.geschrieben.length, geschriebenVorher, "kein setItem durch den Wechsel");
   assert.deepEqual(s.entfernt, [], "kein removeItem durch den Wechsel");
@@ -244,7 +247,7 @@ test("Ein fehlendes Bürgerbüro-Modul fehlt in der Auswahl und wird nicht erfun
   const roh = lucaAktiv();
   const store = Object.assign({}, roh);
   const geladen = start(store);
-  assert.equal(alle(geladen.auswahl()).filter((k) => k.tag === "option").length, 5);
+  assert.equal(alle(geladen.auswahl()).filter((k) => k.tag === "option").length, 6);
   // Nur Personalamt: gleiche Oberfläche ohne die drei Bürgerbüro-UI-Skripte.
   const ids = {};
   ["hauptinhalt", "rathaus-fortschritt", "lehrkraft-banner", "lehrkraft-schalter", "rathaus-bereiche", "lehrkraft-status", "rathaus-unterleiste", "rathaus-brotkrumen"].forEach((id) => { ids[id] = knoten("div"); ids[id].id = id; });

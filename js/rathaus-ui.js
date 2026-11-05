@@ -173,7 +173,7 @@
   }
 
   function zeige(ansicht, modus) {
-    if (ansicht === "buerger") buergerModus = modus === "fall" || modus === "fall-b02" || modus === "fall-b03" ? modus : "uebersicht";
+    if (ansicht === "buerger") buergerModus = modus === "fall" || modus === "fall-b02" || modus === "fall-b03" || modus === "fall-b04" ? modus : "uebersicht";
     state.ansicht = ansicht;
     speichern();
     zeichnen();
@@ -798,7 +798,8 @@
     [
       ["b01", "B01 – Samira Yilmaz", window.RATHAUS_BUERGERBUERO_UI],
       ["b02", "B02 – Alex Weber", window.RATHAUS_B02_UI],
-      ["b03", "B03 – Robin Keller", window.RATHAUS_B03_UI]
+      ["b03", "B03 – Robin Keller", window.RATHAUS_B03_UI],
+      ["b04", "B04 – Mira Hoffmann", window.RATHAUS_B04_UI]
     ].forEach(function (b) {
       if (b[2] && typeof b[2].zeichneLehrkraft === "function") liste.push({ id: b[0], gruppe: "Bürgerbüro", label: b[1], ui: b[2] });
     });
@@ -1092,6 +1093,10 @@
   // Das Bürgerbüro zeichnet seinen Arbeitsplatz selbst und speichert nur unter seinem eigenen Schlüssel.
   function zeichneBuergerbuero(ziel) {
     var ui = window.RATHAUS_BUERGERBUERO_UI;
+    if (state.ansicht === "buerger" && buergerModus === "fall-b04" && window.RATHAUS_B04_UI) {
+      window.RATHAUS_B04_UI.zeichne(ziel);
+      return;
+    }
     if (state.ansicht === "buerger" && buergerModus === "fall-b03" && window.RATHAUS_B03_UI) {
       window.RATHAUS_B03_UI.zeichne(ziel);
       return;

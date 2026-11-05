@@ -501,16 +501,18 @@
       if (f.startbar) {
         var istB02 = f.id === "b02";
         var istB03 = f.id === "b03";
+        var istB04 = f.id === "b04";
         var text = istB02 ? standTextB02() : standText();
-        if (istB03 && window.RATHAUS_B03) {
+        var neuerKern = istB04 ? window.RATHAUS_B04 : istB03 ? window.RATHAUS_B03 : null;
+        if (neuerKern) {
           try {
-            var rohB03 = window.localStorage.getItem(window.RATHAUS_B03.SPEICHER_SCHLUESSEL);
-            var sB03 = rohB03 ? window.RATHAUS_B03.bereinigeGespeichert(rohB03) : null;
-            text = !sB03 ? "Stand: noch nicht begonnen" : sB03.verworfen ? "Stand: beschädigt oder veraltet – bitte neu prüfen" : sB03.abgeschlossen ? "Stand: Übungsfall abgeschlossen" : "Stand: in Bearbeitung";
+            var rohNeu = window.localStorage.getItem(neuerKern.SPEICHER_SCHLUESSEL);
+            var sNeu = rohNeu ? neuerKern.bereinigeGespeichert(rohNeu) : null;
+            text = !sNeu ? "Stand: noch nicht begonnen" : sNeu.verworfen ? "Stand: beschädigt oder veraltet – bitte neu prüfen" : sNeu.abgeschlossen ? "Stand: Übungsfall abgeschlossen" : "Stand: in Bearbeitung";
           } catch (_) { text = "Stand: nicht lesbar"; }
-        }
+        } else if (istB03 || istB04) text = "Stand: nicht verfügbar";
         karte.appendChild(el("p", "rathaus-status", text));
-        karte.appendChild(knopf("Fall " + f.id.toUpperCase() + " öffnen", "knopf knopf-haupt", function () { ctx.wechsle("buerger", istB03 ? "fall-b03" : istB02 ? "fall-b02" : "fall"); }));
+        karte.appendChild(knopf("Fall " + f.id.toUpperCase() + " öffnen", "knopf knopf-haupt", function () { ctx.wechsle("buerger", istB04 ? "fall-b04" : istB03 ? "fall-b03" : istB02 ? "fall-b02" : "fall"); }));
       } else {
         var gesperrt = knopf("geplant, noch nicht startbar", "knopf", null);
         gesperrt.disabled = true;
