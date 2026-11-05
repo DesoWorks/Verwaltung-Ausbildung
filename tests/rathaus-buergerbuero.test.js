@@ -151,11 +151,11 @@ test('Gültiger Speicherstand bleibt, Abschluss wird neu geprüft', () => {
   assert.strictEqual(nein.abgeschlossen, false);
 });
 
-test('B03 ist nicht startbar, B01 und B02 schon', () => {
+test('B01, B02 und B03 sind startbar', () => {
   const liste = B.fallListe();
   assert.strictEqual(liste.find((f) => f.id === 'b01').startbar, true);
   assert.strictEqual(liste.find((f) => f.id === 'b02').startbar, true);
-  assert.strictEqual(liste.find((f) => f.id === 'b03').startbar, false);
+  assert.strictEqual(liste.find((f) => f.id === 'b03').startbar, true);
 });
 
 test('Hilfe: drei Stufen, Stufe 0 leer, kein Musterbrief, keine Auswahl-ID', () => {

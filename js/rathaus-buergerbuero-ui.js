@@ -500,8 +500,17 @@
       karte.appendChild(el("h4", "", "Fall " + f.id.toUpperCase() + ": " + f.titel));
       if (f.startbar) {
         var istB02 = f.id === "b02";
-        karte.appendChild(el("p", "rathaus-status", istB02 ? standTextB02() : standText()));
-        karte.appendChild(knopf("Fall " + f.id.toUpperCase() + " öffnen", "knopf knopf-haupt", function () { ctx.wechsle("buerger", istB02 ? "fall-b02" : "fall"); }));
+        var istB03 = f.id === "b03";
+        var text = istB02 ? standTextB02() : standText();
+        if (istB03 && window.RATHAUS_B03) {
+          try {
+            var rohB03 = window.localStorage.getItem(window.RATHAUS_B03.SPEICHER_SCHLUESSEL);
+            var sB03 = rohB03 ? window.RATHAUS_B03.bereinigeGespeichert(rohB03) : null;
+            text = !sB03 ? "Stand: noch nicht begonnen" : sB03.verworfen ? "Stand: beschädigt oder veraltet – bitte neu prüfen" : sB03.abgeschlossen ? "Stand: Übungsfall abgeschlossen" : "Stand: in Bearbeitung";
+          } catch (_) { text = "Stand: nicht lesbar"; }
+        }
+        karte.appendChild(el("p", "rathaus-status", text));
+        karte.appendChild(knopf("Fall " + f.id.toUpperCase() + " öffnen", "knopf knopf-haupt", function () { ctx.wechsle("buerger", istB03 ? "fall-b03" : istB02 ? "fall-b02" : "fall"); }));
       } else {
         var gesperrt = knopf("geplant, noch nicht startbar", "knopf", null);
         gesperrt.disabled = true;

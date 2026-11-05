@@ -72,6 +72,7 @@
     if (ansicht === "personal") return [stadt, { label: TITEL.personal, ziel: null }];
     if (ansicht === "buerger") {
       if (modus === "uebersicht") return [stadt, { label: TITEL.buerger, ziel: null }];
+      if (modus === "fall-b03") return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: "Fall B03", ziel: null }];
       if (modus === "fall-b02") return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: "Fall B02", ziel: null }];
       return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: "Fall B01", ziel: null }];
     }
@@ -91,7 +92,7 @@
     if (PERSONAL_ANSICHTEN.indexOf(ansicht) !== -1 && ansicht !== "personal") {
       return { ansicht: "personal", modus: null, label: "Zurück zum Personalamt" };
     }
-    if (ansicht === "buerger-karte" || (ansicht === "buerger" && (modus === "fall" || modus === "fall-b02"))) {
+    if (ansicht === "buerger-karte" || (ansicht === "buerger" && (modus === "fall" || modus === "fall-b02" || modus === "fall-b03"))) {
       return { ansicht: "buerger", modus: "uebersicht", label: "Zurück zum Bürgerbüro" };
     }
     return { ansicht: "stadt", modus: null, label: RUECK_LABEL };
@@ -153,11 +154,13 @@
   function buergerUnternavigation(ansicht, modus) {
     if (BUERGER_ANSICHTEN.indexOf(ansicht) === -1) return [];
     var fallB02 = ansicht === "buerger" && modus === "fall-b02";
-    var fall = ansicht === "buerger" && modus !== "uebersicht" && !fallB02;
+    var fallB03 = ansicht === "buerger" && modus === "fall-b03";
+    var fall = ansicht === "buerger" && modus !== "uebersicht" && !fallB02 && !fallB03;
     return [
       { ansicht: "buerger", modus: "uebersicht", label: "Übersicht", aktuell: ansicht === "buerger" && modus === "uebersicht" },
       { ansicht: "buerger", modus: "fall", label: "Fall B01", aktuell: fall },
       { ansicht: "buerger", modus: "fall-b02", label: "Fall B02", aktuell: fallB02 },
+      { ansicht: "buerger", modus: "fall-b03", label: "Fall B03", aktuell: fallB03 },
       { ansicht: "buerger-karte", modus: null, label: "Nachschlagen", aktuell: ansicht === "buerger-karte" }
     ];
   }

@@ -87,7 +87,7 @@ test("Bürgerbüro: Brotkrumen, Rückziel und Unternavigation", () => {
   assert.deepStrictEqual(nav.rueckziel("buerger", "fall-b02"), zumAmt);
   assert.deepStrictEqual(nav.rueckziel("buerger", "uebersicht"), { ansicht: "stadt", modus: null, label: "Zur Stadtübersicht" });
   const u = nav.buergerUnternavigation("buerger", "fall");
-  assert.deepStrictEqual(labels(u), ["Übersicht", "Fall B01", "Fall B02", "Nachschlagen"]);
+  assert.deepStrictEqual(labels(u), ["Übersicht", "Fall B01", "Fall B02", "Fall B03", "Nachschlagen"]);
   assert.deepStrictEqual(u.filter((e) => e.aktuell).map((e) => e.label), ["Fall B01"]);
   assert.deepStrictEqual(labels(nav.brotkrumen("buerger", "fall-b02")), ["Stadtverwaltung", "Bürgerbüro", "Fall B02"]);
   const u2 = nav.buergerUnternavigation("buerger", "fall-b02");

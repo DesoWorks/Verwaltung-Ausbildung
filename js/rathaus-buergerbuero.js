@@ -124,7 +124,7 @@
     return [
       { id: 'b01', titel: 'Neu in Sonnenthal – reicht mein Mietvertrag?', startbar: true },
       { id: 'b02', titel: 'Meldebescheinigung für die eigene Person', startbar: true },
-      { id: 'b03', titel: 'Führungszeugnis', startbar: false }
+      { id: 'b03', titel: 'Führungszeugnis für einen privaten Arbeitgeber', startbar: true }
     ];
   }
 

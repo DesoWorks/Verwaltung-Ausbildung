@@ -35,6 +35,8 @@ const MESSEN = `(() => {
           ["Fall B01", "Array.from(document.querySelectorAll('button')).find(k=>k.textContent==='Fall B01 öffnen').click()"],
           ["Fall B02", "[...document.querySelectorAll('#rathaus-bereiche button')].find((k) => k.textContent === 'Bürgerbüro').click()"],
           ["Fall B02 offen", "Array.from(document.querySelectorAll('button')).find(k=>k.textContent==='Fall B02 öffnen').click()"],
+          ["B03 Übersicht", "[...document.querySelectorAll('#rathaus-bereiche button')].find(k=>k.textContent==='Bürgerbüro').click()"],
+          ["B03 offen", "Array.from(document.querySelectorAll('button')).find(k=>k.textContent==='Fall B03 öffnen').click(); document.querySelectorAll('#hauptinhalt details').forEach(d=>d.open=true)"],
           ["Lehrkraft", "document.getElementById('lehrkraft-schalter').click()"]
         ];
         for (const [name, js] of ansichten) {

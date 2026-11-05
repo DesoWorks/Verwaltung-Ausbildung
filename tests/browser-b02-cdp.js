@@ -44,8 +44,8 @@ window.__hat = (text) => document.getElementById('hauptinhalt').innerText.toLowe
     await b.warte(250);
     await b.ev(HELFER);
 
-    check("Übersicht zeigt B02 offen und B03 gesperrt",
-      await b.ev("__hat('Fall B02')") && await b.ev("Array.from(document.querySelectorAll('button')).filter((k)=>k.textContent==='geplant, noch nicht startbar' && k.disabled).length") === 1);
+    check("Übersicht zeigt B02 und B03 startbar",
+      await b.ev("__hat('Fall B02')") && await b.ev("Array.from(document.querySelectorAll('button')).filter((k)=>k.textContent==='geplant, noch nicht startbar' && k.disabled).length") === 0);
     check("Fall B02 öffnen", await b.ev("__knopf('Fall B02 öffnen')"));
     await b.warte(200);
     await b.ev(HELFER);
