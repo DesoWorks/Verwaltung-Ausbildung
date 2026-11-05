@@ -6,9 +6,18 @@ const { starteBrowser, pruefer, warte, WURZEL } = require('./browser-cdp-helfer.
 
 const SEITEN = ['glossar.html', 'module/lf1-rolle.html', 'module/rathaus.html', 'module/werkzeuge/rechner.html', 'index.html'];
 const KNOPF = "document.querySelector('button.nach-oben')";
+let schritt = 'vor-start';
+function merke(name) {
+  schritt = name;
+  try {
+    fs.mkdirSync(path.join(WURZEL, '.output/nach-oben'), { recursive: true });
+    fs.writeFileSync(path.join(WURZEL, '.output/nach-oben/schritt.json'), JSON.stringify({ schritt, zeit: new Date().toISOString() }));
+  } catch (e) { /* Fortschritt ist nur Diagnose */ }
+}
 
 (async () => {
   const { check, ergebnisse } = pruefer('NACH OBEN');
+  merke('browser-start');
   const b = await starteBrowser({ breite: 1280, hoehe: 900 });
   const scrolleZu = async y => { await b.ev(`window.scrollTo(0, ${y})`); await warte(400); };
   const weitGenug = async () => {
@@ -28,6 +37,7 @@ const KNOPF = "document.querySelector('button.nach-oben')";
   };
   try {
     for (const seite of SEITEN) {
+      merke(seite);
       await b.oeffne(seite);
       await b.call('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
       await lang();
@@ -79,6 +89,7 @@ const KNOPF = "document.querySelector('button.nach-oben')";
       check(seite + ': nach Enter verborgen', !(await sichtbar()));
 
       for (const modus of ['dunkel', 'kontrast']) {
+        merke(seite + ':' + modus);
         await b.ev(`document.documentElement.dataset.theme = '${modus}'`);
         await weitGenug();
         await warte(250);
@@ -193,4 +204,14 @@ const KNOPF = "document.querySelector('button.nach-oben')";
     console.log((drin ? 'OK   ' : 'FAIL ') + 'Zoom 400% plus große Schrift: Knopf im Fenster  ' + JSON.stringify(lage));
     if (!drin) throw new Error('Knopf ragt bei 400% und großer Schrift aus dem Fenster');
   } finally { await gross.schliessen(); }
-})().catch(e => { console.error(e); process.exitCode = 1; });
+})().catch(e => {
+  const text = 'ABBRUCH bei ' + schritt + ': ' + (e && e.stack ? e.stack : e);
+  console.error(text);
+  try {
+    fs.mkdirSync(path.join(WURZEL, '.output/nach-oben'), { recursive: true });
+    fs.writeFileSync(path.join(WURZEL, '.output/nach-oben/abbruch.json'), JSON.stringify({
+      schritt, message: String(e && e.message || e), stack: String(e && e.stack || '')
+    }, null, 2));
+  } catch (schreibfehler) { console.error(schreibfehler); }
+  process.exitCode = 1;
+});
