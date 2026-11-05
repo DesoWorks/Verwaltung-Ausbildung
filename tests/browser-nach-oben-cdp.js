@@ -10,14 +10,15 @@ const KNOPF = "document.querySelector('button.nach-oben')";
 (async () => {
   const { check, ergebnisse } = pruefer('NACH OBEN');
   const b = await starteBrowser({ breite: 1280, hoehe: 900 });
-  const scrolleZu = async y => { await b.ev(`window.scrollTo(0, ${y})`); await warte(250); };
+  const scrolleZu = async y => { await b.ev(`window.scrollTo(0, ${y})`); await warte(400); };
   const weitGenug = async () => {
     const y = await b.ev(`(() => { const z = document.getElementById('hauptinhalt'); const top = z ? z.getBoundingClientRect().top + scrollY : 0; return Math.ceil(Math.max(400, top + 320)); })()`);
     await scrolleZu(y);
     return y;
   };
   const amInhalt = () => b.ev(`(() => { const z = document.getElementById('hauptinhalt'); return !!z && z.getBoundingClientRect().top <= 12; })()`);
-  const sichtbar = () => b.ev(`(() => { const k = ${KNOPF}; return !!k && !k.hidden && getComputedStyle(k).display !== 'none'; })()`);
+  const sichtbar = () => b.ev(`(() => { const k = ${KNOPF}; const s = k && getComputedStyle(k); return !!k && !k.hidden && s.display !== 'none' && s.visibility === 'visible' && Number(s.opacity) === 1 && s.pointerEvents !== 'none'; })()`);
+  const zustand = () => b.ev(`(() => { const k = ${KNOPF}, s = getComputedStyle(k); return { hidden: k.hidden, opacity: Number(s.opacity), visibility: s.visibility, pointer: s.pointerEvents, tabindex: k.getAttribute('tabindex'), aria: k.getAttribute('aria-hidden'), transition: s.transitionProperty + ' ' + s.transitionDuration }; })()`);
   const lang = () => b.ev(`(() => { if (document.documentElement.scrollHeight - innerHeight < 700) { const s = document.createElement('div'); s.id = 'test-abstandhalter'; s.style.height = '2500px'; document.body.appendChild(s); } return document.documentElement.scrollHeight - innerHeight; })()`);
   const rechtsUnten = () => b.ev(`(() => { const r = ${KNOPF}.getBoundingClientRect(); return getComputedStyle(${KNOPF}).position === 'fixed' && r.right <= innerWidth + 0.5 && r.bottom <= innerHeight + 0.5 && r.left >= 0 && r.top >= 0 && r.left > innerWidth / 2 && r.top > innerHeight / 2; })()`);
   const bedienbar = () => b.ev(`(() => { const k = ${KNOPF}, r = k.getBoundingClientRect(); const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !k.hidden && r.width >= 40 && r.height >= 40 && (e === k || k.contains(e)); })()`);
@@ -41,6 +42,29 @@ const KNOPF = "document.querySelector('button.nach-oben')";
       check(seite + ': in der Tab-Reihenfolge erreichbar', await b.ev(`(() => { ${KNOPF}.focus(); return document.activeElement === ${KNOPF}; })()`));
       check(seite + ': über Dialogen (z-index < 50)', await b.ev(`Number(getComputedStyle(${KNOPF}).zIndex) < 50`));
 
+      // Fade: sichtbarer Zustand, Mitte des Ausblendens, Zustand nach dem Ausblenden.
+      let z = await zustand();
+      check(seite + ': sichtbar = opacity 1, tabindex 0, aria-hidden false', z.opacity === 1 && z.tabindex === '0' && z.aria === 'false' && z.pointer === 'auto', z);
+      check(seite + ': Fade nur über opacity, 200 ms', /opacity/.test(z.transition) && /0\.2s/.test(z.transition), z.transition);
+      await b.ev('window.scrollTo(0, 0)');
+      await warte(100);
+      z = await zustand();
+      check(seite + ': Mitte des Ausblendens: noch da, halbtransparent, ohne Klicks und Tab', !z.hidden && z.opacity < 1 && z.pointer === 'none' && z.tabindex === '-1' && z.aria === 'true', z);
+      await warte(400);
+      z = await zustand();
+      check(seite + ': nach dem Ausblenden hidden, tabindex -1, aria-hidden true', z.hidden && z.tabindex === '-1' && z.aria === 'true', z);
+      check(seite + ': unsichtbar nicht per Fokus erreichbar', await b.ev(`(() => { ${KNOPF}.focus(); return document.activeElement !== ${KNOPF}; })()`));
+      // Schnelles Hin und Her endet nie in einem hängenden Zwischenzustand.
+      for (const y of [900, 0, 900, 0, 900, 0, 900]) { await b.ev(`window.scrollTo(0, ${y})`); await warte(45); }
+      await warte(450);
+      z = await zustand();
+      check(seite + ': schnelles Hin und Her: am Ende sichtbar, voll deckend, bedienbar', !z.hidden && z.opacity === 1 && z.pointer === 'auto' && z.tabindex === '0' && z.aria === 'false' && (await bedienbar()), z);
+      for (const y of [900, 0, 900, 0]) { await b.ev(`window.scrollTo(0, ${y})`); await warte(45); }
+      await warte(450);
+      z = await zustand();
+      check(seite + ': schnelles Hin und Her: am Ende verborgen', z.hidden && z.tabindex === '-1' && z.aria === 'true', z);
+      await weitGenug();
+
       await b.ev(`${KNOPF}.click()`);
       await warte(1500);
       check(seite + ': Klick erreicht den Inhaltsanfang', await amInhalt(), await b.ev("document.getElementById('hauptinhalt').getBoundingClientRect().top"));
@@ -57,7 +81,9 @@ const KNOPF = "document.querySelector('button.nach-oben')";
       for (const modus of ['dunkel', 'kontrast']) {
         await b.ev(`document.documentElement.dataset.theme = '${modus}'`);
         await weitGenug();
-        check(seite + ': ' + modus + ' bedienbar und lesbar abgesetzt', (await sichtbar()) && (await bedienbar()) && await b.ev(`(() => { const s = getComputedStyle(${KNOPF}); return s.color !== s.backgroundColor; })()`));
+        await warte(250);
+        const abgesetzt = await b.ev(`(() => { const k = ${KNOPF}; if (!k) return { ok: false, grund: 'fehlt' }; const s = getComputedStyle(k); const r = k.getBoundingClientRect(); const e = document.elementFromPoint(Math.min(innerWidth - 2, Math.max(1, r.left + r.width / 2)), Math.min(innerHeight - 2, Math.max(1, r.top + r.height / 2))); return { ok: !k.hidden && s.visibility === 'visible' && Number(s.opacity) === 1 && s.pointerEvents !== 'none' && r.width >= 40 && r.height >= 40 && (e === k || (k.contains && k.contains(e))) && s.color !== s.backgroundColor, hidden: k.hidden, opacity: Number(s.opacity), color: s.color, bg: s.backgroundColor, hit: e ? (e.id || e.className || e.tagName) : null }; })()`);
+        check(seite + ': ' + modus + ' bedienbar und lesbar abgesetzt', !!(abgesetzt && abgesetzt.ok), abgesetzt);
         await b.ev("document.documentElement.dataset.theme = 'hell'");
       }
       await b.ev("document.documentElement.classList.add('mehr-abstand')");
@@ -77,6 +103,19 @@ const KNOPF = "document.querySelector('button.nach-oben')";
     const jsDir = path.join(WURZEL, 'js');
     const rathaus = fs.readFileSync(path.join(WURZEL, 'module/rathaus.html'), 'utf8') +
       fs.readdirSync(jsDir).filter(n => /^rathaus-.*\.js$/.test(n)).map(n => fs.readFileSync(path.join(jsDir, n), 'utf8')).join('\n');
+    await b.oeffne('glossar.html');
+    await b.call('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+    await b.ev("document.documentElement.classList.add('ruhige-ansicht')");
+    await lang();
+    await weitGenug();
+    const ohneFade = await b.ev(`(() => { const s = getComputedStyle(${KNOPF}); return { duration: s.transitionDuration, property: s.transitionProperty, opacity: Number(s.opacity), hidden: ${KNOPF}.hidden }; })()`);
+    check('reduzierte Bewegung: keine Transition, Knopf sichtbar', ohneFade && (ohneFade.duration === '0s' || ohneFade.duration.split(',').every(t => t.trim() === '0s')) && ohneFade.opacity === 1 && ohneFade.hidden === false, ohneFade);
+    await b.ev('window.scrollTo(0, 0)');
+    await warte(40);
+    check('reduzierte Bewegung: sofort verborgen, ohne Ausblendwartezeit', await b.ev(`${KNOPF}.hidden === true && getComputedStyle(${KNOPF}).display === 'none'`));
+    await b.call('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: '' }] });
+    await b.ev("document.documentElement.classList.remove('ruhige-ansicht')");
+
     check('Rathaus (Seite und rathaus-*.js) enthält weiter B01, B02, B03', ['B01', 'B02', 'B03'].every(f => rathaus.includes(f)));
     check('Keine JS-Ausnahmen (1280)', b.konsole.length === 0, b.konsole);
   } finally {
@@ -136,6 +175,10 @@ const KNOPF = "document.querySelector('button.nach-oben')";
     const lehr = await eng.ev("(() => { const k = document.querySelector('button.nach-oben'); return { modus: document.getElementById('lehrkraft-schalter').getAttribute('aria-pressed'), sichtbar: !!k && !k.hidden, scrollY }; })()");
     console.log((lehr.modus === 'true' && lehr.sichtbar ? 'OK   ' : 'FAIL ') + 'Lehrkraftansicht: Knopf sichtbar  ' + JSON.stringify(lehr));
     if (!(lehr.modus === 'true' && lehr.sichtbar)) throw new Error('Lehrkraftansicht ohne Knopf');
+    const auswahl = await eng.ev(`(() => { const s = document.getElementById('lehrkraft-fall'); if (!s) return { fehlt: true }; const r = s.getBoundingClientRect(); s.value = 'b03'; s.dispatchEvent(new Event('change', { bubbles: true })); const text = document.getElementById('hauptinhalt').innerText; return { fehlt: false, breite: r.width, rechts: r.right, iw: innerWidth, ueber: document.documentElement.scrollWidth - document.documentElement.clientWidth, b03: text.includes('Bürgerbüro B03: Robin Keller'), lucaLoesung: text.includes('Luca Berger wird am Dienstag') }; })()`);
+    const auswahlOk = auswahl && !auswahl.fehlt && auswahl.breite >= 44 && auswahl.rechts <= auswahl.iw + 1 && auswahl.ueber <= 1 && auswahl.b03 && !auswahl.lucaLoesung;
+    console.log((auswahlOk ? 'OK   ' : 'FAIL ') + 'Lehrkraftauswahl 390x700 große Schrift  ' + JSON.stringify(auswahl));
+    if (!auswahlOk) throw new Error('Lehrkraftauswahl bei schmaler großer Schrift');
   } finally { await eng.schliessen(); }
 
   const gross = await starteBrowser({ zoomProzent: 400, breite: 1280, hoehe: 900 });

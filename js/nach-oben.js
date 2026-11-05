@@ -3,6 +3,7 @@
   "use strict";
   var SCHWELLE = 300;
   var ZIEL = "hauptinhalt";
+  var FADE_MS = 200;
 
   function sichtbar(scrollY, schwelle) {
     var s = Number(scrollY);
@@ -29,7 +30,22 @@
   function verhalten(reduziert) { return reduziert ? "auto" : "smooth"; }
   function zielId() { return ZIEL; }
 
-  var api = { SCHWELLE: SCHWELLE, sichtbar: sichtbar, angekommen: angekommen, zeigen: zeigen, verhalten: verhalten, zielId: zielId };
+  // Zustandswechsel des Knopfs: "verborgen" (hidden), "sichtbar", "ausblendend" (Fade-out läuft, hidden folgt danach).
+  // Reine Funktion: liefert den neuen Zustand und die auszuführende Aktion, ohne den DOM anzufassen.
+  function plan(zustand, soll, reduzierteBewegung) {
+    var z = zustand === "sichtbar" || zustand === "ausblendend" ? zustand : "verborgen";
+    if (soll) {
+      if (z === "verborgen") return { zustand: "sichtbar", aktion: "einblenden" };
+      if (z === "ausblendend") return { zustand: "sichtbar", aktion: "abbrechen" };
+      return { zustand: "sichtbar", aktion: "nichts" };
+    }
+    if (z === "sichtbar") {
+      return reduzierteBewegung ? { zustand: "verborgen", aktion: "verbergen" } : { zustand: "ausblendend", aktion: "ausblenden" };
+    }
+    return { zustand: z, aktion: "nichts" };
+  }
+
+  var api = { SCHWELLE: SCHWELLE, FADE_MS: FADE_MS, sichtbar: sichtbar, angekommen: angekommen, zeigen: zeigen, verhalten: verhalten, zielId: zielId, plan: plan };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   root.NACH_OBEN = api;
   if (typeof document === "undefined") return;
@@ -45,9 +61,50 @@
     try { return !!(root.matchMedia && root.matchMedia("(prefers-reduced-motion: reduce)").matches); }
     catch (e) { return false; }
   }
+  var zustand = "verborgen";
+  var timer = null;
+  function timerAbbrechen() {
+    if (timer !== null) { clearTimeout(timer); timer = null; }
+  }
+  function bedienbar(an) {
+    knopf.setAttribute("tabindex", an ? "0" : "-1");
+    knopf.setAttribute("aria-hidden", an ? "false" : "true");
+    if (an) knopf.classList.add("ist-sichtbar");
+    else knopf.classList.remove("ist-sichtbar");
+  }
   function aktualisiere() {
     if (!knopf) return;
-    knopf.hidden = !zeigen(scrollPosition(), inhaltOffset(), SCHWELLE);
+    var soll = zeigen(scrollPosition(), inhaltOffset(), SCHWELLE);
+    var p = plan(zustand, soll, reduziert());
+    zustand = p.zustand;
+    if (p.aktion === "einblenden") {
+      timerAbbrechen();
+      knopf.hidden = false;
+      knopf.setAttribute("tabindex", "-1");
+      knopf.setAttribute("aria-hidden", "true");
+      platziere();
+      // Erst nach einem erzwungenen Reflow sichtbar schalten, sonst entfällt der Fade-in.
+      void knopf.offsetWidth;
+      bedienbar(true);
+    } else if (p.aktion === "abbrechen") {
+      timerAbbrechen();
+      knopf.hidden = false;
+      bedienbar(true);
+    } else if (p.aktion === "ausblenden") {
+      bedienbar(false);
+      timerAbbrechen();
+      timer = setTimeout(function () {
+        timer = null;
+        if (zustand !== "ausblendend") return;
+        zustand = "verborgen";
+        knopf.hidden = true;
+        platziere();
+      }, FADE_MS + 30);
+    } else if (p.aktion === "verbergen") {
+      timerAbbrechen();
+      bedienbar(false);
+      knopf.hidden = true;
+    }
     platziere();
   }
   function rechteck(el) {
@@ -142,6 +199,8 @@
     knopf.className = "nach-oben";
     knopf.textContent = "Nach oben";
     knopf.hidden = true;
+    knopf.setAttribute("tabindex", "-1");
+    knopf.setAttribute("aria-hidden", "true");
     knopf.addEventListener("click", nachOben);
     document.body.appendChild(knopf);
     root.addEventListener("scroll", aktualisiere, { passive: true });

@@ -621,8 +621,24 @@ summary, legend, .glossar-eintrag p { overflow-wrap: anywhere; max-width: 100%; 
   border: 2px solid var(--farbe-rahmen);
   border-radius: 8px;
   cursor: pointer;
+  /* Fade nur über opacity (und visibility am Ende des Ausblendens). Keine transform-Animation: transform gehört dem Ausweichen. */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 200ms ease, visibility 0s linear 200ms;
+}
+.nach-oben.ist-sichtbar {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 200ms ease, visibility 0s linear 0s;
 }
 .nach-oben[hidden] { display: none !important; }
+html.ruhige-ansicht .nach-oben,
+html.bewegung-reduziert .nach-oben { transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  .nach-oben, .nach-oben.ist-sichtbar { transition: none; }
+}
 .nach-oben:focus-visible { outline: 3px solid var(--farbe-text); outline-offset: 3px; box-shadow: 0 0 0 6px var(--farbe-flaeche); }
 @media (max-width: 560px), (max-height: 520px) {
   .nach-oben {
