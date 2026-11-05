@@ -281,12 +281,27 @@ textarea.rathaus-freitext-gross {
 
 /* Lehrkraftansicht: Fallwahl und Rückfrage vor dem Zurücksetzen. */
 .rathaus-fallwahl {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  display: grid;
+  gap: 0.35rem;
   margin: 0.6rem 0;
+  min-width: 0;
 }
-.rathaus-fallwahl .knopf[aria-pressed="true"] { border-width: 3px; font-weight: 700; }
+.rathaus-fallwahl label { font-weight: 700; overflow-wrap: anywhere; }
+.rathaus-fallwahl select {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  font: inherit;
+  padding: 0.5rem 0.7rem;
+  border: 2px solid var(--farbe-rahmen);
+  border-radius: 0.7rem;
+  background: var(--farbe-flaeche);
+  color: var(--farbe-text);
+}
+.rathaus-fallwahl select:focus-visible { outline: 3px solid var(--farbe-text); outline-offset: 3px; }
+.rathaus-fallwahl-inhalt { min-width: 0; overflow-wrap: anywhere; }
 .rathaus-bestaetigung {
   display: grid;
   gap: 0.6rem;

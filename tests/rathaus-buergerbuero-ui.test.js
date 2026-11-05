@@ -346,14 +346,27 @@ test("rathaus-ui: Bürgerbüro-Übersicht öffnet B01, ohne den B01-Schlüssel z
   assert.equal(JSON.parse(u.store[KEY]).ansicht, "buerger");
 });
 
-test("rathaus-ui: Lehrkraftansicht zeigt zusätzlich den B01-Block samt Warnung", () => {
-  const u = mitRathausUi({ [KEY]: JSON.stringify({ ansicht: "lehrkraft", lehrkraft: true, bewertungsstand: luca.BEWERTUNGSSTAND }) });
-  const t = u.sicht();
-  assert.ok(t.includes("Luca Berger") && t.includes("Noelle Kranz"));
-  assert.ok(t.includes("Samira Yilmaz"));
-  assert.ok(t.includes(bb.lehrkraft().musterantwort));
-  assert.ok(t.includes(bb.lehrkraft().warnung));
-  assert.ok(t.includes(luca.lehrkraftLoesung().mustertext), "Luca-Block bleibt");
+test("rathaus-ui: Lehrkraftansicht öffnet standardmäßig Luca; B01 erscheint erst nach der Auswahl samt Warnung", () => {
+  const start = { [KEY]: JSON.stringify({ ansicht: "lehrkraft", lehrkraft: true, bewertungsstand: luca.BEWERTUNGSSTAND }) };
+  const u = mitRathausUi(start);
+  const vorher = JSON.stringify(u.store);
+  const geschriebenVorher = u.geschrieben.length;
+  let t = u.sicht();
+  assert.ok(t.includes("Luca Berger") && t.includes("Noelle Kranz") && t.includes("Samira Yilmaz"), "alle Fälle stehen in der Auswahl");
+  assert.ok(t.includes(luca.lehrkraftLoesung().mustertext), "Standard: Lucas Mustertext");
+  assert.equal(t.includes(bb.lehrkraft().musterantwort), false, "B01-Musterantwort bleibt zu");
+
+  const auswahl = alle(u.haupt).find((k) => k.tag === "select" && k.id === "lehrkraft-fall");
+  assert.ok(auswahl, "Fallauswahl fehlt");
+  auswahl.value = "b01";
+  auswahl.handlers.change();
+  t = u.sicht();
+  assert.ok(t.includes(bb.lehrkraft().musterantwort), "B01-Musterantwort nach Wahl");
+  assert.ok(t.includes(bb.lehrkraft().warnung), "B01-Warnung nach Wahl");
+  assert.equal(t.includes(luca.lehrkraftLoesung().mustertext), false, "Lucas Mustertext ist nach der Wahl zu");
+  assert.equal(JSON.stringify(u.store), vorher, "Speicher unverändert");
+  assert.equal(u.geschrieben.length, geschriebenVorher, "Der Wechsel schreibt nichts");
+  assert.deepEqual(u.entfernt, [], "Der Wechsel löscht nichts");
 });
 
 test("rathaus-ui: Lernansichten des Personalamts zeigen den B01-Block nicht", () => {

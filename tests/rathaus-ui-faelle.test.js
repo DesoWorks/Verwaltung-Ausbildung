@@ -135,20 +135,29 @@ test("Eine bereits gelesene andere Nachricht bleibt als gelesen markiert", () =>
   assert.deepEqual(knoepfe.filter((t) => /Nachricht/.test(t)).sort(), ["Nachricht erneut lesen", "Nachricht lesen"]);
 });
 
-test("Lehrkraftansicht listet beide Fälle mit Betreff und Name, ohne Id und Pfad", () => {
+test("Lehrkraftansicht zeigt den gewählten Fall voll, beide Namen stehen in der Auswahl, ohne Id und Pfad", () => {
   const s = start({ [KEY]: JSON.stringify({ ansicht: "lehrkraft", lehrkraft: true, bewertungsstand: luca.BEWERTUNGSSTAND }) });
-  const t = s.sicht();
-  [luca.fallDaten(), hb.fallDaten()].forEach((d) => {
+  const auswahl = alle(s.haupt).find((k) => k.tag === "select" && k.id === "lehrkraft-fall");
+  assert.ok(auswahl, "Fallauswahl fehlt");
+  const optionen = alle(auswahl).filter((k) => k.tag === "option").map((k) => k.textContent);
+  assert.ok(optionen.includes("Luca Berger") && optionen.includes("Noelle Kranz"));
+  const wahl = (id) => { auswahl.value = id; auswahl.handlers.change(); };
+  [[luca, "luca", hb], [hb, "noelle", luca]].forEach(([kern, id, anderer]) => {
+    wahl(id);
+    const t = s.sicht();
+    const d = kern.fallDaten();
     assert.ok(t.includes(d.betreff), d.betreff);
     assert.ok(t.includes(d.person.name), d.person.name);
     assert.equal(t.includes(d.id), false, "interne Id sichtbar: " + d.id);
+    assert.equal(t.includes(anderer.fallDaten().betreff), false, "der andere Fall bleibt zu");
+    assert.equal(t.includes("/home/"), false);
+    assert.equal(t.includes(".js"), false);
+    assert.ok(t.includes(kern.lehrkraftLoesung().mustertext), "Musterlösung des gewählten Falls");
+    assert.equal(t.includes(anderer.lehrkraftLoesung().mustertext), false, "keine fremde Musterlösung");
   });
-  assert.equal(t.includes("/home/"), false);
-  assert.equal(t.includes(".js"), false);
-  assert.ok(t.includes(luca.lehrkraftLoesung().mustertext), "Musterlösung in der Lehrkraftansicht");
 });
 
-test("Lehrkraftansicht listet beide Fälle auch bei aktivem Noelle-Fall", () => {
+test("Lehrkraftansicht nennt beide Fälle in der Auswahl auch bei aktivem Noelle-Fall", () => {
   const s = start(Object.assign({ [KEY]: JSON.stringify({ aktiverFall: "noelle", bewertungsstand: luca.BEWERTUNGSSTAND }) }, {
     [KEY_H]: JSON.stringify({ ansicht: "lehrkraft", lehrkraft: true, bewertungsstand: hb.BEWERTUNGSSTAND })
   }));

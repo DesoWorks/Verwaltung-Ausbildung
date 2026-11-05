@@ -17,6 +17,8 @@
   var ohneSchritt = false;
   // Unterseite im Bürgerbüro: "uebersicht" (Fallübersicht) oder "fall" (Arbeitsplatz B01). Wird nie gespeichert.
   var buergerModus = "uebersicht";
+  // In dieser Seitenladung gewählter Fall der Lehrkraftansicht. Reine Anzeige, wird nie gespeichert.
+  var lehrkraftWahl = null;
 
   var state = {
     ansicht: "stadt",
@@ -776,8 +778,40 @@
     speichern();
   }
 
+  // Setzt genau den angezeigten Personalfall zurück. Ist er nicht der aktive Lernfall, bleiben der aktive Lernfall,
+  // sein Speicher und der Plattformfortschritt unberührt. Der alte Schlüssel behält dabei die Wahl des aktiven Vorgangs.
+  function setzeFallZurueck(id) {
+    if (!id || id === aktiverFall) { setzeVorgangZurueck(); return; }
+    var speicherKey = id === "noelle" ? KEY_HOCHBETRIEB : KEY;
+    var alt = rohLesen(speicherKey);
+    if (speicherKey === KEY && alt && alt.aktiverFall) window.localStorage.setItem(speicherKey, JSON.stringify({ aktiverFall: alt.aktiverFall }));
+    else window.localStorage.removeItem(speicherKey);
+  }
+
+  // Fälle der Lehrkraftansicht in Anzeigereihenfolge. Fehlende Module fehlen in der Liste.
+  // Ein neuer Fall kommt als weiterer Eintrag hinzu (Personalfall: kern, Bürgerbüro: ui mit zeichneLehrkraft).
+  function lehrkraftFaelle() {
+    var liste = [];
+    [["luca", kernLuca], ["noelle", kernHochbetrieb]].forEach(function (paar) {
+      if (paar[1]) liste.push({ id: paar[0], gruppe: "Personalamt", label: paar[1].fallDaten().person.name, kern: paar[1] });
+    });
+    [
+      ["b01", "B01 – Samira Yilmaz", window.RATHAUS_BUERGERBUERO_UI],
+      ["b02", "B02 – Alex Weber", window.RATHAUS_B02_UI],
+      ["b03", "B03 – Robin Keller", window.RATHAUS_B03_UI]
+    ].forEach(function (b) {
+      if (b[2] && typeof b[2].zeichneLehrkraft === "function") liste.push({ id: b[0], gruppe: "Bürgerbüro", label: b[1], ui: b[2] });
+    });
+    return liste;
+  }
+
+  function findeLehrFall(faelle, id) {
+    for (var i = 0; i < faelle.length; i++) if (faelle[i].id === id) return faelle[i];
+    return null;
+  }
+
   // Rückfrage vor dem Zurücksetzen: nennt den gewählten Fall, Abbrechen ändert nichts.
-  function zeigeResetFrage(host, ansichtDaten) {
+  function zeigeResetFrage(host, ansichtDaten, lehrNr) {
     leeren(host);
     var box = el("div", "rathaus-bestaetigung");
     box.id = "reset-bestaetigung";
@@ -802,7 +836,7 @@
       if (ereignis && ereignis.key === "Escape") abbrechen();
     });
     ja.addEventListener("click", function () {
-      setzeVorgangZurueck();
+      setzeFallZurueck(lehrNr);
       zeichnen();
       fokus("ansicht-titel");
       ansage("Der Vorgang " + ansichtDaten.fallName + " wurde für einen neuen Durchlauf zurückgesetzt.");
@@ -822,31 +856,72 @@
       ziel.appendChild(el("p", "", "Die Musterlösung ist ausschließlich in der lokalen Lehrkraftansicht verfügbar. Lernende sehen sie in der Lernansicht nicht."));
       return;
     }
-    var daten = lehrkraftAnsicht.fallAnsicht(kern);
-    titel.textContent = daten.ueberschrift;
+    var faelle = lehrkraftFaelle();
+    if (!faelle.length) return;
+    var gewaehlt = findeLehrFall(faelle, lehrkraftWahl)
+      || findeLehrFall(faelle, aktiverFall === "noelle" ? "noelle" : "luca")
+      || faelle[0];
 
+    // Eine gruppierte Auswahlliste statt einer Buttonwand. Ein Wechsel zeichnet nur den Fallinhalt neu:
+    // kein Lernfallwechsel, kein Speichern, kein Zurücksetzen, der Fokus bleibt auf der Auswahl.
     var wahl = el("div", "rathaus-fallwahl");
-    wahl.setAttribute("role", "group");
-    wahl.setAttribute("aria-label", "Fall für die Lehrkraftansicht wählen");
-    [["luca", kernLuca], ["noelle", kernHochbetrieb]].forEach(function (paar) {
-      if (!paar[1]) return;
-      var knopf = el("button", "knopf", paar[1].fallDaten().person.name);
-      knopf.type = "button";
-      knopf.setAttribute("aria-pressed", String(paar[0] === aktiverFall));
-      knopf.addEventListener("click", function () {
-        if (paar[0] === aktiverFall) return;
-        aktiviereFall(paar[0]);
-        state.ansicht = "lehrkraft";
-        speichern();
-        zeichnen();
-        fokus("ansicht-titel");
-        ansage("Lehrkraftansicht zeigt jetzt den Fall " + paar[1].fallDaten().person.name + ".");
-      });
-      wahl.appendChild(knopf);
+    var beschriftung = el("label", "", "Fall für die Lehrkraftansicht wählen");
+    beschriftung.setAttribute("for", "lehrkraft-fall");
+    var auswahl = el("select", "");
+    auswahl.id = "lehrkraft-fall";
+    var gruppen = {};
+    faelle.forEach(function (f) {
+      var gruppe = gruppen[f.gruppe];
+      if (!gruppe) {
+        gruppe = el("optgroup", "");
+        gruppe.label = f.gruppe;
+        gruppe.setAttribute("label", f.gruppe);
+        gruppen[f.gruppe] = gruppe;
+        auswahl.appendChild(gruppe);
+      }
+      var option = el("option", "", f.label);
+      option.value = f.id;
+      option.setAttribute("value", f.id);
+      option.selected = f.id === gewaehlt.id;
+      gruppe.appendChild(option);
     });
+    auswahl.value = gewaehlt.id;
+    wahl.appendChild(beschriftung);
+    wahl.appendChild(auswahl);
     ziel.appendChild(wahl);
-    ziel.appendChild(el("p", "rathaus-meta", "Angezeigter Fall: " + daten.fallZeile + ". Bewertungskriterien, Antwortvorschlag und Rechtsquellen gelten nur für diesen Fall."));
 
+    var satz = el("p", "rathaus-meta");
+    satz.id = "lehrkraft-fall-satz";
+    ziel.appendChild(satz);
+    var inhalt = el("div", "rathaus-fallwahl-inhalt");
+    inhalt.id = "lehrkraft-fall-inhalt";
+    ziel.appendChild(inhalt);
+
+    function zeigeLehrFall(f) {
+      leeren(inhalt);
+      if (f.kern) {
+        var daten = lehrkraftAnsicht.fallAnsicht(f.kern);
+        titel.textContent = daten.ueberschrift;
+        satz.textContent = "Angezeigter Fall: " + daten.fallZeile + ". Bewertungskriterien, Antwortvorschlag und Rechtsquellen gelten nur für diesen Fall.";
+        zeichnePersonalFall(inhalt, daten, f.id);
+      } else {
+        titel.textContent = "Lehrkraftansicht – Fall " + f.label;
+        satz.textContent = "Angezeigter Fall: " + f.label + " (Bürgerbüro). Alle Angaben darunter gelten nur für diesen Fall.";
+        f.ui.zeichneLehrkraft(inhalt);
+      }
+    }
+    zeigeLehrFall(gewaehlt);
+    auswahl.addEventListener("change", function () {
+      var neu = findeLehrFall(faelle, auswahl.value);
+      if (!neu) return;
+      lehrkraftWahl = neu.id;
+      zeigeLehrFall(neu);
+      ansage("Lehrkraftansicht zeigt jetzt den Fall " + neu.label + ".");
+    });
+  }
+
+  // Vollständige Lehrkraftansicht eines Personalamt-Falls. Der Reset gilt nur für genau diesen Fall.
+  function zeichnePersonalFall(ziel, daten, lehrNr) {
     lehrAbschnitt(ziel, "Sachverhalt", daten.sachverhalt, daten.fehlt);
     lehrAbschnitt(ziel, "Besondere Lernziele dieses Falls", daten.lernziele, daten.fehlt);
     if (daten.lernziele.length) ziel.appendChild(el("p", "rathaus-meta", daten.lernzieleHinweis));
@@ -864,34 +939,15 @@
     else ziel.appendChild(el("p", "rathaus-meta", daten.fehlt));
     ziel.appendChild(el("p", "rathaus-hinweis", daten.unsicherheit));
 
-    ziel.appendChild(el("h3", "", "Vorhandene Übungsfälle"));
-    var faelleListe = el("ul", "");
-    [kernLuca, kernHochbetrieb].forEach(function (k) {
-      if (!k) return;
-      var d = k.fallDaten();
-      faelleListe.appendChild(el("li", "", d.betreff + " (" + d.person.name + ")"));
-    });
-    if (window.RATHAUS_BUERGERBUERO) {
-      var b01 = window.RATHAUS_BUERGERBUERO.fallDaten();
-      faelleListe.appendChild(el("li", "", b01.titel + " (" + b01.person.name + ", Bürgerbüro B01)"));
-    }
-    ziel.appendChild(faelleListe);
-
     ziel.appendChild(el("h3", "", "Zurücksetzen"));
     var reset = el("button", "knopf knopf-warn", "Fall " + daten.fallName + " für einen neuen Durchlauf zurücksetzen");
     reset.id = "reset-knopf";
     reset.type = "button";
     var resetHost = el("div", "");
     resetHost.id = "reset-bereich";
-    reset.addEventListener("click", function () { zeigeResetFrage(resetHost, daten); });
+    reset.addEventListener("click", function () { zeigeResetFrage(resetHost, daten, lehrNr); });
     ziel.appendChild(reset);
     ziel.appendChild(resetHost);
-
-    // Dritter Fall: Bürgerbüro B01. Nur Lesen, der Bürgerbüro-Speicher wird hier nicht berührt.
-    if (window.RATHAUS_BUERGERBUERO_UI) window.RATHAUS_BUERGERBUERO_UI.zeichneLehrkraft(ziel);
-    // Vierter Fall: Bürgerbüro B02, ebenfalls nur Lesen.
-    if (window.RATHAUS_B02_UI) window.RATHAUS_B02_UI.zeichneLehrkraft(ziel);
-    if (window.RATHAUS_B03_UI) window.RATHAUS_B03_UI.zeichneLehrkraft(ziel);
   }
 
   function fortschrittNur() {

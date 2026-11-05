@@ -60,6 +60,8 @@ const B = require('../js/rathaus-b03.js');
       check('B03 Reflow ' + breite, await b.ev('document.documentElement.scrollWidth <= document.documentElement.clientWidth'));
     }
     await b.ev("document.querySelector('#lehrkraft-schalter').click()");
+    check('Lehrkraft: Auswahl vorhanden, B03 anfangs nicht offen', await b.ev("!!document.querySelector('#lehrkraft-fall') && !document.querySelector('#hauptinhalt').innerText.includes('Bürgerbüro B03: Robin Keller')"));
+    await b.ev("(() => { const s = document.querySelector('#lehrkraft-fall'); s.value = 'b03'; s.dispatchEvent(new Event('change', { bubbles: true })); })()");
     check('Lehrkraft B03 Musterlösung getrennt erreichbar', await b.ev("document.querySelector('#hauptinhalt').innerText.includes('Bürgerbüro B03: Robin Keller') && document.querySelector('#hauptinhalt').innerText.includes('Musterlösung')"));
     check('Keine JS-Ausnahmen', b.konsole.length === 0, b.konsole);
   } finally {

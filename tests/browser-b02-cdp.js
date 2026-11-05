@@ -109,6 +109,9 @@ window.__hat = (text) => document.getElementById('hauptinhalt').innerText.toLowe
 
     await b.ev("document.getElementById('lehrkraft-schalter').click()");
     await b.warte(300);
+    check("Lehrkraft: Fallauswahl vorhanden, B02 ist anfangs nicht offen", await b.ev("!!document.getElementById('lehrkraft-fall') && !document.body.innerText.includes('Bürgerbüro B02')"));
+    await b.ev("(() => { const s = document.getElementById('lehrkraft-fall'); s.value = 'b02'; s.dispatchEvent(new Event('change', { bubbles: true })); })()");
+    await b.warte(200);
     check("Lehrkraftansicht zeigt B02 fallbezogen", await b.ev("document.body.innerText.includes('Bürgerbüro B02') && document.body.innerText.includes('§ 18')"));
 
     // Reflow (Viewport-Emulation, kein echter Zoom)
