@@ -603,3 +603,37 @@ main p, main li, main strong, main h2, main h3, main h4, main td, main th, main 
 summary, legend, .glossar-eintrag p { overflow-wrap: anywhere; max-width: 100%; box-sizing: border-box; }
 /* Knöpfe mit flex-basis 100% liefen wegen content-box um Polster und Rahmen über den Rand hinaus. */
 .knopf { box-sizing: border-box; max-width: 100%; overflow-wrap: anywhere; }
+
+/* Nach oben: fester Knopf unten rechts, unter Dialogen (z-index 50), nutzt nur vorhandene Theme-Variablen. */
+.nach-oben {
+  position: fixed;
+  z-index: 30;
+  inset-inline-end: max(1rem, env(safe-area-inset-right));
+  inset-block-end: max(1rem, env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  min-width: 44px;
+  min-height: 44px;
+  padding: .5rem 1rem;
+  font: inherit;
+  font-weight: 700;
+  color: var(--farbe-aktiv-tekst);
+  background: var(--farbe-akzent);
+  border: 2px solid var(--farbe-rahmen);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.nach-oben[hidden] { display: none !important; }
+.nach-oben:focus-visible { outline: 3px solid var(--farbe-text); outline-offset: 3px; box-shadow: 0 0 0 6px var(--farbe-flaeche); }
+@media (max-width: 560px), (max-height: 520px) {
+  .nach-oben {
+    inset-block-end: max(.35rem, env(safe-area-inset-bottom));
+    inset-inline-end: max(.35rem, env(safe-area-inset-right));
+    max-width: min(8rem, 46vw);
+    padding: .35rem .5rem;
+    font-size: .85rem;
+    line-height: 1.15;
+  }
+}
+@media (forced-colors: active) {
+  .nach-oben { color: ButtonText; background: ButtonFace; border-color: ButtonText; }
+}
