@@ -130,6 +130,18 @@
       }
       target.appendChild(detail);
     });
+    var tools = window.PLATTFORM_NAVIGATION.sortiereNachTitel(window.MODULE_TOOLS || []);
+    if (tools.length) {
+      var toolsSection = erzeuge("section", "overview-tools");
+      toolsSection.setAttribute("aria-labelledby", "tools-titel");
+      var toolsHeading = erzeuge("h2", null, "Tools & Nachschlagen");
+      toolsHeading.id = "tools-titel";
+      toolsSection.appendChild(toolsHeading);
+      var toolsList = erzeuge("ul", "modul-liste");
+      tools.forEach(function (tool) { toolsList.appendChild(makeEntry(tool)); });
+      toolsSection.appendChild(toolsList);
+      target.appendChild(toolsSection);
+    }
     if (returningField) { try { sessionStorage.removeItem(RETURN_KEY); } catch (_) {} }
     target.addEventListener("click", function (event) {
       var link = event.target.closest("a[href]");
