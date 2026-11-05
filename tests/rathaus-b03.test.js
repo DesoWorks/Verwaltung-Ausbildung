@@ -65,3 +65,10 @@ test('B03 eigener Schlüssel und hierarchische Navigation', () => {
   assert.equal(nav.rueckziel('buerger', 'fall-b03').modus, 'uebersicht');
   assert.deepEqual(nav.buergerUnternavigation('buerger', 'fall-b03').filter(e => e.aktuell).map(e => e.label), ['Fall B03']);
 });
+
+test('B03 Rückmeldung benennt betroffene Aufgabe, ohne Sollwert zu verraten', () => {
+  const e = gut(); e.empfaenger = 'arbeitgeber-direkt';
+  const text = B.auswertung(e).bereiche.regeln.hinweise.join(' ');
+  assert.ok(text.includes(B.katalog().empfaenger.frage));
+  assert.ok(!text.includes('antragsteller'));
+});

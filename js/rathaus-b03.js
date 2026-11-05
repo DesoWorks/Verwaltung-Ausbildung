@@ -157,7 +157,15 @@
         unvollstaendig: 'Es fehlen noch Angaben. Prüfe alle Aufgaben in diesem Abschnitt.',
         falsch: 'Mindestens eine gewählte Einordnung passt nicht zur Akte oder widerspricht den geprüften Regeln. Richtige Zusatzantworten gleichen das nicht aus.',
         ungueltig: 'Unbekannte oder beschädigte Eingabe. Bitte diesen Abschnitt neu bearbeiten.' };
-      bereiche[b.key] = { status: status, hinweise: [texte[status]] };
+      var hinweise = [texte[status]];
+      b.felder.forEach(function (f, i) {
+        var feldStatus = z[i];
+        if (invalid.indexOf(f) >= 0) hinweise.push(KATALOG[f].frage + ' – ungültige Angabe; bitte neu wählen.');
+        else if (!feldStatus.gegeben) hinweise.push(KATALOG[f].frage + ' – noch nicht beantwortet.');
+        else if (feldStatus.falsch) hinweise.push(KATALOG[f].frage + ' – Einordnung mit Akte und Nachschlagekarte vergleichen.');
+        else if (!feldStatus.voll) hinweise.push(KATALOG[f].frage + ' – noch nicht vollständig.');
+      });
+      bereiche[b.key] = { status: status, hinweise: hinweise };
       if (status === 'falsch' || status === 'ungueltig') sperren.push(b.name + ': ' + texte[status]);
     });
     if (invalid.length) sperren.push('Ungültige Eingabewerte: Bitte die Angaben neu prüfen.');
