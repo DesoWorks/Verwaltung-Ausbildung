@@ -41,6 +41,7 @@
   var speicherMeldung = "";
   var refs = {};
   var merkHost = null;
+  var flussApi = null;
   var merkKontext = null;
   var ansageTimer = null;
 
@@ -273,6 +274,7 @@
     modell.verworfen = false;
     var ok = speichern();
     aktualisiere();
+    if (flussApi) flussApi.gehe(5, false);
     fokusAuf(refs.ergebnis);
     ansage(ok
       ? "Auswertung fertig. " + ergebnisSatz(modell.letzteAuswertung)
@@ -378,6 +380,7 @@
   function aktualisiere() {
     if (refs.schritte) fuelleSchritte(refs.schritte);
     if (refs.auswertung) fuelleAuswertung(refs.auswertung);
+    if (flussApi) flussApi.aktualisiere();
   }
 
   // ---------- Hilfe ----------
@@ -426,6 +429,7 @@
     }
     try {
       window.localStorage.removeItem(bb.SPEICHER_SCHLUESSEL);
+      if (window.RATHAUS_AUFGABENFLUSS) window.RATHAUS_AUFGABENFLUSS.loescheSchritt("b01");
     } catch (fehler) {
       speicherMeldung = "Zurücksetzen nicht möglich. Der gespeicherte Stand wurde nicht gelöscht.";
       zeigeFehler();
@@ -538,29 +542,92 @@
     host.appendChild(el("p", "rathaus-meta", "Die Nachschlagekarte verändert keinen Fallstand."));
   }
 
-  function zeichneFall(host, ctx) {
+
+  function legeInFluss(zielHost, gebaut, daten) {
+    var fluss = window.RATHAUS_AUFGABENFLUSS;
+    var kinder = Array.prototype.slice.call(gebaut.children);
+    var etappen = kinder.filter(function (k) {
+      return k.className === "rathaus-etappe" && k.children[0] && /^\d+\./.test(k.children[0].textContent || "");
+    });
+    var hilfe = kinder.filter(function (k) { return k.children[0] && k.children[0].textContent === "Hilfe"; })[0];
+    var schrittHinweis = el("p", "rathaus-meta", "");
+    if (hilfe) hilfe.appendChild(schrittHinweis);
+    var schrittTexte = [
+      "Worum bittet die Person, und welche Rückfrage fehlt noch?",
+      "Öffne jede Unterlage, bevor du ihren Stand festlegst.",
+      "Trenne Regel, Zuständigkeit und Aussage. Die Nachschlagekarte hilft beim Nachlesen, nicht beim Abschreiben.",
+      "Vorbereiten ist noch kein Abschluss des Vorgangs.",
+      "Die Bausteine müssen zum Anliegen passen. Der eigene Entwurf wird nicht automatisch bewertet.",
+      "Die Auswertung zeigt den Stand. Sie ersetzt nicht die Lehrkraftlösung."
+    ];
+    var reset = kinder.filter(function (k) { return k.children[0] && k.children[0].textContent === "Zurücksetzen"; })[0];
+    var vor = kinder.filter(function (k) {
+      return k.className === "rathaus-meta" || k.className === "rathaus-hinweis" || k.className === "rathaus-fehler" ||
+        k.getAttribute("role") === "alert" || k.getAttribute("role") === "status";
+    });
+    flussApi = fluss.mount(zielHost, {
+      fallId: "b01",
+      kicker: "Bürgerbüro · Fall B01",
+      titel: "Fall B01: " + daten.titel,
+      bewertete: BEREICHE.length,
+      richtig: function () {
+        var a = modell.letzteAuswertung;
+        if (!a) return 0;
+        return BEREICHE.filter(function (bereich) { return a.bereiche[bereich.key] && a.bereiche[bereich.key].status === "richtig"; }).length;
+      },
+      bereichStatus: function (schritt, i) {
+        if (!modell.letzteAuswertung) return "noch nicht geprüft";
+        if (i >= BEREICHE.length) return modell.abgeschlossen ? "abgeschlossen" : "Auswertung";
+        return STATUSWORT[modell.letzteAuswertung.bereiche[BEREICHE[i].key].status] || "offen";
+      },
+      schritte: etappen.map(function (box, i) {
+        return { id: (BEREICHE[i] && BEREICHE[i].key) || "auswertung", name: ETAPPEN[i], panel: box };
+      }),
+      vorKarte: function (box) { vor.forEach(function (k) { box.appendChild(k); }); },
+      hilfeKnoten: hilfe,
+      hilfeAktualisieren: function () { schrittHinweis.textContent = schrittTexte[flussApi.schritt()] || ""; },
+      untenKnoten: [reset],
+      akte: { titel: "Fallakte", fuellen: function (panel) {
+        panel.appendChild(el("p", "rathaus-meta", "Rückfragen und Unterlagen bleiben erreichbar. Die Bearbeitung geht dabei nicht verloren."));
+        FRAGEN.forEach(function (f) {
+          aufklappbar(panel, "bb-akte-frage-" + f.id, "Akte: " + f.frage, "Akte schließen: " + f.frage, function () {
+            return el("p", "rathaus-antwort", f.antwort);
+          });
+        });
+        Object.keys(DOKUMENTE).forEach(function (id) {
+          aufklappbar(panel, "bb-akte-dok-" + id, "Akte: Unterlage " + id, "Akte schließen: " + id, function () {
+            return el("p", "", DOKUMENTE[id]);
+          });
+        });
+      } }
+    });
+    refs.titel = flussApi.titel;
+  }
+
+  function zeichneFall(zielHost, ctx) {
     var daten = bb.fallDaten();
-    titel(host, "Fall B01: " + daten.titel);
-    host.appendChild(el("p", "rathaus-meta", "Fiktive Übung mit erfundener Person. Es wird keine echte Anmeldung durchgeführt."));
-    host.appendChild(el("p", "rathaus-hinweis", daten.uebungsannahme));
+    var bau = el("div", "");
+    titel(bau, "Fall B01: " + daten.titel);
+    bau.appendChild(el("p", "rathaus-meta", "Fiktive Übung mit erfundener Person. Es wird keine echte Anmeldung durchgeführt."));
+    bau.appendChild(el("p", "rathaus-hinweis", daten.uebungsannahme));
 
     refs.fehler = el("p", "rathaus-fehler", speicherMeldung);
     refs.fehler.setAttribute("role", "alert");
     zeigeFehler();
-    host.appendChild(refs.fehler);
+    bau.appendChild(refs.fehler);
 
     refs.status = el("p", "nur-lesen");
     refs.status.setAttribute("role", "status");
     refs.status.setAttribute("aria-live", "polite");
     refs.status.setAttribute("aria-atomic", "true");
-    host.appendChild(refs.status);
+    bau.appendChild(refs.status);
 
     refs.schritte = el("nav", "rathaus-fortschritt");
     refs.schritte.setAttribute("aria-label", "Bereiche im Fall B01");
-    host.appendChild(refs.schritte);
+    bau.appendChild(refs.schritte);
 
     // 1 Anliegen
-    var e1 = etappe(host, 1, "Höre zu, stelle Rückfragen und halte fest, worum es geht.");
+    var e1 = etappe(bau, 1, "Höre zu, stelle Rückfragen und halte fest, worum es geht.");
     e1.appendChild(el("p", "rathaus-gespraech", "Frau Yilmaz sagt: „" + daten.anliegenText + "“"));
     e1.appendChild(el("h4", "", "Rückfragen stellen"));
     FRAGEN.forEach(function (f) {
@@ -573,7 +640,7 @@
     einzelGruppe(e1, "weitereWohnung", "Gibt es weitere Wohnungen?", "Wähle genau eine Antwort.");
 
     // 2 Unterlagen
-    var e2 = etappe(host, 2, "Öffne jede Unterlage und entscheide, was sie für die Anmeldung bedeutet.");
+    var e2 = etappe(bau, 2, "Öffne jede Unterlage und entscheide, was sie für die Anmeldung bedeutet.");
     var kat = bb.katalog().dokumente;
     kat.optionen.forEach(function (d) {
       aufklappbar(e2, "bb-dok-" + d.id, d.text + " öffnen", d.text + " schließen", function () {
@@ -594,16 +661,16 @@
     });
 
     // 3 Regeln
-    var e3 = etappe(host, 3, "Ordne die Regeln und die Zuständigkeit ein.");
+    var e3 = etappe(bau, 3, "Ordne die Regeln und die Zuständigkeit ein.");
     mehrfachGruppe(e3, "regeln", "Welche Regeln und Zuständigkeiten gehören zum Fall?", "Du kannst mehrere ankreuzen.");
     einzelGruppe(e3, "fallen", "Welche dieser Aussagen trifft im Fall von Frau Yilmaz zu?", "Wähle genau eine Antwort. Wenn keine Aussage stimmt, wähle ausdrücklich die letzte Option.");
 
     // 4 Vorbereitung
-    var e4 = etappe(host, 4, "Entscheide, was du für die weitere Bearbeitung vorbereitest.");
+    var e4 = etappe(bau, 4, "Entscheide, was du für die weitere Bearbeitung vorbereitest.");
     einzelGruppe(e4, "vorbereitung", "Wie wird die weitere Bearbeitung vorbereitet?", "Wähle genau eine Antwort.");
 
     // 5 Antwort
-    var e5 = etappe(host, 5, "Stelle die Antwort an Frau Yilmaz aus Bausteinen zusammen. Eigenen Text kannst du zusätzlich schreiben.");
+    var e5 = etappe(bau, 5, "Stelle die Antwort an Frau Yilmaz aus Bausteinen zusammen. Eigenen Text kannst du zusätzlich schreiben.");
     mehrfachGruppe(e5, "bausteine", "Welche Bausteine gehören in die Antwort an Frau Yilmaz?", "Du kannst mehrere ankreuzen.");
     var feldName = el("label", "rathaus-feldname", "Eigener Antwortentwurf (freiwillig)");
     feldName.setAttribute("for", "bb-freitext");
@@ -628,7 +695,7 @@
     e5.appendChild(feldHilfe);
 
     // 6 Auswertung
-    var e6 = etappe(host, 6, "Lass deine Eingaben prüfen. Danach kannst du den Übungsfall abschließen.");
+    var e6 = etappe(bau, 6, "Lass deine Eingaben prüfen. Danach kannst du den Übungsfall abschließen.");
     refs.auswertung = el("div", "rathaus-auswertung");
     e6.appendChild(refs.auswertung);
 
@@ -639,14 +706,16 @@
     var hilfeHost = el("div", "");
     fuelleHilfe(hilfeHost);
     hilfeBox.appendChild(hilfeHost);
-    host.appendChild(hilfeBox);
+    bau.appendChild(hilfeBox);
 
     // Zurücksetzen und Rückweg
     var reset = el("section", "rathaus-etappe");
     reset.appendChild(el("h3", "", "Zurücksetzen"));
     reset.appendChild(knopf("Fall B01 zurücksetzen", "knopf knopf-warn", zuruecksetzen));
-    host.appendChild(reset);
+    bau.appendChild(reset);
 
+    if (window.RATHAUS_AUFGABENFLUSS) legeInFluss(zielHost, bau, daten);
+    else zielHost.appendChild(bau);
     aktualisiere();
   }
 

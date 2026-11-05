@@ -60,7 +60,7 @@ window.__hat = (text) => document.getElementById('hauptinhalt').innerText.toLowe
     check("Fall B04 öffnen", await b.ev("__knopf('Fall B04 öffnen')"));
     await b.warte(250);
     await b.ev(HELFER);
-    check("Fallansicht B04 sichtbar", await b.ev("__hat('Mira Hoffmann') && __hat('6. Auswertung') && __hat('Fall B04')"));
+    check("Fallansicht B04 sichtbar", await b.ev("__hat('Mira Hoffmann') && __hat('Schritt 1 von 5') && __hat('Auswertung') && __hat('Fall B04')"));
     check("Lernansicht ohne Musterlösung", !(await b.ev("__hat('Musterlösung')")));
 
     // Negativ 1: leer

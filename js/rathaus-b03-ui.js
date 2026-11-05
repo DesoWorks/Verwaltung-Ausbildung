@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var b = window.RATHAUS_B03;
-  var modell, host, refs, meldung = '';
+  var modell, host, refs, flussApi, meldung = '';
   function el(tag, klasse, text) {
     var n = document.createElement(tag);
     if (klasse) n.className = klasse;
@@ -28,11 +28,16 @@
     } catch (_) { meldung = 'Speichern nicht möglich. Kein dauerhaft gespeicherter Abschluss; Stand gilt nur bis zum Verlassen.'; return false; }
   }
   function status() {
-    refs.meldung.textContent = meldung;
-    refs.meldung.hidden = !meldung;
-    refs.fortschritt.textContent = b.BEREICHE.filter(function (x) {
-      return b.auswertung(modell.eingaben).bereiche[x.key].status === 'richtig';
-    }).length + ' von 5 Bereichen richtig bearbeitet';
+    if (refs.meldung) {
+      refs.meldung.textContent = meldung;
+      refs.meldung.hidden = !meldung;
+    }
+    if (flussApi) flussApi.aktualisiere();
+  }
+  function richtigAnzahl() {
+    var a = modell.letzteAuswertung;
+    if (!a) return 0;
+    return b.BEREICHE.filter(function (x) { return a.bereiche[x.key].status === 'richtig'; }).length;
   }
   function geaendert() {
     var alt = !!modell.letzteAuswertung || modell.abgeschlossen;
@@ -80,7 +85,7 @@
   }
   function auswertung() {
     var ziel = refs.ergebnis; ziel.textContent = '';
-    var h = el('h3', '', '6. Auswertung'); h.tabIndex = -1; ziel.appendChild(h);
+    var h = el('h3', '', 'Auswertung'); h.tabIndex = -1; ziel.appendChild(h);
     ziel.appendChild(knopf('Auswertung prüfen', function () {
       modell.letzteAuswertung = b.auswertung(modell.eingaben); modell.abgeschlossen = false;
       modell.verworfen = false; speichern(); auswertung(); status();
@@ -110,54 +115,93 @@
     ab.id = 'b3-abschluss-knopf'; ab.disabled = !a || !a.darfAbschliessen || modell.abgeschlossen;
     ab.setAttribute('aria-describedby', p.id); ziel.appendChild(ab);
   }
+  var SCHRITT_HILFE = [
+    'Trenne Zweck, Art des Zeugnisses und Empfänger, bevor du eine Art festlegst.',
+    'Öffne die Fallakte und vergleiche Identitätsdokument und Antragsdaten. Ein Arbeitgeberwunsch ersetzt die Prüfung nicht.',
+    'Die Nachschlagekarte unterscheidet einfach, erweitert und den digitalen Weg. Ein privater Arbeitgeber ist keine Behörde.',
+    'Antrag vorbereiten ist noch keine Ausstellung und keine Zahlung.',
+    'Die gewünschte Papierfassung und der Übungsrahmen gehören in die Antwort. Der Entwurf wird nicht automatisch bewertet.'
+  ];
   function zeichne(ziel) {
-    host = ziel; refs = {};
+    host = ziel; refs = {}; flussApi = null;
     if (!modell) modell = laden();
-    var daten = b.fallDaten(), h = el('h2', '', 'Fall B03: ' + daten.titel);
-    h.id = 'ansicht-titel'; h.tabIndex = -1; host.appendChild(h);
-    host.appendChild(el('p', 'rathaus-hinweis', daten.uebungsannahme));
-    host.appendChild(el('p', 'rathaus-hinweis', daten.hinweis));
-    if (modell.verworfen) host.appendChild(el('p', 'rathaus-hinweis', 'Der gespeicherte Stand ist beschädigt oder veraltet. Kein alter Abschluss wird übernommen. Bereinigte Eingaben bitte erneut prüfen.'));
-    refs.meldung = el('p', 'rathaus-fehler'); refs.meldung.setAttribute('role', 'alert'); host.appendChild(refs.meldung);
-    refs.live = el('p', 'nur-lesen'); refs.live.setAttribute('role', 'status'); refs.live.setAttribute('aria-live', 'polite'); host.appendChild(refs.live);
-    refs.fortschritt = el('p', 'rathaus-fortschritt-text'); host.appendChild(refs.fortschritt);
-    var sprung = el('nav', 'knopf-reihe'); sprung.setAttribute('aria-label', 'Bereiche im Fall B03'); host.appendChild(sprung);
-    b.BEREICHE.forEach(function (x, i) {
-      var s = el('section', 'rathaus-etappe'), titel = el('h3', '', (i + 1) + '. ' + x.name);
-      titel.id = 'b3-' + x.key; titel.tabIndex = -1; s.setAttribute('aria-labelledby', titel.id); s.appendChild(titel);
-      sprung.appendChild(knopf(x.name, function () { titel.scrollIntoView(); titel.focus(); }));
-      if (i === 0) {
-        s.appendChild(el('p', 'rathaus-gespraech', 'Robin Keller: „' + daten.anliegenText + '“'));
-        aufklappen(s, 'Rückfrage: Für wen und wofür?', 'Für mich selbst. Die private Sonnental Büroservice GmbH verlangt ein einfaches Führungszeugnis für kaufmännische Sachbearbeitung. Keine Betreuung Minderjähriger.');
-        aufklappen(s, 'Rückfrage: Papier oder digital? Gebührenbefreiung?', 'Heute persönlich als Papierfassung. Keine Gebührenbefreiung beantragt; im Übungsfall keine Befreiungsgründe belegt.');
-      }
-      if (i === 1) {
-        aufklappen(s, 'Identitätsdokument und Antragsdaten öffnen', 'Nur fiktive Übungsdaten: Robin Keller, Geburtsname Keller, geboren 08.06.1998 in Freiburg im Breisgau, deutsch. Alleinige Wohnung Rosenweg 12, 00000 Sonnenthal. Gültiges Identitätsdokument im Original und Antragsdaten stimmen überein.');
-        aufklappen(s, 'Arbeitgeberschreiben öffnen', 'Fiktive Sonnental Büroservice GmbH: Bitte legen Sie ein einfaches Führungszeugnis für private Zwecke vor. Tätigkeit: kaufmännische Sachbearbeitung, keine Betreuung Minderjähriger.');
-      }
-      x.felder.forEach(function (f) { frage(s, f); });
-      if (i === 4) {
-        var label = el('label', 'rathaus-feldname', 'Eigener Antwortentwurf (freiwillig, nicht automatisch bewertet)');
-        label.htmlFor = 'b3-freitext'; s.appendChild(label);
-        var t = el('textarea', 'rathaus-freitext-gross'); t.id = 'b3-freitext'; t.rows = 4; t.maxLength = 2000;
-        t.value = modell.eingaben.freitext; t.setAttribute('aria-describedby', 'b3-freitext-hilfe');
-        t.addEventListener('input', function () { modell.eingaben.freitext = t.value.slice(0, 2000); geaendert(); }); s.appendChild(t);
-        var hinweis = el('p', 'rathaus-meta', 'Wird lokal gespeichert, aber nicht fachlich automatisch geprüft. Rückmeldung durch die Lehrkraft.');
-        hinweis.id = 'b3-freitext-hilfe'; s.appendChild(hinweis);
-      }
-      host.appendChild(s);
-    });
-    refs.ergebnis = el('section', 'rathaus-etappe'); host.appendChild(refs.ergebnis); auswertung();
-    var hilfe = el('section', 'rathaus-etappe'); hilfe.appendChild(el('h3', '', 'Gestufte Hilfen'));
-    [1, 2, 3].forEach(function (stufe) { aufklappen(hilfe, 'Hilfestufe ' + stufe, b.hilfe(stufe)); });
-    var karte = b.nachschlagen(); hilfe.appendChild(el('h3', '', karte.titel));
-    karte.themen.forEach(function (t) { aufklappen(hilfe, t.titel, t.text); });
-    hilfe.appendChild(el('p', 'rathaus-meta', karte.quelle)); host.appendChild(hilfe);
-    host.appendChild(knopf('Fall B03 zurücksetzen', function () {
+    var daten = b.fallDaten();
+    var fluss = window.RATHAUS_AUFGABENFLUSS;
+    if (!fluss) {
+      ziel.appendChild(el('p', 'rathaus-fehler', 'Die Aufgabenoberfläche ist nicht geladen.'));
+      return;
+    }
+    var schrittHinweis = el('p', 'rathaus-meta', '');
+    var hilfe = el('div', '');
+    hilfe.appendChild(schrittHinweis);
+    hilfe.appendChild(el('p', 'rathaus-meta', 'Gestufte Hilfen, von allgemein bis konkret. Eine fertige Antwort steht hier nicht.'));
+    [1, 2].forEach(function (stufe) { aufklappen(hilfe, 'Hilfestufe ' + stufe, b.hilfe(stufe)); });
+    aufklappen(hilfe, 'Hilfestufe 3', 'Prüfe die Fallakte. Sie nennt das Recht, nicht die anzukreuzende Zeile.');
+    var karte = b.nachschlagen();
+    refs.meldung = el('p', 'rathaus-fehler'); refs.meldung.setAttribute('role', 'alert');
+    refs.live = el('p', 'nur-lesen'); refs.live.setAttribute('role', 'status'); refs.live.setAttribute('aria-live', 'polite');
+    refs.ergebnis = el('section', 'rathaus-etappe');
+    var reset = knopf('Fall B03 zurücksetzen', function () {
       if (!window.confirm(b.resetText())) return;
-      try { localStorage.removeItem(b.SPEICHER_SCHLUESSEL); } catch (_) { meldung = 'Zurücksetzen nicht möglich. Speicher wurde nicht gelöscht.'; status(); return; }
+      try { localStorage.removeItem(b.SPEICHER_SCHLUESSEL); } catch (_) {
+        meldung = 'Zurücksetzen nicht möglich. Speicher wurde nicht gelöscht.'; status(); return;
+      }
+      if (window.RATHAUS_AUFGABENFLUSS) window.RATHAUS_AUFGABENFLUSS.loescheSchritt('b03');
       modell = leer(); meldung = ''; host.textContent = ''; zeichne(host); host.querySelector('h2').focus();
-    }));
+    });
+    flussApi = fluss.mount(ziel, {
+      fallId: 'b03',
+      kicker: 'Bürgerbüro · Fall B03',
+      titel: 'Fall B03: ' + daten.titel,
+      hinweise: [daten.uebungsannahme, daten.hinweis].concat(modell.verworfen
+        ? ['Der gespeicherte Stand ist beschädigt oder veraltet. Kein alter Abschluss wird übernommen. Bereinigte Eingaben bitte erneut prüfen.'] : []),
+      bewertete: b.BEREICHE.length,
+      richtig: richtigAnzahl,
+      bereichStatus: function (s) {
+        var a = modell.letzteAuswertung;
+        if (!a || !a.bereiche[s.id]) return 'noch nicht geprüft';
+        return { richtig: 'richtig', falsch: 'noch nicht richtig', offen: 'noch offen', unvollstaendig: 'noch unvollständig', ungueltig: 'ungültig' }[a.bereiche[s.id].status] || 'offen';
+      },
+      schritte: b.BEREICHE.map(function (x, i) {
+        return { id: x.key, name: x.name, fuellen: function (s) {
+          if (i === 0) {
+            s.appendChild(el('p', 'rathaus-gespraech', 'Robin Keller: „' + daten.anliegenText + '“'));
+            aufklappen(s, 'Rückfrage: Für wen und wofür?', 'Für mich selbst. Die private Sonnental Büroservice GmbH verlangt ein einfaches Führungszeugnis für kaufmännische Sachbearbeitung. Keine Betreuung Minderjähriger.');
+            aufklappen(s, 'Rückfrage: Papier oder digital? Gebührenbefreiung?', 'Heute persönlich als Papierfassung. Keine Gebührenbefreiung beantragt; im Übungsfall keine Befreiungsgründe belegt.');
+          }
+          if (i === 1) {
+            aufklappen(s, 'Identitätsdokument und Antragsdaten öffnen', 'Nur fiktive Übungsdaten: Robin Keller, Geburtsname Keller, geboren 08.06.1998 in Freiburg im Breisgau, deutsch. Alleinige Wohnung Rosenweg 12, 00000 Sonnenthal. Gültiges Identitätsdokument im Original und Antragsdaten stimmen überein.');
+            aufklappen(s, 'Arbeitgeberschreiben öffnen', 'Fiktive Sonnental Büroservice GmbH: Bitte legen Sie ein einfaches Führungszeugnis für private Zwecke vor. Tätigkeit: kaufmännische Sachbearbeitung, keine Betreuung Minderjähriger.');
+          }
+          x.felder.forEach(function (f) { frage(s, f); });
+          if (i === 4) {
+            var label = el('label', 'rathaus-feldname', 'Eigener Antwortentwurf (freiwillig, nicht automatisch bewertet)');
+            label.htmlFor = 'b3-freitext'; s.appendChild(label);
+            var t = el('textarea', 'rathaus-freitext-gross'); t.id = 'b3-freitext'; t.rows = 4; t.maxLength = 2000;
+            t.value = modell.eingaben.freitext; t.setAttribute('aria-describedby', 'b3-freitext-hilfe');
+            t.addEventListener('input', function () { modell.eingaben.freitext = t.value.slice(0, 2000); geaendert(); }); s.appendChild(t);
+            var feldHilfe = el('p', 'rathaus-meta', 'Wird lokal gespeichert, aber nicht fachlich automatisch geprüft. Rückmeldung durch die Lehrkraft.');
+            feldHilfe.id = 'b3-freitext-hilfe'; s.appendChild(feldHilfe);
+          }
+        } };
+      }),
+      akte: { titel: 'Fallakte', fuellen: function (p) {
+        p.appendChild(el('p', '', daten.anliegenText));
+        p.appendChild(el('p', 'rathaus-meta', 'Unterlagen und Rechtsgrenzen bleiben hier erreichbar, ohne die Antworten zu löschen.'));
+        aufklappen(p, 'Identitätsdokument und Antragsdaten', 'Nur fiktive Übungsdaten: Robin Keller, Geburtsname Keller, geboren 08.06.1998 in Freiburg im Breisgau, deutsch. Alleinige Wohnung Rosenweg 12, 00000 Sonnenthal.');
+        aufklappen(p, 'Arbeitgeberschreiben', 'Fiktive Sonnental Büroservice GmbH verlangt ein einfaches Führungszeugnis für kaufmännische Sachbearbeitung ohne Betreuung Minderjähriger.');
+        karte.themen.forEach(function (t) { aufklappen(p, t.titel, t.text); });
+      } },
+      hilfeKnoten: hilfe,
+      hilfeAktualisieren: function () { schrittHinweis.textContent = SCHRITT_HILFE[flussApi.schritt()] || ''; },
+      untenFuellen: function (unten) {
+        unten.appendChild(refs.meldung);
+        unten.appendChild(refs.live);
+        unten.appendChild(refs.ergebnis);
+        unten.appendChild(reset);
+      }
+    });
+    auswertung();
     status();
   }
   function zeichneLehrkraft(ziel) {

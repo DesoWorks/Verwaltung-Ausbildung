@@ -82,6 +82,7 @@ function umgebung(speicher, optionen) {
   };
   const kontext = { window, document };
   vm.createContext(kontext);
+  vm.runInContext(fs.readFileSync(path.join(wurzel, "js/rathaus-aufgabenfluss.js"), "utf8"), kontext);
   vm.runInContext(fs.readFileSync(path.join(wurzel, "js/rathaus-buergerbuero-ui.js"), "utf8"), kontext);
   const haupt = ids.hauptinhalt;
   const api = {
@@ -246,7 +247,8 @@ test("Die Oberfläche schreibt nur den eigenen Schlüssel", () => {
   u.klick("Auswertung prüfen");
   u.klick("Übungsfall abschließen");
   assert.ok(u.geschrieben.length > 0);
-  assert.ok(u.geschrieben.every((k) => k === BB), u.geschrieben.join(","));
+  const schritt = "verwaltung-ausbildung.rathaus.aufgabenfluss.sicht.buerger-01";
+  assert.ok(u.geschrieben.every((k) => k === BB || k === schritt), u.geschrieben.join(","));
   assert.equal(u.store[KEY], luca1);
 });
 
@@ -330,6 +332,7 @@ function mitRathausUi(speicher) {
     addEventListener() {}
   } };
   vm.createContext(kontext);
+  vm.runInContext(fs.readFileSync(path.join(wurzel, "js/rathaus-aufgabenfluss.js"), "utf8"), kontext);
   vm.runInContext(fs.readFileSync(path.join(wurzel, "js/rathaus-buergerbuero-ui.js"), "utf8"), kontext);
   vm.runInContext(fs.readFileSync(path.join(wurzel, "js/rathaus-ui.js"), "utf8"), kontext);
   return u;
@@ -378,6 +381,7 @@ test("rathaus.html bindet Kern und Oberfläche vor rathaus-ui.js ein", () => {
   const html = fs.readFileSync(path.join(wurzel, "module/rathaus.html"), "utf8");
   const i = (n) => html.indexOf(n);
   assert.ok(i("rathaus-buergerbuero.js") > -1);
+  assert.ok(i("rathaus-aufgabenfluss.js") > -1 && i("rathaus-aufgabenfluss.js") < i("rathaus-buergerbuero-ui.js"));
   assert.ok(i("rathaus-buergerbuero.js") < i("rathaus-buergerbuero-ui.js"));
   assert.ok(i("rathaus-buergerbuero-ui.js") < i("rathaus-ui.js"));
 });

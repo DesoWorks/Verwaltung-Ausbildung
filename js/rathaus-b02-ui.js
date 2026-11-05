@@ -36,6 +36,7 @@
   var speicherMeldung = "";
   var refs = {};
   var merkHost = null;
+  var flussApi = null;
   var merkKontext = null;
   var ansageTimer = null;
 
@@ -258,6 +259,7 @@
     modell.verworfen = false;
     var ok = speichern();
     aktualisiere();
+    if (flussApi) flussApi.gehe(5, false);
     fokusAuf(refs.ergebnis);
     ansage(ok
       ? "Auswertung fertig. " + ergebnisSatz(modell.letzteAuswertung)
@@ -364,6 +366,7 @@
     if (refs.verworfen) refs.verworfen.hidden = !modell.verworfen;
     if (refs.schritte) fuelleSchritte(refs.schritte);
     if (refs.auswertung) fuelleAuswertung(refs.auswertung);
+    if (flussApi) flussApi.aktualisiere();
   }
 
   // ---------- Hilfe ----------
@@ -412,6 +415,7 @@
     }
     try {
       window.localStorage.removeItem(b2.SPEICHER_SCHLUESSEL);
+      if (window.RATHAUS_AUFGABENFLUSS) window.RATHAUS_AUFGABENFLUSS.loescheSchritt("b02");
     } catch (fehler) {
       speicherMeldung = "Zurücksetzen nicht möglich. Der gespeicherte Stand wurde nicht gelöscht.";
       zeigeFehler();
@@ -447,49 +451,111 @@
     host.appendChild(box);
   }
 
-  function zeichne(host, ctx) {
+
+  function legeInFluss(zielHost, gebaut, daten) {
+    var fluss = window.RATHAUS_AUFGABENFLUSS;
+    var kinder = Array.prototype.slice.call(gebaut.children);
+    var etappen = kinder.filter(function (k) {
+      return k.className === "rathaus-etappe" && k.children[0] && /^\d+\./.test(k.children[0].textContent || "");
+    });
+    var hilfe = kinder.filter(function (k) { return k.children[0] && k.children[0].textContent === "Hilfe"; })[0];
+    var schrittHinweis = el("p", "rathaus-meta", "");
+    if (hilfe) hilfe.appendChild(schrittHinweis);
+    var schrittTexte = [
+      "Geht es um die eigene Person oder um jemand anderen?",
+      "Vergleiche Ausweis, Antrag und Übungsregister, bevor du den Stand festlegst.",
+      "Umfang, Regel und Aussage sind drei verschiedene Fragen.",
+      "Vorbereiten heißt nicht aushändigen.",
+      "Die Bausteine müssen zum Antrag passen. Der eigene Entwurf wird nicht automatisch bewertet.",
+      "Die Auswertung zeigt den Stand. Sie ersetzt nicht die Lehrkraftlösung."
+    ];
+    var reset = kinder.filter(function (k) { return k.children[0] && k.children[0].textContent === "Zurücksetzen"; })[0];
+    var karte = kinder.filter(function (k) {
+      return k.className === "rathaus-etappe" && etappen.indexOf(k) < 0 && k !== hilfe && k !== reset;
+    });
+    var vor = kinder.filter(function (k) {
+      return k.className === "rathaus-meta" || k.className === "rathaus-hinweis" || k.className === "rathaus-fehler" ||
+        k.getAttribute("role") === "alert" || k.getAttribute("role") === "status";
+    });
+    flussApi = fluss.mount(zielHost, {
+      fallId: "b02",
+      kicker: "Bürgerbüro · Fall B02",
+      titel: "Fall B02: " + daten.titel,
+      bewertete: b2.BEREICHE.length,
+      richtig: function () {
+        var a = modell.letzteAuswertung;
+        if (!a) return 0;
+        return b2.BEREICHE.filter(function (bereich) { return a.bereiche[bereich.key] && a.bereiche[bereich.key].status === "richtig"; }).length;
+      },
+      bereichStatus: function (schritt, i) {
+        if (!modell.letzteAuswertung) return "noch nicht geprüft";
+        if (i >= b2.BEREICHE.length) return modell.abgeschlossen ? "abgeschlossen" : "Auswertung";
+        return STATUSWORT[modell.letzteAuswertung.bereiche[b2.BEREICHE[i].key].status] || "offen";
+      },
+      schritte: etappen.map(function (box, i) {
+        return { id: (b2.BEREICHE[i] && b2.BEREICHE[i].key) || "auswertung", name: ETAPPEN[i], panel: box };
+      }),
+      vorKarte: function (box) { vor.forEach(function (k) { box.appendChild(k); }); },
+      hilfeKnoten: hilfe,
+      hilfeAktualisieren: function () { schrittHinweis.textContent = schrittTexte[flussApi.schritt()] || ""; },
+      untenKnoten: [reset],
+      akte: { titel: "Fallakte", fuellen: function (panel) {
+        panel.appendChild(el("p", "rathaus-meta", "Unterlagen und Nachschlagekarte bleiben erreichbar. Die Bearbeitung geht nicht verloren."));
+        DOKUMENTE.forEach(function (d) {
+          aufklappbar(panel, "b2-akte-" + d.id, "Akte: " + d.text, "Akte schließen: " + d.text, function () {
+            return el("p", "", d.inhalt);
+          });
+        });
+        karte.forEach(function (k) { panel.appendChild(k); });
+      } }
+    });
+    refs.titel = flussApi.titel;
+  }
+
+  function zeichne(zielHost, ctx) {
     refs = { etappen: {} };
-    merkHost = host;
+    merkHost = zielHost;
     merkKontext = ctx;
     if (!b2) {
-      host.appendChild(el("p", "rathaus-fehler", "Der Fall B02 ist gerade nicht verfügbar."));
+      zielHost.appendChild(el("p", "rathaus-fehler", "Der Fall B02 ist gerade nicht verfügbar."));
       return;
     }
     if (!modell) modell = laden();
     var daten = b2.fallDaten();
+    var bau = el("div", "");
 
     var h = el("h2", "", "Fall B02: " + daten.titel);
     h.id = "ansicht-titel";
     h.tabIndex = -1;
     refs.titel = h;
-    host.appendChild(h);
-    host.appendChild(el("p", "rathaus-meta", "Fiktive Übung mit erfundener Person. Es wird keine echte Bescheinigung ausgestellt."));
-    host.appendChild(el("p", "rathaus-hinweis", daten.uebungsannahme));
-    host.appendChild(el("p", "rathaus-hinweis", daten.hinweis));
+    bau.appendChild(h);
+    bau.appendChild(el("p", "rathaus-meta", "Fiktive Übung mit erfundener Person. Es wird keine echte Bescheinigung ausgestellt."));
+    bau.appendChild(el("p", "rathaus-hinweis", daten.uebungsannahme));
+    bau.appendChild(el("p", "rathaus-hinweis", daten.hinweis));
 
     refs.fehler = el("p", "rathaus-fehler", speicherMeldung);
     refs.fehler.setAttribute("role", "alert");
     zeigeFehler();
-    host.appendChild(refs.fehler);
+    bau.appendChild(refs.fehler);
 
     refs.verworfen = el("p", "rathaus-hinweis", VERWORFEN_HINWEIS);
     refs.verworfen.id = "b2-verworfen-hinweis";
     refs.verworfen.setAttribute("role", "status");
     refs.verworfen.hidden = !modell.verworfen;
-    host.appendChild(refs.verworfen);
+    bau.appendChild(refs.verworfen);
 
     refs.status = el("p", "nur-lesen");
     refs.status.setAttribute("role", "status");
     refs.status.setAttribute("aria-live", "polite");
     refs.status.setAttribute("aria-atomic", "true");
-    host.appendChild(refs.status);
+    bau.appendChild(refs.status);
 
     refs.schritte = el("nav", "rathaus-fortschritt");
     refs.schritte.setAttribute("aria-label", "Bereiche im Fall B02");
-    host.appendChild(refs.schritte);
+    bau.appendChild(refs.schritte);
 
     // 1 Anliegen
-    var e1 = etappe(host, 1, "Höre zu, stelle Rückfragen und halte fest, worum es geht.");
+    var e1 = etappe(bau, 1, "Höre zu, stelle Rückfragen und halte fest, worum es geht.");
     e1.appendChild(el("p", "rathaus-gespraech", "Alex Weber sagt: „" + daten.anliegenText + "“"));
     e1.appendChild(el("h4", "", "Rückfragen stellen"));
     FRAGEN.forEach(function (f) {
@@ -500,7 +566,7 @@
     einzelGruppe(e1, "anliegen", "Worum geht es bei dem Anliegen?", "Wähle genau eine Antwort.");
 
     // 2 Unterlagen
-    var e2 = etappe(host, 2, "Öffne jede Unterlage, vergleiche die Angaben und prüfe die Identität.");
+    var e2 = etappe(bau, 2, "Öffne jede Unterlage, vergleiche die Angaben und prüfe die Identität.");
     DOKUMENTE.forEach(function (d) {
       aufklappbar(e2, "b2-dok-" + d.id, d.text + " öffnen", d.text + " schließen", function () {
         var artikel = el("article", "rathaus-dokument-inhalt");
@@ -523,17 +589,17 @@
     einzelGruppe(e2, "identitaet", b2.katalog().identitaet.frage, "Wähle genau eine Antwort.");
 
     // 3 Regeln
-    var e3 = etappe(host, 3, "Ordne Umfang, Regeln und Rechtsgrundlage ein. Die Nachschlagekarte unten hilft dabei.");
+    var e3 = etappe(bau, 3, "Ordne Umfang, Regeln und Rechtsgrundlage ein. Die Nachschlagekarte unten hilft dabei.");
     einzelGruppe(e3, "umfang", b2.katalog().umfang.frage, "Wähle genau eine Antwort.");
     mehrfachGruppe(e3, "regeln", b2.katalog().regeln.frage, "Du kannst mehrere ankreuzen.");
     einzelGruppe(e3, "aussagen", b2.katalog().aussagen.frage, "Wähle genau eine Antwort. Wenn keine Aussage stimmt, wähle ausdrücklich die letzte Option.");
 
     // 4 Vorbereitung
-    var e4 = etappe(host, 4, "Entscheide, was du für die weitere Bearbeitung vorbereitest. Vorbereiten heißt nicht aushändigen.");
+    var e4 = etappe(bau, 4, "Entscheide, was du für die weitere Bearbeitung vorbereitest. Vorbereiten heißt nicht aushändigen.");
     einzelGruppe(e4, "vorbereitung", b2.katalog().vorbereitung.frage, "Wähle genau eine Antwort.");
 
     // 5 Antwort
-    var e5 = etappe(host, 5, "Stelle die Antwort an Alex Weber aus Bausteinen zusammen. Eigenen Text kannst du zusätzlich schreiben.");
+    var e5 = etappe(bau, 5, "Stelle die Antwort an Alex Weber aus Bausteinen zusammen. Eigenen Text kannst du zusätzlich schreiben.");
     mehrfachGruppe(e5, "bausteine", b2.katalog().bausteine.frage, "Du kannst mehrere ankreuzen.");
     var feldName = el("label", "rathaus-feldname", "Eigener Antwortentwurf (freiwillig)");
     feldName.setAttribute("for", "b2-freitext");
@@ -558,7 +624,7 @@
     e5.appendChild(feldHilfe);
 
     // 6 Auswertung
-    var e6 = etappe(host, 6, "Lass deine Eingaben prüfen. Danach kannst du den Übungsfall abschließen.");
+    var e6 = etappe(bau, 6, "Lass deine Eingaben prüfen. Danach kannst du den Übungsfall abschließen.");
     refs.auswertung = el("div", "rathaus-auswertung");
     e6.appendChild(refs.auswertung);
 
@@ -569,15 +635,17 @@
     var hilfeHost = el("div", "");
     fuelleHilfe(hilfeHost);
     hilfeBox.appendChild(hilfeHost);
-    host.appendChild(hilfeBox);
-    zeichneKarte(host);
+    bau.appendChild(hilfeBox);
+    zeichneKarte(bau);
 
     // Zurücksetzen und Rückweg
     var reset = el("section", "rathaus-etappe");
     reset.appendChild(el("h3", "", "Zurücksetzen"));
     reset.appendChild(knopf("Fall B02 zurücksetzen", "knopf knopf-warn", zuruecksetzen));
-    host.appendChild(reset);
+    bau.appendChild(reset);
 
+    if (window.RATHAUS_AUFGABENFLUSS) legeInFluss(zielHost, bau, daten);
+    else { while (bau.firstChild) zielHost.appendChild(bau.firstChild); }
     aktualisiere();
   }
 

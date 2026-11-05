@@ -556,3 +556,71 @@ textarea.rathaus-freitext-gross {
   .rathaus-menue-schalter, .rathaus-lehrkraftbereich .knopf { width: 100%; }
   .rathaus-brotkrumen .rathaus-zurueck { width: 100%; }
 }
+
+/* Aufgabenfluss: eine Karte, Schritte aus dem Fall. Farben kommen aus den Anzeigemodi. */
+.aufgabenfluss { display: flex; flex-direction: column; gap: 0.85rem; max-width: 46rem; }
+.aufgabenfluss-kopf, .aufgabenfluss-karte, .aufgabenfluss-akte, .aufgabenfluss-unten {
+  min-width: 0;
+}
+.aufgabenfluss-titelzeile {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem;
+}
+.aufgabenfluss-kicker {
+  margin: 0 0 0.2rem; font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--farbe-text-leise); font-weight: 700;
+}
+.aufgabenfluss-titel { margin: 0; font-size: 1.45rem; line-height: 1.25; overflow-wrap: anywhere; }
+.aufgabenfluss-badge {
+  flex: 0 0 auto; margin: 0; min-height: 2.4rem; padding: 0.25rem 0.7rem;
+  border: 2px solid var(--farbe-rahmen); border-radius: 999px;
+  background: var(--farbe-flaeche); font-weight: 700; line-height: 1.8;
+}
+.aufgabenfluss-leiste { display: flex; gap: 0.3rem; margin-top: 0.75rem; }
+.aufgabenfluss-segment {
+  flex: 1 1 0; height: 0.35rem; border-radius: 999px; background: var(--farbe-leiste);
+  border: 1px solid var(--farbe-rahmen);
+}
+.aufgabenfluss-segment.ist-position { background: var(--farbe-akzent); border-color: var(--farbe-akzent); }
+.aufgabenfluss-nav { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+.aufgabenfluss-chip {
+  min-height: 44px; border-radius: 999px; background: var(--farbe-flaeche); color: var(--farbe-text);
+}
+.aufgabenfluss-chip.ist-aktiv {
+  background: var(--farbe-text); color: var(--farbe-hintergrund);
+  border-color: var(--farbe-text); text-decoration: underline; text-underline-offset: 0.15em;
+}
+html[data-theme="dunkel"] .aufgabenfluss-chip.ist-aktiv,
+html[data-theme="kontrast"] .aufgabenfluss-chip.ist-aktiv {
+  background: var(--farbe-aktiv-tekst); color: var(--farbe-text); border-color: var(--farbe-text);
+}
+.aufgabenfluss-karte, .aufgabenfluss-akte {
+  background: var(--farbe-flaeche); border: 2px solid var(--farbe-rahmen); border-radius: 1rem; padding: 1rem;
+}
+.aufgabenfluss-schrittlabel {
+  margin: 0 0 0.8rem; font-size: 0.82rem; letter-spacing: 0.03em; text-transform: uppercase;
+  color: var(--farbe-text-leise);
+}
+.aufgabenfluss-karte .rathaus-gespraech {
+  border: 2px solid var(--farbe-rahmen); border-radius: 0.7rem; padding: 0.75rem 0.9rem;
+  background: var(--farbe-erklaerung-flaeche);
+}
+.aufgabenfluss-fuss {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.6rem;
+  margin-top: 1rem;
+}
+.aufgabenfluss-hilfen, .aufgabenfluss-bewegung .knopf { min-height: 44px; }
+.aufgabenfluss-hilfen { display: inline-flex; align-items: center; gap: 0.35rem; }
+.aufgabenfluss-bewegung { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-left: auto; }
+.aufgabenfluss-hilfe-panel {
+  margin-top: 0.8rem; padding: 0.75rem; border: 2px dashed var(--farbe-rahmen); border-radius: 0.7rem;
+}
+.aufgabenfluss-akte > summary { cursor: pointer; font-weight: 700; min-height: 44px; }
+.aufgabenfluss-akte-inhalt { padding-top: 0.6rem; }
+.aufgabenfluss [hidden] { display: none !important; }
+@media (max-width: 40rem) {
+  .aufgabenfluss-titelzeile, .aufgabenfluss-fuss, .aufgabenfluss-bewegung { display: flex; flex-direction: column; align-items: stretch; }
+  .aufgabenfluss-bewegung { margin-left: 0; }
+  .aufgabenfluss-badge { align-self: flex-start; }
+  .aufgabenfluss-chip { flex: 1 1 auto; }
+}
+html.bewegung-reduziert .aufgabenfluss *, html.ruhige-ansicht .aufgabenfluss * { scroll-behavior: auto; }
