@@ -162,9 +162,37 @@
         if (!a || !a.bereiche[s.id]) return 'noch nicht geprüft';
         return { richtig: 'richtig', falsch: 'noch nicht richtig', offen: 'noch offen', unvollstaendig: 'noch unvollständig', ungueltig: 'ungültig' }[a.bereiche[s.id].status] || 'offen';
       },
+      rueckmeldung: function (s) {
+        var a = modell.letzteAuswertung;
+        if (!a || !a.bereiche[s.id]) return null;
+        var bereich = b.BEREICHE.filter(function (x) { return x.key === s.id; })[0];
+        var kat = b.katalog();
+        var ergebnis = { hinweise: (a.bereiche[s.id].hinweise || []).slice(), mehrfach: [] };
+        (bereich ? bereich.felder : []).forEach(function (f) {
+          var k = kat[f], w = modell.eingaben[f];
+          if (!k || k.art !== 'mehrfach' || !Array.isArray(w)) return;
+          if (!k.optionen.every(function (o) { return typeof o.richtig === 'boolean'; })) return;
+          var gewaehlt = k.optionen.filter(function (o) { return w.indexOf(o.id) >= 0; });
+          ergebnis.mehrfach.push({
+            frage: k.frage,
+            richtig: gewaehlt.filter(function (o) { return o.richtig; }).map(function (o) { return o.text; }),
+            falsch: gewaehlt.filter(function (o) { return !o.richtig && !o.optional; }).map(function (o) { return o.text; }),
+            fehlt: k.optionen.filter(function (o) { return o.richtig && w.indexOf(o.id) < 0; }).map(function (o) { return o.text; })
+          });
+        });
+        return ergebnis;
+      },
       schritte: b.BEREICHE.map(function (x, i) {
         return { id: x.key, name: x.name, fuellen: function (s) {
           if (i === 0) {
+            s.appendChild(fluss.grundlagen({
+              id: 'b4',
+              einfuehrung: 'Bevor du entscheidest: Lies zuerst die Grundlagen zur Auskunftssperre. Die Fragen weiter unten werden bewertet.',
+              themen: karte.themen.map(function (t) { return { titel: t.titel, text: t.text }; }),
+              bedeutung: 'Eine Auskunftssperre braucht Tatsachen, die eine Gefahr nahelegen, und schützt die Anschrift vor einer Melderegisterauskunft.',
+              beispiel: 'Bloßes Unbehagen ohne Tatsachen genügt nicht für eine Auskunftssperre. Die Voraussetzungen stehen in der Nachschlagekarte.',
+              hinweis: karte.quelle + ' Die Nachschlagekarte bleibt in der Fallakte nachschlagbar.'
+            }));
             s.appendChild(el('p', 'rathaus-meta', 'Die vollständige Aussage von Mira Hoffmann steht in der Fallakte, nicht noch einmal in dieser Karte.'));
             aufklappen(s, 'Rückfrage: Wer hat gefragt und was ist passiert?', 'Mein früherer Partner hat mich bedroht und mir nachgestellt. Eine fiktive Privatperson, Jonas Brandt, hat jetzt eine Melderegisterauskunft über meine Anschrift angefragt. Die polizeiliche Notiz dazu liegt in der Akte.');
             aufklappen(s, 'Rückfrage: Bin ich schon gemeldet? Kostet das etwas?', 'Ich wohne schon in der Lindenstraße 4 und bin gemeldet. Ich möchte nur, dass meine Anschrift nicht herausgegeben wird. Was das kostet, weiß ich nicht.');

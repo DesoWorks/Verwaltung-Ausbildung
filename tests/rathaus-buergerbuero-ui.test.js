@@ -65,6 +65,7 @@ function umgebung(speicher, optionen) {
     RATHAUS_NAVIGATION: navi,
     RATHAUS_LEHRKRAFT: require("../js/rathaus-lehrkraft.js"),
     RATHAUS_BUERGERBUERO: bb,
+    RATHAUS_RECHTSVERZEICHNIS: require("../js/rathaus-rechtsverzeichnis.js"),
     localStorage: {
       getItem: (k) => (k in store ? store[k] : null),
       setItem: (k, w) => {
@@ -418,4 +419,48 @@ test("Nur die ausdrückliche vierte Option ist richtig; falsche Aussage und fehl
   assert.equal(u.knopf("Übungsfall abschließen").disabled, true, "Änderung invalidiert die Auswertung");
   u.klick("Auswertung prüfen");
   assert.equal(u.knopf("Übungsfall abschließen").disabled, false);
+});
+
+// ---------- Refit A: Grundlagen vor der Regeln-Frage, Rückmeldung nach der Auswertung ----------
+
+test("B01: sichtbarer Grundlagen-Block steht vor der bewerteten Regeln-Frage", () => {
+  const u = umgebung({});
+  u.zeichne("fall");
+  const t = u.sicht();
+  const grundlagen = t.indexOf("Grundlagen: erst lesen, dann entscheiden");
+  const regelnFrage = t.indexOf("Welche Regeln und Zuständigkeiten gehören zum Fall?");
+  const einzugFrage = t.indexOf("Welches Datum zählt für die Frist?");
+  assert.ok(grundlagen > -1, "Grundlagen-Block fehlt");
+  assert.ok(regelnFrage > -1, "bewertete Regeln-Frage fehlt");
+  assert.ok(grundlagen < regelnFrage, "Grundlagen müssen vor der Regeln-Frage stehen");
+  assert.ok(grundlagen < einzugFrage, "Grundlagen müssen auch vor der Fristfrage stehen");
+  ["§ 1 BMG", "§ 17 Abs. 1 BMG", "§ 19 Abs. 1 und 2 BMG", "§ 23 Abs. 1 BMG", "§ 24 Abs. 2 BMG", "Bundesrecht", "06.11.2026"].forEach((s) => {
+    assert.ok(t.includes(s), s);
+  });
+  assert.ok(t.includes("Herr Berg zieht am 3. März"), "Mini-Beispiel fehlt");
+  assert.ok(t.includes("Beispiel (wird nicht bewertet)"));
+  assert.ok(!/Beispiel[^]*bmg17/.test(t.slice(grundlagen, regelnFrage)), "keine Optionskennungen im Block");
+});
+
+test("B01: Mehrfachauswahl-Rückmeldung erscheint erst nach der Auswertung und nur aus den richtig-Flags", () => {
+  const u = umgebung({});
+  u.zeichne("fall");
+  ["Richtig ausgewählt", "Falsch ausgewählt", "Relevante Antwort fehlt"].forEach((s) => {
+    assert.ok(!u.sicht().includes(s), "vor der Auswertung nicht sichtbar: " + s);
+  });
+  fuelleGut(u);
+  u.abwahl("bb-regeln", "bmg23");
+  u.klick("Auswertung prüfen");
+  assert.ok(u.sicht().includes("Noch nicht richtig oder offen"), "Sprungliste aus der Auswertung fehlt");
+  u.klick("Zu Schritt 3");
+  const t = u.sicht();
+  ["Richtig ausgewählt", "Falsch ausgewählt", "Relevante Antwort fehlt"].forEach((s) => assert.ok(t.includes(s), s));
+  const regeln = bb.katalog().regeln.optionen;
+  const fehlt = regeln.find((o) => o.id === "bmg23");
+  const richtig = regeln.find((o) => o.id === "bmg17");
+  assert.equal(fehlt.richtig, true);
+  assert.ok(regeln.every((o) => o.richtig === true), "Katalog B01: alle Regel-Optionen sind richtig, daher keine falsche Auswahl möglich");
+  assert.ok(t.includes(fehlt.text) && t.includes(richtig.text));
+  const ab = t.indexOf("Relevante Antwort fehlt");
+  assert.ok(t.slice(ab).includes(fehlt.text), "fehlende Antwort steht unter Relevante Antwort fehlt");
 });

@@ -25,7 +25,7 @@ test('Ämter alphabetisch, geplante Ämter nicht startbar', () => {
   assert.ok(n.bereichsMenue('stadt').filter(x => !x.benutzbar).every(x => x.ansicht === null));
 });
 test('Kompakte Fallübersicht benennt B01 und B02 getrennt', () => {
-  for (const [modus, label] of [['fall', 'Fall B01'], ['fall-b02', 'Fall B02']]) {
+  for (const [modus, label] of [['fall', 'B01'], ['fall-b02', 'B02']]) {
     const view = n.fallUebersicht('buerger', modus);
     assert.equal(view.amt, 'Bürgerbüro');
     assert.equal(view.aktuellLabel, label);

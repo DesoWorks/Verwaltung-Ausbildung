@@ -87,6 +87,12 @@
   color: var(--farbe-ok);
 }
 
+.rathaus-schritte li.ist-nicht-richtig {
+  background: var(--farbe-fehler-flaeche);
+  color: var(--farbe-fehler);
+  border: 1px dashed currentColor;
+}
+
 .rathaus-einleitung {
   font-size: 1.05rem;
 }

@@ -180,13 +180,20 @@
     fokus("ansicht-titel");
   }
 
+  // Nur nach einer Auswertung: Schritt 3 bis 5 gelten als "nicht richtig", wenn der geprüfte Teil falsch ist.
+  function nichtRichtig(index) {
+    if (!state.letzteAuswertung) return false;
+    var teil = teilbewertungen(state.letzteAuswertung)[index];
+    return Boolean(teil) && teil.wert === false;
+  }
+
   function schritte() {
     return [
       { nr: 1, label: "Nachricht lesen", done: state.gelesen },
       { nr: 2, label: "Akte öffnen", done: state.akteGelesen },
-      { nr: 3, label: "Entscheiden", done: Boolean(state.entscheidung) },
-      { nr: 4, label: "Begründen", done: state.gruende.length > 0 },
-      { nr: 5, label: "Antwort schreiben", done: state.antwort.trim().length >= 40 },
+      { nr: 3, label: "Entscheiden", done: Boolean(state.entscheidung), nichtRichtig: nichtRichtig(0) },
+      { nr: 4, label: "Begründen", done: state.gruende.length > 0, nichtRichtig: nichtRichtig(1) },
+      { nr: 5, label: "Antwort schreiben", done: state.antwort.trim().length >= 40, nichtRichtig: nichtRichtig(2) },
       { nr: 6, label: "Auswertung", done: Boolean(state.letzteAuswertung) },
       { nr: 7, label: "Abschließen", done: state.abgeschlossen }
     ];
@@ -204,8 +211,8 @@
     kopf.appendChild(text);
     var leiste = el("ol", "rathaus-schritte");
     liste.forEach(function (schritt) {
-      var punkt = el("li", schritt.done ? "ist-fertig" : "", schritt.nr + ". " + schritt.label);
-      punkt.appendChild(el("span", "nur-lesen", schritt.done ? " – erledigt" : " – offen"));
+      var punkt = el("li", schritt.nichtRichtig ? "ist-nicht-richtig" : (schritt.done ? "ist-fertig" : ""), schritt.nr + ". " + schritt.label);
+      punkt.appendChild(el("span", schritt.nichtRichtig ? "" : "nur-lesen", schritt.nichtRichtig ? " – noch nicht richtig" : (schritt.done ? " – erledigt" : " – offen")));
       leiste.appendChild(punkt);
     });
     kopf.appendChild(leiste);
@@ -594,6 +601,23 @@
     ziel.appendChild(akteKnopf);
     if (!state.akteGelesen) {
       ziel.appendChild(el("p", "rathaus-hinweis", "Öffne die Akte, bevor du entscheidest. Du kannst danach hierher zurück."));
+    }
+
+    // Grundlagen vor der ersten bewerteten Rechtsfrage (3. Sachverhalt beurteilen). Texte stammen unverändert aus der vorhandenen Karte.
+    var flussGl = window.RATHAUS_AUFGABENFLUSS;
+    var karteGl = window.RATHAUS_NACHSCHLAGEN ? window.RATHAUS_NACHSCHLAGEN.karte() : null;
+    if (flussGl && flussGl.grundlagen && karteGl) {
+      ziel.appendChild(flussGl.grundlagen({
+        id: aktiverFall === "noelle" ? "noelle" : "luca",
+        einfuehrung: "Bevor du entscheidest: Lies zuerst die Grundlagen. Die Fragen weiter unten werden bewertet.",
+        themen: karteGl.abschnitte.map(function (abschnitt) {
+          return { titel: abschnitt.titel, text: abschnitt.absaetze.concat(abschnitt.punkte || []).join(" ") };
+        }),
+        bedeutung: "Ausbildende haben Auszubildende zum Besuch der Berufsschule anzuhalten und dafür freizustellen. Die Entscheidung hängt an dieser Pflicht, nicht an der Arbeitslage.",
+        beispiel: "Hochbetrieb ist keine im gelesenen § 15 BBiG genannte Ausnahme von der Freistellung für den Berufsschulunterricht. Ausbildende haben Auszubildende zum Besuch der Berufsschule anzuhalten (§ 14 Abs. 1 Nr. 4 BBiG) und für die Teilnahme am Unterricht freizustellen (§ 15 Abs. 1 Satz 2 Nr. 1 BBiG).",
+        hinweis: karteGl.quelle + " Die Nachschlagekarte bleibt während der Aufgabe nachschlagbar.",
+        karteKnopf: { text: "Nachschlagekarte öffnen", aktion: function () { zeige("nachschlagen"); } }
+      }));
     }
 
     var form = el("form", "rathaus-form");
@@ -987,7 +1011,7 @@
           geplant.setAttribute("aria-disabled", "true");
           li.appendChild(geplant);
         } else {
-          var knopf = navKnopf(eintrag.label, "knopf", eintrag.ansicht, eintrag.modus || undefined);
+          var knopf = eintrag.fall ? vorgangKnopf(eintrag.label, eintrag.fall) : navKnopf(eintrag.label, "knopf", eintrag.ansicht, eintrag.modus || undefined);
           if (eintrag.aktuell) knopf.setAttribute("aria-current", "page");
           li.appendChild(knopf);
         }
@@ -1008,17 +1032,33 @@
     var unter = document.getElementById("rathaus-unterleiste");
     if (unter) {
       leeren(unter);
-      var uebersicht = navi.fallUebersicht(state.ansicht, buergerModus);
+      var uebersicht = navi.fallUebersicht(state.ansicht, buergerModus, aktiverFall);
       unter.hidden = !uebersicht;
       if (uebersicht) {
-        unter.setAttribute("aria-label", "Fallübersicht " + uebersicht.amt);
-        var person = uebersicht.amt === "Personalamt" ? aktivePerson() : "";
-        unter.appendChild(auswahlMenue("rathaus-menue-faelle", "Fälle und Seiten: ",
-          uebersicht.aktuellLabel + (person ? " · " + person : ""),
-          uebersicht.eintraege, "Fälle und Seiten im " + uebersicht.amt));
+        unter.setAttribute("aria-label", "Vorgänge " + uebersicht.amt);
+        unter.appendChild(auswahlMenue("rathaus-menue-faelle", "Vorgang: ",
+          uebersicht.aktuellLabel || "wählen",
+          uebersicht.eintraege, "Vorgänge im " + uebersicht.amt));
       }
     }
 
+    zeichneKrumen();
+  }
+
+  // Name des aktuellen TASKFLOW-Schritts. Gesetzt von rathaus-aufgabenfluss.js, leer außerhalb eines Vorgangs.
+  var schrittName = "";
+
+  function vorgangKnopf(text, vorgangsName) {
+    var knopf = el("button", "knopf", text);
+    knopf.type = "button";
+    knopf.addEventListener("click", function () {
+      if ((vorgangsName === "noelle") === (aktiverFall === "noelle")) zeige("personal");
+      else wechsleFall(vorgangsName);
+    });
+    return knopf;
+  }
+
+  function zeichneKrumen() {
     // Orientierung: Breadcrumb (Text mit Trennern) plus genau ein Zurück zur Elternebene.
     var krumen = document.getElementById("rathaus-brotkrumen");
     if (krumen) {
@@ -1032,9 +1072,7 @@
         var pfad = el("div", "rathaus-pfad");
         pfad.appendChild(el("span", "rathaus-pfad-label", "Du bist hier:"));
         var liste = el("ol", "rathaus-krumenliste");
-        var krumenListe = navi.brotkrumen(state.ansicht, buergerModus);
-        var person = navi.amtTitel(state.ansicht) === "Personalamt" ? aktivePerson() : "";
-        if (person && krumenListe.length > 2) krumenListe[krumenListe.length - 1].label += " (" + person + ")";
+        var krumenListe = navi.brotkrumen(state.ansicht, buergerModus, schrittName, aktiverFall);
         krumenListe.forEach(function (krume) {
           var li = el("li", "");
           if (krume.ziel) {
@@ -1074,6 +1112,7 @@
     if (!haupt || !fort || !banner) return;
     zeichneFortschritt(fort);
     banner.hidden = !state.lehrkraft;
+    schrittName = "";
     zeichneNavigation();
     var lehrknopf = document.getElementById("lehrkraft-schalter");
     if (lehrknopf) lehrknopf.setAttribute("aria-pressed", state.lehrkraft ? "true" : "false");
@@ -1126,6 +1165,14 @@
   }
 
   function init() {
+    if (window.RATHAUS_AUFGABENFLUSS) {
+      // Der Aufgabenfluss meldet seinen aktuellen Schritt; der Pfad hängt ihn als letztes Glied an.
+      window.RATHAUS_AUFGABENFLUSS.beiSchritt = function (kennung, name) {
+        if (name === schrittName) return;
+        schrittName = name || "";
+        zeichneKrumen();
+      };
+    }
     laden();
     state.ansicht = navi.ansichtNachLaden(state.ansicht, state.lehrkraft);
     var vomHash = hashAnwenden();

@@ -138,20 +138,20 @@ test("Hash #nachschlagen wird erkannt, #lehrkraft bleibt abgelehnt", () => {
   assert.ok(navi.istAnsicht("nachschlagen"));
 });
 
-test("Unternavigation enthält Nachschlagen nur in Personalamt-Ansichten", () => {
+test("Personalamt-Unternavigation zeigt die zwei Vorgänge nur in Personalamt-Ansichten; Nachschlagen bleibt Arbeitsfläche", () => {
   ["personal", "post", "akte", "vorgang", "nachschlagen"].forEach((a) => {
-    assert.ok(navi.personalUnternavigation(a).some((e) => e.ansicht === "nachschlagen" && e.label === "Nachschlagen"), a);
+    assert.deepEqual(navi.personalUnternavigation(a).map((e) => e.label), ["Luca Berger", "Noelle Kranz"], a);
   });
   ["stadt", "lehrkraft", "unbekannt"].forEach((a) => {
     assert.deepEqual(navi.personalUnternavigation(a), [], a);
   });
-  assert.deepEqual(navi.personalUnternavigation("nachschlagen").filter((e) => e.aktuell).map((e) => e.ansicht), ["nachschlagen"]);
+  assert.ok(navi.istAnsicht("nachschlagen"), "die Ansicht nachschlagen bleibt erhalten");
   assert.equal(navi.leistenEbene("nachschlagen"), "personal");
 });
 
 test("Brotkrumen der Karte führen über Stadt und Personalamt, Rückziel zur Stadt bleibt", () => {
   const k = navi.brotkrumen("nachschlagen");
-  assert.deepEqual(k.map((x) => x.label), ["Stadtverwaltung", "Personalamt", "Nachschlagen"]);
+  assert.deepEqual(k.map((x) => x.label), ["Rathaus Sonnenthal", "Personalamt", "Nachschlagen"]);
   assert.equal(k[0].ziel, "stadt");
   assert.equal(k[1].ziel, "personal");
   assert.equal(k[2].ziel, null);
@@ -218,7 +218,7 @@ test("Kartenansicht: Überschrift fokussierbar, Knöpfe sind button, Unternaviga
   assert.ok(s.knoepfe().length >= 6, "Sprungknöpfe der Karte");
   s.knoepfe().forEach((k) => assert.equal(k.type, "button"));
   assert.ok(alle(s.ids.hauptinhalt).filter((k) => k.tag === "h3").length >= 6);
-  assert.ok(s.unter().includes("Nachschlagen"));
+  assert.ok(s.unter().includes("Luca Berger"), "die Fallleiste zeigt die Vorgänge des Amts");
   assert.equal(s.knoepfe().some((k) => k.textContent === "Zurück zum Personalamt"), false, "kein zweiter Rücksprung im Inhalt");
   assert.ok(alle(s.ids["rathaus-brotkrumen"]).some((k) => k.id === "rathaus-zurueck" && k.textContent === "Zurück zum Personalamt"));
 });

@@ -162,9 +162,37 @@
         if (!a || !a.bereiche[s.id]) return 'noch nicht geprüft';
         return { richtig: 'richtig', falsch: 'noch nicht richtig', offen: 'noch offen', unvollstaendig: 'noch unvollständig', ungueltig: 'ungültig' }[a.bereiche[s.id].status] || 'offen';
       },
+      rueckmeldung: function (s) {
+        var a = modell.letzteAuswertung;
+        if (!a || !a.bereiche[s.id]) return null;
+        var bereich = b.BEREICHE.filter(function (x) { return x.key === s.id; })[0];
+        var kat = b.katalog();
+        var ergebnis = { hinweise: (a.bereiche[s.id].hinweise || []).slice(), mehrfach: [] };
+        (bereich ? bereich.felder : []).forEach(function (f) {
+          var k = kat[f], w = modell.eingaben[f];
+          if (!k || k.art !== 'mehrfach' || !Array.isArray(w)) return;
+          if (!k.optionen.every(function (o) { return typeof o.richtig === 'boolean'; })) return;
+          var gewaehlt = k.optionen.filter(function (o) { return w.indexOf(o.id) >= 0; });
+          ergebnis.mehrfach.push({
+            frage: k.frage,
+            richtig: gewaehlt.filter(function (o) { return o.richtig; }).map(function (o) { return o.text; }),
+            falsch: gewaehlt.filter(function (o) { return !o.richtig && !o.optional; }).map(function (o) { return o.text; }),
+            fehlt: k.optionen.filter(function (o) { return o.richtig && w.indexOf(o.id) < 0; }).map(function (o) { return o.text; })
+          });
+        });
+        return ergebnis;
+      },
       schritte: b.BEREICHE.map(function (x, i) {
         return { id: x.key, name: x.name, fuellen: function (s) {
           if (i === 0) {
+            s.appendChild(fluss.grundlagen({
+              id: 'b3',
+              einfuehrung: 'Bevor du entscheidest: Lies zuerst die Grundlagen zum Führungszeugnis. Die Fragen weiter unten werden bewertet.',
+              themen: karte.themen.map(function (t) { return { titel: t.titel, text: t.text }; }),
+              bedeutung: 'Welche Art Zeugnis möglich ist, hängt vom Zweck und von einer gesetzlichen Grundlage ab, nicht vom Wunsch des Empfängers.',
+              beispiel: 'Ein privater Arbeitgeber ist keine Behörde. Ein gewöhnlicher Bürojob begründet kein erweitertes Zeugnis. Die Einzelheiten stehen in der Nachschlagekarte.',
+              hinweis: karte.quelle + ' Die Nachschlagekarte bleibt in der Fallakte nachschlagbar.'
+            }));
             s.appendChild(el('p', 'rathaus-meta', 'Die vollständige Aussage von Robin Keller steht in der Fallakte, nicht noch einmal in dieser Karte.'));
             aufklappen(s, 'Rückfrage: Für wen und wofür?', 'Für mich selbst. Die private Sonnental Büroservice GmbH verlangt ein einfaches Führungszeugnis für kaufmännische Sachbearbeitung. Keine Betreuung Minderjähriger.');
             aufklappen(s, 'Rückfrage: Papier oder digital? Gebührenbefreiung?', 'Heute persönlich als Papierfassung. Keine Gebührenbefreiung beantragt; im Übungsfall keine Befreiungsgründe belegt.');

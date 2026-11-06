@@ -580,6 +580,27 @@
         if (i >= BEREICHE.length) return modell.abgeschlossen ? "abgeschlossen" : "Auswertung";
         return STATUSWORT[modell.letzteAuswertung.bereiche[BEREICHE[i].key].status] || "offen";
       },
+      rueckmeldung: function (schritt, i) {
+        var a = modell.letzteAuswertung;
+        if (!a || i >= BEREICHE.length) return null;
+        var key = BEREICHE[i].key;
+        var b = a.bereiche[key];
+        if (!b) return null;
+        var ergebnis = { hinweise: (b.hinweise || []).slice(), mehrfach: [] };
+        // Mehrfachauswahl: nur aus den vorhandenen richtig-Flags des Katalogs und der gespeicherten Auswahl.
+        var gruppeKat = bb.katalog()[key];
+        var auswahl = modell.eingaben[key];
+        if (gruppeKat && Array.isArray(auswahl) && gruppeKat.optionen.every(function (o) { return typeof o.richtig === "boolean"; })) {
+          var gewaehlt = gruppeKat.optionen.filter(function (o) { return auswahl.indexOf(o.id) !== -1; });
+          ergebnis.mehrfach.push({
+            frage: "Deine Auswahl bei den Regeln",
+            richtig: gewaehlt.filter(function (o) { return o.richtig; }).map(function (o) { return o.text; }),
+            falsch: gewaehlt.filter(function (o) { return !o.richtig; }).map(function (o) { return o.text; }),
+            fehlt: gruppeKat.optionen.filter(function (o) { return o.richtig && auswahl.indexOf(o.id) === -1; }).map(function (o) { return o.text; })
+          });
+        }
+        return ergebnis;
+      },
       schritte: etappen.map(function (box, i) {
         return { id: (BEREICHE[i] && BEREICHE[i].key) || "auswertung", name: ETAPPEN[i], panel: box };
       }),
@@ -602,6 +623,30 @@
       } }
     });
     refs.titel = flussApi.titel;
+  }
+
+  // Grundlagen vor der ersten bewerteten Frage. Rechtstexte kommen aus dem Rechtsverzeichnis (gelesene Normen).
+  // Das Beispiel ist nicht der bewertete Sachverhalt und nennt keine Optionskennungen.
+  var B01_BEISPIEL = "Herr Berg zieht am 3. März in eine Wohnung. Der Mietvertrag begann am 1. März. " +
+    "Die Zwei-Wochen-Frist beginnt mit dem Einzug, nicht mit dem Vertragsbeginn. Eine Wohnungsgeberbestätigung liegt nicht vor. " +
+    "Er muss das der Meldebehörde unverzüglich mitteilen. Eine amtliche Meldebestätigung gibt es erst nach der durchgeführten Anmeldung.";
+
+  function baueGrundlagen() {
+    var fluss = window.RATHAUS_AUFGABENFLUSS;
+    var verzeichnis = window.RATHAUS_RECHTSVERZEICHNIS;
+    if (!fluss || !fluss.grundlagen || !verzeichnis) return null;
+    return fluss.grundlagen({
+      id: "bb",
+      einfuehrung: "Bevor du Unterlagen und Regeln beurteilst: Diese Grundlagen brauchst du für die Anmeldung einer Wohnung. " +
+        "Lies sie zuerst, die Fragen weiter unten werden bewertet.",
+      themen: verzeichnis.fuerFall("b01").map(function (e) {
+        return { titel: e.norm, text: e.kurz, geltung: verzeichnis.geltungText(e.geltung), pruefdatum: e.pruefdatum, url: e.url };
+      }),
+      bedeutung: "Die Anmeldung hat eine Frist, braucht bestimmte Nachweise, und die Meldebehörde bestätigt sie danach schriftlich.",
+      beispiel: B01_BEISPIEL,
+      hinweis: "Rechtsstand: gesetze-im-internet.de, nichtamtliche Fassung, geprüft am " + verzeichnis.PRUEFDATUM +
+        ". Die Nachschlagekarte Meldewesen im Bürgerbüro bleibt während der Aufgabe nachschlagbar."
+    });
   }
 
   function zeichneFall(zielHost, ctx) {
@@ -628,6 +673,8 @@
 
     // 1 Anliegen
     var e1 = etappe(bau, 1, "Höre zu, stelle Rückfragen und halte fest, worum es geht.");
+    var grundlagen = baueGrundlagen();
+    if (grundlagen) e1.appendChild(grundlagen);
     e1.appendChild(el("p", "rathaus-gespraech", "Frau Yilmaz sagt: „" + daten.anliegenText + "“"));
     e1.appendChild(el("h4", "", "Rückfragen stellen"));
     FRAGEN.forEach(function (f) {

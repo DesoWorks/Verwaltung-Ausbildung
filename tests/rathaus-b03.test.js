@@ -61,9 +61,9 @@ test('B03 defekte/alte/manipulierte Speicherstände übernehmen keinen Abschluss
 });
 test('B03 eigener Schlüssel und hierarchische Navigation', () => {
   assert.notEqual(B.SPEICHER_SCHLUESSEL, require('../js/rathaus-b02.js').SPEICHER_SCHLUESSEL);
-  assert.equal(nav.brotkrumen('buerger', 'fall-b03').at(-1).label, 'Fall B03');
+  assert.equal(nav.brotkrumen('buerger', 'fall-b03').at(-1).label, 'B03');
   assert.equal(nav.rueckziel('buerger', 'fall-b03').modus, 'uebersicht');
-  assert.deepEqual(nav.buergerUnternavigation('buerger', 'fall-b03').filter(e => e.aktuell).map(e => e.label), ['Fall B03']);
+  assert.deepEqual(nav.buergerUnternavigation('buerger', 'fall-b03').filter(e => e.aktuell).map(e => e.label), ['B03']);
 });
 
 test('B03 Rückmeldung benennt betroffene Aufgabe, ohne Sollwert zu verraten', () => {

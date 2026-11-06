@@ -75,6 +75,7 @@ function start(speicher) {
     haupt,
     sicht: () => text(haupt),
     knopf: (beschriftung) => finde((k) => k.tag === "button" && k.textContent === beschriftung),
+    schrittleiste: () => alle(ids["rathaus-fortschritt"]).filter((k) => k.tag === "li").map((k) => ({ klasse: k.className, text: text(k) })),
     abschluss: () => finde((k) => k.id === "abschluss-knopf"),
     feld: () => finde((k) => k.tag === "textarea"),
     teile: () => alle(haupt).filter((k) => /rathaus-teil /.test(k.className + " ")).map((k) => k.getAttribute("aria-label")),
@@ -219,4 +220,29 @@ test("Gespeicherte Auswertung mit Abschluss bleibt nach dem Laden bestehen, Butt
   const s = start(speicher(FAELLE[0], { letzteAuswertung: frei.letzteAuswertung }));
   assert.equal(s.abschluss().disabled, false);
   assert.deepEqual(s.teile(), ["Entscheidung: ✓ Richtig", "Begründung: ✓ Richtig", "Antwortbrief: ✓ Richtig"]);
+});
+
+FAELLE.forEach((f) => {
+  test(f.name + ": nach der Auswertung markiert die Schrittleiste nur den nicht richtigen Bereich und die Markierung verschwindet bei Änderung", () => {
+    const s = start(speicher(f, { antwort: f.schlecht }));
+    const vorher = s.schrittleiste();
+    assert.equal(vorher.filter((p) => p.klasse === "ist-nicht-richtig").length, 0, "vor der Auswertung nichts markiert");
+    s.auswerten();
+    const nach = s.schrittleiste();
+    const markiert = nach.filter((p) => p.klasse === "ist-nicht-richtig");
+    assert.equal(markiert.length, 1);
+    assert.ok(markiert[0].text.includes("5. Antwort schreiben"));
+    assert.ok(markiert[0].text.includes("noch nicht richtig"), "Markierung nicht nur über Farbe");
+    assert.ok(nach.find((p) => p.text.includes("3. Entscheiden")).klasse !== "ist-nicht-richtig");
+    assert.ok(nach.find((p) => p.text.includes("4. Begründen")).klasse !== "ist-nicht-richtig");
+    s.feld().value = f.gut;
+    s.feld().handlers.input();
+    assert.equal(s.schrittleiste().filter((p) => p.klasse === "ist-nicht-richtig").length, 0, "Markierung gilt nur für die aktuelle Auswertung");
+  });
+
+  test(f.name + ": mit allen drei Bereichen richtig steht keine Markierung in der Schrittleiste", () => {
+    const s = start(speicher(f));
+    s.auswerten();
+    assert.equal(s.schrittleiste().filter((p) => p.klasse === "ist-nicht-richtig").length, 0);
+  });
 });

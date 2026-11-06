@@ -15,8 +15,11 @@
   var HASH_ANSICHTEN = ["stadt", "personal", "post", "akte", "vorgang", "nachschlagen", "buerger", "buerger-karte"];
   var PERSONAL_ANSICHTEN = ["personal", "post", "akte", "vorgang", "nachschlagen"];
   var BUERGER_ANSICHTEN = ["buerger", "buerger-karte"];
-  var STADT_LABEL = "Stadtverwaltung";
-  var RUECK_LABEL = "Zur Stadtübersicht";
+  var STADT_LABEL = "Rathaus Sonnenthal";
+  var RUECK_LABEL = "Zurück zur Rathausübersicht";
+  // Sichtbare Namen der Vorgänge in der Pfadnavigation und in der Fallleiste.
+  var VORGANG_LABEL = { b01: "B01", b02: "B02", b03: "B03", b04: "B04", luca: "Luca Berger", noelle: "Noelle Kranz" };
+  var BUERGER_MODI = { "fall": "B01", "fall-b02": "B02", "fall-b03": "B03", "fall-b04": "B04" };
 
   // Ämter stehen alphabetisch nach sichtbarem Titel (deutsche Sortierung). Neue Ämter einfach ergänzen:
   // aemter() sortiert selbst. Geplante und benutzbare Ämter werden nicht getrennt vorsortiert.
@@ -65,23 +68,39 @@
   }
 
   // Zweites Argument nur für das Bürgerbüro: "uebersicht" zeigt die Fallübersicht, sonst gilt Fall B01.
-  function brotkrumen(ansicht, modus) {
+  // Drittes Argument (optional): Name des aktuellen Arbeitsschritts. Nur mit nicht-leerem Text kommt ein viertes
+  // Glied dazu; das bisher letzte Glied wird dann zum Link auf die aktuelle Ansicht.
+  // Viertes Argument (optional, nur Personalamt): "luca" oder "noelle" für den Vorgangsnamen.
+  function brotkrumen(ansicht, modus, schrittLabel, vorgang) {
+    var krumen = grundKrumen(ansicht, modus, vorgang);
+    if (typeof schrittLabel === "string" && schrittLabel.trim() && krumen.length > 1) {
+      var letztes = krumen[krumen.length - 1];
+      if (letztes.ziel === null) {
+        letztes.ziel = ansicht;
+        if (modus) letztes.modus = modus;
+      }
+      krumen.push({ label: schrittLabel.trim(), ziel: null });
+    }
+    return krumen;
+  }
+
+  function grundKrumen(ansicht, modus, vorgang) {
     var stadt = { label: STADT_LABEL, ziel: "stadt" };
     if (ansicht === "stadt") return [{ label: STADT_LABEL, ziel: null }];
     if (ansicht === "lehrkraft") return [stadt, { label: TITEL.lehrkraft, ziel: null }];
     if (ansicht === "personal") return [stadt, { label: TITEL.personal, ziel: null }];
     if (ansicht === "buerger") {
       if (modus === "uebersicht") return [stadt, { label: TITEL.buerger, ziel: null }];
-      if (modus === "fall-b04") return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: "Fall B04", ziel: null }];
-      if (modus === "fall-b03") return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: "Fall B03", ziel: null }];
-      if (modus === "fall-b02") return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: "Fall B02", ziel: null }];
-      return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: "Fall B01", ziel: null }];
+      var vorgangLabel = BUERGER_MODI[modus] || VORGANG_LABEL.b01;
+      return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: vorgangLabel, ziel: null }];
     }
     if (ansicht === "buerger-karte") {
       return [stadt, { label: TITEL.buerger, ziel: "buerger", modus: "uebersicht" }, { label: TITEL["buerger-karte"], ziel: null }];
     }
     if (ansicht === "post" || ansicht === "akte" || ansicht === "vorgang" || ansicht === "nachschlagen") {
-      return [stadt, { label: TITEL.personal, ziel: "personal" }, { label: TITEL[ansicht], ziel: null }];
+      var personLabel = (ansicht === "akte" || ansicht === "vorgang") && VORGANG_LABEL[vorgang] && (vorgang === "luca" || vorgang === "noelle")
+        ? VORGANG_LABEL[vorgang] + " · " + TITEL[ansicht] : TITEL[ansicht];
+      return [stadt, { label: TITEL.personal, ziel: "personal" }, { label: personLabel, ziel: null }];
     }
     return [{ label: STADT_LABEL, ziel: null }];
   }
@@ -128,25 +147,25 @@
   }
 
   // Kompakte Fallübersicht des aktuellen Amts oder null (Stadt, Lehrkraft). Zweites Argument wie bei brotkrumen().
-  function fallUebersicht(ansicht, modus) {
+  function fallUebersicht(ansicht, modus, aktiverFall) {
     var amt = amtTitel(ansicht);
     if (!amt) return null;
-    var eintraege = personalUnternavigation(ansicht);
+    var eintraege = personalUnternavigation(ansicht, aktiverFall);
     if (!eintraege.length) eintraege = buergerUnternavigation(ansicht, modus);
     var aktuell = eintraege.filter(function (e) { return e.aktuell; })[0];
     return { amt: amt, eintraege: eintraege, aktuellLabel: aktuell ? aktuell.label : "" };
   }
 
-  function personalUnternavigation(ansicht) {
+  // Sichtbare Fallleiste im Personalamt: die zwei Vorgänge. Posteingang, Akte, Vorgang und Nachschlagen
+  // bleiben als Arbeitsflächen erhalten, stehen aber nicht mehr als gleichrangige Menüpunkte da.
+  function personalUnternavigation(ansicht, aktiverFall) {
     if (PERSONAL_ANSICHTEN.indexOf(ansicht) === -1) return [];
+    var aktiv = aktiverFall === "noelle" ? "noelle" : "luca";
     return [
-      { ansicht: "personal", label: "Übersicht Personalamt" },
-      { ansicht: "post", label: "Posteingang" },
-      { ansicht: "akte", label: "Ausbildungsakte" },
-      { ansicht: "vorgang", label: "Vorgang" },
-      { ansicht: "nachschlagen", label: "Nachschlagen" }
+      { ansicht: "personal", fall: "luca", label: VORGANG_LABEL.luca },
+      { ansicht: "personal", fall: "noelle", label: VORGANG_LABEL.noelle }
     ].map(function (eintrag) {
-      eintrag.aktuell = eintrag.ansicht === ansicht;
+      eintrag.aktuell = eintrag.fall === aktiv;
       return eintrag;
     });
   }
@@ -159,12 +178,10 @@
     var fallB04 = ansicht === "buerger" && modus === "fall-b04";
     var fall = ansicht === "buerger" && modus !== "uebersicht" && !fallB02 && !fallB03 && !fallB04;
     return [
-      { ansicht: "buerger", modus: "uebersicht", label: "Übersicht", aktuell: ansicht === "buerger" && modus === "uebersicht" },
-      { ansicht: "buerger", modus: "fall", label: "Fall B01", aktuell: fall },
-      { ansicht: "buerger", modus: "fall-b02", label: "Fall B02", aktuell: fallB02 },
-      { ansicht: "buerger", modus: "fall-b03", label: "Fall B03", aktuell: fallB03 },
-      { ansicht: "buerger", modus: "fall-b04", label: "Fall B04", aktuell: fallB04 },
-      { ansicht: "buerger-karte", modus: null, label: "Nachschlagen", aktuell: ansicht === "buerger-karte" }
+      { ansicht: "buerger", modus: "fall", label: VORGANG_LABEL.b01, aktuell: fall },
+      { ansicht: "buerger", modus: "fall-b02", label: VORGANG_LABEL.b02, aktuell: fallB02 },
+      { ansicht: "buerger", modus: "fall-b03", label: VORGANG_LABEL.b03, aktuell: fallB03 },
+      { ansicht: "buerger", modus: "fall-b04", label: VORGANG_LABEL.b04, aktuell: fallB04 }
     ];
   }
 

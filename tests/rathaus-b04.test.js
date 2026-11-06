@@ -108,9 +108,9 @@ test('B04 Fallliste und hierarchische Navigation', () => {
   const eintrag = bb.fallListe().find(f => f.id === 'b04');
   assert.equal(eintrag.startbar, true);
   assert.equal(eintrag.titel, 'Auskunftssperre im Melderegister');
-  assert.equal(nav.brotkrumen('buerger', 'fall-b04').at(-1).label, 'Fall B04');
+  assert.equal(nav.brotkrumen('buerger', 'fall-b04').at(-1).label, 'B04');
   assert.equal(nav.rueckziel('buerger', 'fall-b04').modus, 'uebersicht');
-  assert.deepEqual(nav.buergerUnternavigation('buerger', 'fall-b04').filter(e => e.aktuell).map(e => e.label), ['Fall B04']);
+  assert.deepEqual(nav.buergerUnternavigation('buerger', 'fall-b04').filter(e => e.aktuell).map(e => e.label), ['B04']);
   assert.deepEqual(nav.aemter().map(a => a.titel), ['Bürgerbüro', 'Ordnungsamt', 'Personalamt', 'Stadtkasse']);
   assert.deepEqual(nav.aemter().filter(a => a.benutzbar).map(a => a.titel), ['Bürgerbüro', 'Personalamt']);
 });

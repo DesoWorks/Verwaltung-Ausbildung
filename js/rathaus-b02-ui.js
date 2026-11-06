@@ -492,6 +492,25 @@
         if (i >= b2.BEREICHE.length) return modell.abgeschlossen ? "abgeschlossen" : "Auswertung";
         return STATUSWORT[modell.letzteAuswertung.bereiche[b2.BEREICHE[i].key].status] || "offen";
       },
+      rueckmeldung: function (schritt, i) {
+        var a = modell.letzteAuswertung;
+        if (!a || i >= b2.BEREICHE.length) return null;
+        var b = a.bereiche[b2.BEREICHE[i].key];
+        if (!b) return null;
+        var ergebnis = { hinweise: (b.hinweise || []).slice(), mehrfach: [] };
+        var gruppeKat = b2.katalog()[b2.BEREICHE[i].key];
+        var auswahl = modell.eingaben[b2.BEREICHE[i].key];
+        if (gruppeKat && Array.isArray(auswahl) && gruppeKat.optionen && gruppeKat.optionen.every(function (o) { return typeof o.richtig === "boolean"; })) {
+          var gewaehlt = gruppeKat.optionen.filter(function (o) { return auswahl.indexOf(o.id) !== -1; });
+          ergebnis.mehrfach.push({
+            frage: "Deine Auswahl",
+            richtig: gewaehlt.filter(function (o) { return o.richtig; }).map(function (o) { return o.text; }),
+            falsch: gewaehlt.filter(function (o) { return !o.richtig; }).map(function (o) { return o.text; }),
+            fehlt: gruppeKat.optionen.filter(function (o) { return o.richtig && auswahl.indexOf(o.id) === -1; }).map(function (o) { return o.text; })
+          });
+        }
+        return ergebnis;
+      },
       schritte: etappen.map(function (box, i) {
         return { id: (b2.BEREICHE[i] && b2.BEREICHE[i].key) || "auswertung", name: ETAPPEN[i], panel: box };
       }),
@@ -556,6 +575,18 @@
 
     // 1 Anliegen
     var e1 = etappe(bau, 1, "Höre zu, stelle Rückfragen und halte fest, worum es geht.");
+    if (window.RATHAUS_AUFGABENFLUSS && window.RATHAUS_AUFGABENFLUSS.grundlagen) {
+      // Grundlagen vor der ersten bewerteten Frage. Texte stammen unverändert aus der vorhandenen B02-Karte.
+      var karteB2 = b2.nachschlagen();
+      e1.appendChild(window.RATHAUS_AUFGABENFLUSS.grundlagen({
+        id: "b2",
+        einfuehrung: "Bevor du entscheidest: Lies zuerst, worum es bei einer Meldebescheinigung geht. Die Fragen weiter unten werden bewertet.",
+        themen: karteB2.themen.map(function (t) { return { titel: t.titel, text: t.text }; }),
+        bedeutung: "Eine Meldebescheinigung wird auf Antrag erteilt und hängt an Identität und Umfang der Angaben.",
+        beispiel: "Eine Person beantragt eine Bescheinigung über die eigenen Meldedaten. Das ist nicht dieselbe Sache wie die Anmeldung nach einem Einzug. Die Einzelheiten stehen in der Nachschlagekarte.",
+        hinweis: karteB2.quelle + " Die Nachschlagekarte bleibt während der Aufgabe nachschlagbar."
+      }));
+    }
     e1.appendChild(el("p", "rathaus-gespraech", "Alex Weber sagt: „" + daten.anliegenText + "“"));
     e1.appendChild(el("h4", "", "Rückfragen stellen"));
     FRAGEN.forEach(function (f) {
