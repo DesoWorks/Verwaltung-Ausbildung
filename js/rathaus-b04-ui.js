@@ -15,7 +15,7 @@
   function liste(ziel, punkte) {
     var ul = el('ul'); punkte.forEach(function (p) { ul.appendChild(el('li', '', p)); }); ziel.appendChild(ul);
   }
-  function leer() { return { eingaben: b.normalisiere({}), letzteAuswertung: null, abgeschlossen: false }; }
+  function leer() { return { eingaben: b.normalisiere({}), letzteAuswertung: null, abgeschlossen: false, lichtStand: {} }; }
   function laden() {
     try { var roh = localStorage.getItem(b.SPEICHER_SCHLUESSEL); return roh ? b.bereinigeGespeichert(roh) : leer(); }
     catch (_) { meldung = 'Speicher nicht lesbar. Dieser Stand bleibt nur bis zum Verlassen der Seite.'; return leer(); }
@@ -23,11 +23,28 @@
   function speichern() {
     try {
       localStorage.setItem(b.SPEICHER_SCHLUESSEL, JSON.stringify({ fallId: b.FALL_ID, bewertungsstand: b.BEWERTUNGSSTAND,
-        eingaben: modell.eingaben, letzteAuswertung: modell.letzteAuswertung, abgeschlossen: modell.abgeschlossen }));
+        eingaben: modell.eingaben, letzteAuswertung: modell.letzteAuswertung, abgeschlossen: modell.abgeschlossen,
+        lichtStand: modell.lichtStand || {} }));
       meldung = ''; return true;
     } catch (_) { meldung = 'Speichern nicht möglich. Kein dauerhaft gespeicherter Abschluss; Stand gilt nur bis zum Verlassen.'; return false; }
   }
+
+  // Frageblock-Lichter: nur für Blöcke mit gespeichertem, zur Antwort passendem Auswertungsstand.
+  function registriereLicht(set, key) {
+    set.setAttribute('data-licht-feld', key);
+    refs.lichtSets = (refs.lichtSets || []).filter(function (e) { return e.key !== key; });
+    refs.lichtSets.push({ set: set, key: key });
+  }
+  function zeigeLichter() {
+    var L = window.RATHAUS_LICHTER;
+    if (!L || !refs || !refs.lichtSets || typeof b.lichtFelder !== 'function') return;
+    var felder = b.lichtFelder();
+    var antworten = b.lichtAntworten(modell.eingaben);
+    var stand = modell.lichtStand || {};
+    refs.lichtSets.forEach(function (e) { L.zeigeFeld(e.set, felder[e.key], antworten[e.key], stand[e.key]); });
+  }
   function status() {
+    zeigeLichter();
     if (refs.meldung) {
       refs.meldung.textContent = meldung;
       refs.meldung.hidden = !meldung;
@@ -41,9 +58,17 @@
   }
   function geaendert() {
     var alt = !!modell.letzteAuswertung || modell.abgeschlossen;
+    if (modell.letzteAuswertung) modell.anzeigeAuswertung = modell.letzteAuswertung;
     modell.letzteAuswertung = null; modell.abgeschlossen = false;
     speichern(); auswertung(); status();
-    if (alt) refs.live.textContent = 'Eingaben geändert. Auswertung und Abschluss gelten nicht mehr. Bitte erneut prüfen.';
+    if (alt) refs.live.textContent = 'Eingaben geändert. Nur der geänderte Block ist veraltet. Bitte erneut prüfen.';
+  }
+  function schrittLicht(key) {
+    var L = window.RATHAUS_LICHTER;
+    if (!L) return 'ungeprueft';
+    var felder = b.lichtFelder();
+    var bereich = b.BEREICHE.filter(function (x) { return x.key === key; })[0];
+    return L.gruppenStand(L.erweitere(bereich ? bereich.felder : [], felder), felder, b.lichtAntworten(modell.eingaben), modell.lichtStand);
   }
   function aufklappen(ziel, titel, text) {
     var d = el('details', 'rathaus-aufklapp');
@@ -57,17 +82,17 @@
   }
   function frage(ziel, feld) {
     var k = b.katalog()[feld];
-    function set(titel) { var n = el('fieldset', 'rathaus-gruppe'); n.appendChild(el('legend', '', titel)); ziel.appendChild(n); return n; }
+    function set(titel, key) { var n = el('fieldset', 'rathaus-gruppe'); n.appendChild(el('legend', '', titel)); registriereLicht(n, key); ziel.appendChild(n); return n; }
     if (k.art === 'status') {
       k.optionen.forEach(function (o) {
-        var s = set(o.text + ': Stand der Angabe');
+        var s = set(o.text + ': Stand der Angabe', feld + '.' + o.id);
         k.status.forEach(function (v) {
           option(s, 'radio', 'b4-' + feld + '-' + o.id, v.id, v.text, modell.eingaben[feld][o.id] === v.id,
             function () { modell.eingaben[feld][o.id] = v.id; });
         });
       });
     } else {
-      var s = set(k.frage);
+      var s = set(k.frage, feld);
       s.appendChild(el('p', 'rathaus-meta', k.art === 'einzel' ? 'Wähle genau eine Antwort.' : 'Mehrere Antworten möglich. Richtige Zusatzantworten heilen keine falschen Aussagen.'));
       k.optionen.forEach(function (o) {
         var multi = k.art === 'mehrfach';
@@ -88,6 +113,7 @@
     var h = el('h3', '', 'Auswertung'); h.tabIndex = -1; ziel.appendChild(h);
     ziel.appendChild(knopf('Auswertung prüfen', function () {
       modell.letzteAuswertung = b.auswertung(modell.eingaben); modell.abgeschlossen = false;
+      modell.lichtStand = b.lichtAntworten(modell.eingaben);
       modell.verworfen = false; speichern(); auswertung(); status();
       refs.ergebnis.querySelector('h3').focus(); refs.live.textContent = 'Auswertung aktualisiert.';
     }));
@@ -158,12 +184,17 @@
       bewertete: b.BEREICHE.length,
       richtig: richtigAnzahl,
       bereichStatus: function (s) {
+        var licht = schrittLicht(s.id);
+        if (licht === 'veraltet') return 'Bewertung veraltet';
+        if (licht === 'richtig') return 'richtig';
+        if (licht === 'fehler') return 'noch nicht richtig';
         var a = modell.letzteAuswertung;
         if (!a || !a.bereiche[s.id]) return 'noch nicht geprüft';
         return { richtig: 'richtig', falsch: 'noch nicht richtig', offen: 'noch offen', unvollstaendig: 'noch unvollständig', ungueltig: 'ungültig' }[a.bereiche[s.id].status] || 'offen';
       },
       rueckmeldung: function (s) {
-        var a = modell.letzteAuswertung;
+        if (schrittLicht(s.id) === 'veraltet') return { hinweise: ['Bewertung veraltet. Die alte Rückmeldung dieses Schritts gilt nicht mehr.'], mehrfach: [] };
+        var a = modell.letzteAuswertung || modell.anzeigeAuswertung;
         if (!a || !a.bereiche[s.id]) return null;
         var bereich = b.BEREICHE.filter(function (x) { return x.key === s.id; })[0];
         var kat = b.katalog();
@@ -203,6 +234,7 @@
             aufklappen(s, 'Fiktive Anfrage der dritten Person öffnen', 'Jonas Brandt (fiktiv): Bitte teilen Sie mir die aktuelle Anschrift von Mira Hoffmann aus dem Melderegister mit.');
           }
           x.felder.forEach(function (f) { frage(s, f); });
+          zeigeLichter();
           if (i === 4) {
             var label = el('label', 'rathaus-feldname', 'Eigener Antwortentwurf (freiwillig, nicht automatisch bewertet)');
             label.htmlFor = 'b4-freitext'; s.appendChild(label);

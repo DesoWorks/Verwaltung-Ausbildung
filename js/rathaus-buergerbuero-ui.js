@@ -70,7 +70,7 @@
   // ---------- Speicher ----------
 
   function leeresModell() {
-    return { eingaben: bb.normalisiere({}), letzteAuswertung: null, abgeschlossen: false, verworfen: false, veraltet: false };
+    return { eingaben: bb.normalisiere({}), letzteAuswertung: null, abgeschlossen: false, verworfen: false, veraltet: false, lichtStand: {} };
   }
 
   function laden() {
@@ -84,7 +84,7 @@
     }
     if (!roh) return leeresModell();
     var b = bb.bereinigeGespeichert(roh);
-    return { eingaben: b.eingaben, letzteAuswertung: b.letzteAuswertung, abgeschlossen: b.abgeschlossen, verworfen: b.verworfen, veraltet: false };
+    return { eingaben: b.eingaben, letzteAuswertung: b.letzteAuswertung, abgeschlossen: b.abgeschlossen, verworfen: b.verworfen, veraltet: false, lichtStand: b.lichtStand || {} };
   }
 
   function zeigeFehler() {
@@ -99,7 +99,8 @@
       bewertungsstand: bb.BEWERTUNGSSTAND,
       eingaben: modell.eingaben,
       letzteAuswertung: modell.letzteAuswertung,
-      abgeschlossen: modell.abgeschlossen
+      abgeschlossen: modell.abgeschlossen,
+      lichtStand: modell.lichtStand || {}
     };
     try {
       window.localStorage.setItem(bb.SPEICHER_SCHLUESSEL, JSON.stringify(nutzlast));
@@ -127,8 +128,12 @@
 
   // ---------- Bausteine ----------
 
-  function gruppe(host, id, legende, hinweis) {
+  function gruppe(host, id, legende, hinweis, lichtKey) {
     var set = el("fieldset", "rathaus-gruppe");
+    if (lichtKey) {
+      set.setAttribute("data-licht-feld", lichtKey);
+      (refs.lichtSets = refs.lichtSets || []).push({ set: set, key: lichtKey });
+    }
     set.appendChild(el("legend", "", legende));
     if (hinweis) {
       var h = el("p", "rathaus-meta", hinweis);
@@ -154,7 +159,7 @@
   }
 
   function einzelGruppe(host, key, legende, hinweis) {
-    var set = gruppe(host, "bb-" + key, legende, hinweis);
+    var set = gruppe(host, "bb-" + key, legende, hinweis, key);
     bb.katalog()[key].optionen.forEach(function (o) {
       option(set, "radio", "bb-" + key, o.id, o.text, modell.eingaben[key] === o.id, function () {
         modell.eingaben[key] = o.id;
@@ -164,7 +169,7 @@
   }
 
   function mehrfachGruppe(host, key, legende, hinweis) {
-    var set = gruppe(host, "bb-" + key, legende, hinweis);
+    var set = gruppe(host, "bb-" + key, legende, hinweis, key);
     bb.katalog()[key].optionen.forEach(function (o) {
       option(set, "checkbox", "bb-" + key, o.id, o.text, modell.eingaben[key].indexOf(o.id) !== -1, function (an) {
         var liste = modell.eingaben[key].filter(function (id) { return id !== o.id; });
@@ -212,12 +217,13 @@
 
   function eingabeGeaendert() {
     var hatte = Boolean(modell.letzteAuswertung) || modell.abgeschlossen;
+    if (modell.letzteAuswertung) modell.anzeigeAuswertung = modell.letzteAuswertung;
     modell.letzteAuswertung = null;
     modell.abgeschlossen = false;
     if (hatte) modell.veraltet = true;
     speichern();
     aktualisiere();
-    if (hatte) ansage("Eingaben geändert. Die Auswertung gilt nicht mehr. Bitte erneut prüfen.");
+    if (hatte) ansage("Eingaben geändert. Nur der geänderte Block ist veraltet. Bitte erneut prüfen.");
   }
 
   function etappenStatus() {
@@ -269,6 +275,7 @@
 
   function pruefen() {
     modell.letzteAuswertung = bb.auswertung(modell.eingaben);
+    modell.lichtStand = bb.lichtAntworten(modell.eingaben);
     modell.abgeschlossen = false;
     modell.veraltet = false;
     modell.verworfen = false;
@@ -380,7 +387,34 @@
   function aktualisiere() {
     if (refs.schritte) fuelleSchritte(refs.schritte);
     if (refs.auswertung) fuelleAuswertung(refs.auswertung);
+    zeigeLichter();
     if (flussApi) flussApi.aktualisiere();
+  }
+
+  // Frageblock-Lichter: nur für Blöcke mit gespeichertem, zur Antwort passendem Auswertungsstand.
+  function schrittLicht(key) {
+    var L = window.RATHAUS_LICHTER;
+    if (!L || typeof bb.lichtFelder !== "function") return "ungeprueft";
+    var felder = bb.lichtFelder();
+    var map = {
+      anliegen: ["anliegen", "einzug", "weitereWohnung"],
+      unterlagen: Object.keys(felder).filter(function (k) { return k.indexOf("dokumente.") === 0; }),
+      regeln: ["regeln", "fallen"],
+      vorbereitung: ["vorbereitung"],
+      antwort: ["bausteine"]
+    };
+    return L.gruppenStand(map[key] || [], felder, bb.lichtAntworten(modell.eingaben), modell.lichtStand);
+  }
+
+  function zeigeLichter() {
+    var L = window.RATHAUS_LICHTER;
+    if (!L || !refs.lichtSets || typeof bb.lichtFelder !== "function") return;
+    var felder = bb.lichtFelder();
+    var antworten = bb.lichtAntworten(modell.eingaben);
+    var stand = modell.lichtStand || {};
+    refs.lichtSets.forEach(function (eintrag) {
+      L.zeigeFeld(eintrag.set, felder[eintrag.key], antworten[eintrag.key], stand[eintrag.key]);
+    });
   }
 
   // ---------- Hilfe ----------
@@ -576,13 +610,21 @@
         return BEREICHE.filter(function (bereich) { return a.bereiche[bereich.key] && a.bereiche[bereich.key].status === "richtig"; }).length;
       },
       bereichStatus: function (schritt, i) {
-        if (!modell.letzteAuswertung) return "noch nicht geprüft";
         if (i >= BEREICHE.length) return modell.abgeschlossen ? "abgeschlossen" : "Auswertung";
+        var licht = schrittLicht(BEREICHE[i].key);
+        if (licht === "veraltet") return "Bewertung veraltet";
+        if (licht === "richtig") return "Richtig";
+        if (licht === "fehler") return "Noch nicht richtig";
+        if (!modell.letzteAuswertung) return "noch nicht geprüft";
         return STATUSWORT[modell.letzteAuswertung.bereiche[BEREICHE[i].key].status] || "offen";
       },
       rueckmeldung: function (schritt, i) {
-        var a = modell.letzteAuswertung;
-        if (!a || i >= BEREICHE.length) return null;
+        if (i >= BEREICHE.length) return null;
+        if (schrittLicht(BEREICHE[i].key) === "veraltet") {
+          return { hinweise: ["Bewertung veraltet. Die alte Rückmeldung dieses Schritts gilt nicht mehr."], mehrfach: [] };
+        }
+        var a = modell.letzteAuswertung || modell.anzeigeAuswertung;
+        if (!a) return null;
         var key = BEREICHE[i].key;
         var b = a.bereiche[key];
         if (!b) return null;
@@ -698,7 +740,7 @@
       });
     });
     kat.optionen.forEach(function (d) {
-      var set = gruppe(e2, "bb-dok-" + d.id, d.text + ": Stand der Unterlage", null);
+      var set = gruppe(e2, "bb-dok-" + d.id, d.text + ": Stand der Unterlage", null, "dokumente." + d.id);
       kat.status.forEach(function (s) {
         option(set, "radio", "bb-dok-" + d.id, s.id, s.text, modell.eingaben.dokumente[d.id] === s.id, function () {
           modell.eingaben.dokumente[d.id] = s.id;

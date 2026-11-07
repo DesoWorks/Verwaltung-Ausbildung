@@ -356,6 +356,39 @@
     };
   }
 
+  function lichtKatalog() {
+    return {
+      entscheidung: { art: "einzel", optionen: Object.keys(ENTSCHEIDUNGEN).map(function (id) { return { id: id, richtig: ENTSCHEIDUNGEN[id].richtig === true }; }) },
+      gruende: { art: "mehrfach", optionen: Object.keys(GRUENDE).map(function (id) {
+        var g = GRUENDE[id];
+        return { id: id, richtig: g.richtig === true, pflicht: g.pflicht === true, falle: g.falle === true };
+      }) }
+    };
+  }
+
+  // Antwortwerte der bewertbaren Frageblöcke. Der Antwortbrief ist Freitext und wird nicht markiert.
+  function lichtAntworten(daten) {
+    var q = (daten && typeof daten === "object") ? daten : {};
+    return {
+      entscheidung: typeof q.entscheidung === "string" ? q.entscheidung : "",
+      gruende: Array.isArray(q.gruende) ? q.gruende.slice() : []
+    };
+  }
+
+  function filtereLichtStand(roh, daten) {
+    var quelle = (daten && typeof daten === "object") ? daten : {};
+    var auswertungQuelle = (quelle.letzteAuswertung && typeof quelle.letzteAuswertung === "object") ? quelle.letzteAuswertung : null;
+    var aktuell = quelle.bewertungsstand === BEWERTUNGSSTAND &&
+      (auswertungQuelle === null || auswertungQuelle.bewertungsstand === BEWERTUNGSSTAND);
+    if (!aktuell) return {};
+    var L = null;
+    if (typeof require === "function") {
+      try { L = require("./rathaus-lichter.js"); } catch (fehler) { L = null; }
+    }
+    if (!L && typeof globalThis !== "undefined") L = globalThis.RATHAUS_LICHTER || null;
+    return L ? L.filtereStand(roh, lichtAntworten(daten)) : {};
+  }
+
   // Bereinigt einen gespeicherten Zustand. Eingaben und Entwurf bleiben, eine Auswertung
   // und ein Abschluss aus einem anderen Bewertungsstand werden ungültig. Das Eingabeobjekt bleibt unverändert.
   function bereinigeGespeichert(daten) {
@@ -377,6 +410,7 @@
       ergebnis.abgeschlossen = false;
       ergebnis.verworfen = true;
     }
+    ergebnis.lichtStand = filtereLichtStand(quelle.lichtStand, quelle);
     ergebnis.bewertungsstand = BEWERTUNGSSTAND;
     return ergebnis;
   }
@@ -459,6 +493,8 @@
     RECHTSSTAND: RECHTSSTAND,
     BEWERTUNGSSTAND: BEWERTUNGSSTAND,
     bereinigeGespeichert: bereinigeGespeichert,
+    lichtKatalog: lichtKatalog,
+    lichtAntworten: lichtAntworten,
     fallDaten: fallDaten,
     bewerteEntscheidung: bewerteEntscheidung,
     bewerteBegruendung: bewerteBegruendung,

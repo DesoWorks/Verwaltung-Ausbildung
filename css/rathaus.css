@@ -630,3 +630,29 @@ html[data-theme="kontrast"] .aufgabenfluss-chip.ist-aktiv {
   .aufgabenfluss-chip { flex: 1 1 auto; }
 }
 html.bewegung-reduziert .aufgabenfluss *, html.ruhige-ansicht .aufgabenfluss * { scroll-behavior: auto; }
+
+/* Rückmeldelichter (Frageblock- und Antwortebene) – nur nach ausdrücklicher Auswertung */
+fieldset.rathaus-licht { border-width: 3px; border-style: solid; }
+fieldset.rathaus-licht.ist-richtig { border-color: var(--farbe-ok); border-style: solid; }
+fieldset.rathaus-licht.ist-fehler { border-color: var(--farbe-fehler); border-style: double; border-width: 4px; }
+fieldset.rathaus-licht.ist-veraltet { border-style: dashed; border-color: var(--farbe-rahmen, currentColor); }
+.rathaus-licht-hinweis { margin: 0.25rem 0 0.5rem; font-weight: 700; }
+fieldset.rathaus-licht.ist-richtig > .rathaus-licht-hinweis { color: var(--farbe-ok); }
+fieldset.rathaus-licht.ist-fehler > .rathaus-licht-hinweis { color: var(--farbe-fehler); }
+.rathaus-licht-option.ist-richtig-gewaehlt,
+.rathaus-licht-option.ist-fehlt { background: var(--farbe-ok-flaeche); border-left: 6px solid var(--farbe-ok); }
+.rathaus-licht-option.ist-fehlt { border-left-style: dashed; }
+.rathaus-licht-option.ist-falsch-gewaehlt { background: var(--farbe-fehler-flaeche); border-left: 6px double var(--farbe-fehler); }
+.rathaus-licht-option .rathaus-licht-symbol { margin-left: 0.5rem; font-weight: 700; }
+.rathaus-licht-option .rathaus-licht-text { margin-left: 0.35rem; font-weight: 600; }
+.rathaus-licht-option.ist-richtig-gewaehlt .rathaus-licht-symbol,
+.rathaus-licht-option.ist-richtig-gewaehlt .rathaus-licht-text,
+.rathaus-licht-option.ist-fehlt .rathaus-licht-symbol,
+.rathaus-licht-option.ist-fehlt .rathaus-licht-text { color: var(--farbe-ok); }
+.rathaus-licht-option.ist-falsch-gewaehlt .rathaus-licht-symbol,
+.rathaus-licht-option.ist-falsch-gewaehlt .rathaus-licht-text { color: var(--farbe-fehler); }
+@media (forced-colors: active) {
+  fieldset.rathaus-licht.ist-richtig { border-style: solid; border-color: Highlight; }
+  fieldset.rathaus-licht.ist-fehler { border-style: double; border-color: CanvasText; }
+  fieldset.rathaus-licht.ist-veraltet { border-style: dashed; }
+}

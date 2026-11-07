@@ -63,7 +63,7 @@
   // ---------- Speicher ----------
 
   function leeresModell() {
-    return { eingaben: b2.normalisiere({}), letzteAuswertung: null, abgeschlossen: false, verworfen: false, veraltet: false };
+    return { eingaben: b2.normalisiere({}), letzteAuswertung: null, abgeschlossen: false, verworfen: false, veraltet: false, lichtStand: {} };
   }
 
   function laden() {
@@ -77,7 +77,7 @@
     }
     if (!roh) return leeresModell();
     var b = b2.bereinigeGespeichert(roh);
-    return { eingaben: b.eingaben, letzteAuswertung: b.letzteAuswertung, abgeschlossen: b.abgeschlossen, verworfen: b.verworfen, veraltet: false };
+    return { eingaben: b.eingaben, letzteAuswertung: b.letzteAuswertung, abgeschlossen: b.abgeschlossen, verworfen: b.verworfen, veraltet: false, lichtStand: b.lichtStand || {} };
   }
 
   function zeigeFehler() {
@@ -92,7 +92,8 @@
       bewertungsstand: b2.BEWERTUNGSSTAND,
       eingaben: modell.eingaben,
       letzteAuswertung: modell.letzteAuswertung,
-      abgeschlossen: modell.abgeschlossen
+      abgeschlossen: modell.abgeschlossen,
+      lichtStand: modell.lichtStand || {}
     };
     try {
       window.localStorage.setItem(b2.SPEICHER_SCHLUESSEL, JSON.stringify(nutzlast));
@@ -119,8 +120,9 @@
 
   // ---------- Bausteine ----------
 
-  function gruppe(host, id, legende, hinweis) {
+  function gruppe(host, id, legende, hinweis, lichtKey) {
     var set = el("fieldset", "rathaus-gruppe");
+    if (lichtKey) registriereLicht(set, lichtKey);
     set.appendChild(el("legend", "", legende));
     if (hinweis) {
       var h = el("p", "rathaus-meta", hinweis);
@@ -146,7 +148,7 @@
   }
 
   function einzelGruppe(host, key, legende, hinweis) {
-    var set = gruppe(host, "b2-" + key, legende, hinweis);
+    var set = gruppe(host, "b2-" + key, legende, hinweis, key);
     b2.katalog()[key].optionen.forEach(function (o) {
       option(set, "radio", "b2-" + key, o.id, o.text, modell.eingaben[key] === o.id, function () {
         modell.eingaben[key] = o.id;
@@ -156,7 +158,7 @@
   }
 
   function mehrfachGruppe(host, key, legende, hinweis) {
-    var set = gruppe(host, "b2-" + key, legende, hinweis);
+    var set = gruppe(host, "b2-" + key, legende, hinweis, key);
     b2.katalog()[key].optionen.forEach(function (o) {
       option(set, "checkbox", "b2-" + key, o.id, o.text, modell.eingaben[key].indexOf(o.id) !== -1, function (an) {
         var neu = modell.eingaben[key].filter(function (id) { return id !== o.id; });
@@ -203,12 +205,13 @@
 
   function eingabeGeaendert() {
     var hatte = Boolean(modell.letzteAuswertung) || modell.abgeschlossen;
+    if (modell.letzteAuswertung) modell.anzeigeAuswertung = modell.letzteAuswertung;
     modell.letzteAuswertung = null;
     modell.abgeschlossen = false;
     if (hatte) modell.veraltet = true;
     speichern();
     aktualisiere();
-    if (hatte) ansage("Eingaben geändert. Die Auswertung gilt nicht mehr. Bitte erneut prüfen.");
+    if (hatte) ansage("Eingaben geändert. Nur der geänderte Block ist veraltet. Bitte erneut prüfen.");
   }
 
   function etappenStatus() {
@@ -254,6 +257,7 @@
 
   function pruefen() {
     modell.letzteAuswertung = b2.auswertung(modell.eingaben);
+    modell.lichtStand = b2.lichtAntworten(modell.eingaben);
     modell.abgeschlossen = false;
     modell.veraltet = false;
     modell.verworfen = false;
@@ -366,7 +370,24 @@
     if (refs.verworfen) refs.verworfen.hidden = !modell.verworfen;
     if (refs.schritte) fuelleSchritte(refs.schritte);
     if (refs.auswertung) fuelleAuswertung(refs.auswertung);
+    zeigeLichter();
     if (flussApi) flussApi.aktualisiere();
+  }
+
+  // Frageblock-Lichter: nur für Blöcke mit gespeichertem, zur Antwort passendem Auswertungsstand.
+  function registriereLicht(set, key) {
+    set.setAttribute("data-licht-feld", key);
+    refs.lichtSets = (refs.lichtSets || []).filter(function (e) { return e.key !== key; });
+    refs.lichtSets.push({ set: set, key: key });
+  }
+
+  function zeigeLichter() {
+    var L = window.RATHAUS_LICHTER;
+    if (!L || !refs.lichtSets || typeof b2.lichtFelder !== "function") return;
+    var felder = b2.lichtFelder();
+    var antworten = b2.lichtAntworten(modell.eingaben);
+    var stand = modell.lichtStand || {};
+    refs.lichtSets.forEach(function (e) { L.zeigeFeld(e.set, felder[e.key], antworten[e.key], stand[e.key]); });
   }
 
   // ---------- Hilfe ----------
@@ -488,13 +509,24 @@
         return b2.BEREICHE.filter(function (bereich) { return a.bereiche[bereich.key] && a.bereiche[bereich.key].status === "richtig"; }).length;
       },
       bereichStatus: function (schritt, i) {
-        if (!modell.letzteAuswertung) return "noch nicht geprüft";
         if (i >= b2.BEREICHE.length) return modell.abgeschlossen ? "abgeschlossen" : "Auswertung";
+        var L = window.RATHAUS_LICHTER;
+        var felder = b2.lichtFelder();
+        var licht = L ? L.gruppenStand(L.erweitere(b2.BEREICHE[i].felder, felder), felder, b2.lichtAntworten(modell.eingaben), modell.lichtStand) : "ungeprueft";
+        if (licht === "veraltet") return "Bewertung veraltet";
+        if (licht === "richtig") return "Richtig";
+        if (licht === "fehler") return "Noch nicht richtig";
+        if (!modell.letzteAuswertung) return "noch nicht geprüft";
         return STATUSWORT[modell.letzteAuswertung.bereiche[b2.BEREICHE[i].key].status] || "offen";
       },
       rueckmeldung: function (schritt, i) {
-        var a = modell.letzteAuswertung;
-        if (!a || i >= b2.BEREICHE.length) return null;
+        if (i >= b2.BEREICHE.length) return null;
+        var L = window.RATHAUS_LICHTER;
+        var felder = b2.lichtFelder();
+        var licht = L ? L.gruppenStand(L.erweitere(b2.BEREICHE[i].felder, felder), felder, b2.lichtAntworten(modell.eingaben), modell.lichtStand) : "ungeprueft";
+        if (licht === "veraltet") return { hinweise: ["Bewertung veraltet. Die alte Rückmeldung dieses Schritts gilt nicht mehr."], mehrfach: [] };
+        var a = modell.letzteAuswertung || modell.anzeigeAuswertung;
+        if (!a) return null;
         var b = a.bereiche[b2.BEREICHE[i].key];
         if (!b) return null;
         var ergebnis = { hinweise: (b.hinweise || []).slice(), mehrfach: [] };
@@ -609,7 +641,7 @@
     var angaben = b2.katalog().angaben;
     e2.appendChild(el("p", "rathaus-meta", angaben.frage));
     angaben.optionen.forEach(function (zeile) {
-      var set = gruppe(e2, "b2-angaben-" + zeile.id, zeile.text + ": Stand der Angabe", null);
+      var set = gruppe(e2, "b2-angaben-" + zeile.id, zeile.text + ": Stand der Angabe", null, "angaben." + zeile.id);
       angaben.status.forEach(function (s) {
         option(set, "radio", "b2-angaben-" + zeile.id, s.id, s.text, modell.eingaben.angaben[zeile.id] === s.id, function () {
           modell.eingaben.angaben[zeile.id] = s.id;

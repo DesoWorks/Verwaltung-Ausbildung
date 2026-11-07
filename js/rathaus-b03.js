@@ -174,15 +174,36 @@
       bereiche: bereiche, sperren: sperren, bestanden: ok, darfAbschliessen: ok,
       freitext: { text: n.freitext, automatischGeprueft: false } };
   }
+  function lichter() {
+    if (typeof require === 'function') {
+      try { return require('./rathaus-lichter.js'); } catch (err) { /* Browser: globales Modul */ }
+    }
+    return (typeof globalThis !== 'undefined' && globalThis.RATHAUS_LICHTER) || null;
+  }
+
+  // Frageblock-Daten für die Rückmeldelichter, abgeleitet aus dem fachlich geprüften Katalog. Freitext fehlt bewusst.
+  function lichtDaten(eingaben) {
+    var L = lichter();
+    return L ? L.ausKatalog(KATALOG, normalisiere(eingaben)) : { felder: {}, antworten: {} };
+  }
+  function lichtFelder() { return lichtDaten({}).felder; }
+  function lichtAntworten(eingaben) { return lichtDaten(eingaben).antworten; }
+  function filtereLichtStand(roh, eingaben) {
+    var L = lichter();
+    return L ? L.filtereStand(roh, lichtAntworten(eingaben)) : {};
+  }
+
   function bereinigeGespeichert(roh) {
     var obj = roh;
     if (typeof roh === 'string') { try { obj = JSON.parse(roh); } catch (_) { obj = null; } }
     var e = normalisiere(obj && obj.eingaben);
-    var leer = { verworfen: true, eingaben: e, letzteAuswertung: null, abgeschlossen: false };
+    var leer = { verworfen: true, eingaben: e, letzteAuswertung: null, abgeschlossen: false, lichtStand: {} };
     if (!objekt(obj) || obj.fallId !== FALL_ID || obj.bewertungsstand !== BEWERTUNGSSTAND || ungueltigeWerte(obj.eingaben).length) return leer;
+    var lichtStand = filtereLichtStand(obj.lichtStand, e);
     var a = obj.letzteAuswertung ? auswertung(e) : null;
-    if (a && obj.letzteAuswertung.eingabeVersion !== a.eingabeVersion) return leer;
-    return { verworfen: false, eingaben: e, letzteAuswertung: a, abgeschlossen: obj.abgeschlossen === true && !!a && a.darfAbschliessen };
+    // Eine abweichende Gesamtauswertung verwirft nur Auswertung und Abschluss, nicht die gültigen Eingaben und Lichter.
+    if (a && obj.letzteAuswertung.eingabeVersion !== a.eingabeVersion) a = null;
+    return { verworfen: false, eingaben: e, letzteAuswertung: a, abgeschlossen: obj.abgeschlossen === true && !!a && a.darfAbschliessen, lichtStand: lichtStand };
   }
   function fallDaten() {
     return { titel: 'Führungszeugnis für einen privaten Arbeitgeber',
@@ -218,6 +239,7 @@
   return { FALL_ID: FALL_ID, SPEICHER_SCHLUESSEL: SPEICHER_SCHLUESSEL, BEWERTUNGSSTAND: BEWERTUNGSSTAND,
     BEREICHE: kopie(BEREICHE), katalog: function () { return kopie(KATALOG); }, normalisiere: normalisiere,
     eingabeVersion: eingabeVersion, auswertung: auswertung, bereinigeGespeichert: bereinigeGespeichert,
+    lichtFelder: lichtFelder, lichtAntworten: lichtAntworten,
     fallDaten: fallDaten, hilfe: hilfe, nachschlagen: nachschlagen, lehrkraft: lehrkraft,
     resetText: function () { return 'Nur B03 mit Robin Keller zurücksetzen? B01, B02, Luca, Noelle und Anzeige bleiben unverändert.'; } };
 }));

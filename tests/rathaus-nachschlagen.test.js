@@ -252,15 +252,21 @@ test("Katalog und Fortschritt sind gegenüber 85e0e3c unverändert", () => {
   assert.equal(diff, "");
 });
 
-test("Fall- und Bewertungsdateien sind gegenüber 85e0e3c unverändert", () => {
+test("Fall- und Bewertungsdateien sind gegenüber 85e0e3c unverändert (außer Hilfe und Rückmeldelichter)", () => {
   const basis = "85e0e3cc694bd0574c7f5fc1f6b4145e5165abbd";
-  const diff = execFileSync("git", ["diff", "--name-only", basis, "--", "js/rathaus-hochbetrieb.js"], { cwd: wurzel }).toString().trim();
-  assert.equal(diff, "");
-  // rathaus-kern.js: nur die Funktion hilfe darf abweichen.
+  // Erlaubt sind nur die Funktion hilfe und die rein additiven Rückmeldelicht-Bausteine (lichtKatalog,
+  // lichtAntworten, filtereLichtStand, lichtStand-Durchreichung). Die Fachbewertung bleibt zeichengleich.
   const ohneHilfe = (text) => text.replace(/  function hilfe\(stufe\) \{[\s\S]*?\n  \}\n\n  function hilfeWechsel/, "  function hilfeWechsel");
-  const alt = execFileSync("git", ["show", basis + ":js/rathaus-kern.js"], { cwd: wurzel }).toString();
-  const neu = fs.readFileSync(path.join(wurzel, "js/rathaus-kern.js"), "utf8");
-  assert.notEqual(ohneHilfe(alt), alt, "Funktion hilfe nicht gefunden (alt)");
-  assert.notEqual(ohneHilfe(neu), neu, "Funktion hilfe nicht gefunden (neu)");
-  assert.equal(ohneHilfe(neu), ohneHilfe(alt));
+  const ohneLichter = (text) => text
+    .replace(/  function lichtKatalog\(\) \{[\s\S]*?\n  \/\/ Bereinigt einen gespeicherten Zustand\./, "  // Bereinigt einen gespeicherten Zustand.")
+    .replace("    ergebnis.lichtStand = filtereLichtStand(quelle.lichtStand, quelle);\n", "")
+    .replace("\n    lichtKatalog: lichtKatalog,\n    lichtAntworten: lichtAntworten,", "");
+  ["js/rathaus-hochbetrieb.js", "js/rathaus-kern.js"].forEach((datei) => {
+    const alt = execFileSync("git", ["show", basis + ":" + datei], { cwd: wurzel }).toString();
+    const neu = fs.readFileSync(path.join(wurzel, datei), "utf8");
+    assert.notEqual(ohneLichter(neu), neu, "Lichtbausteine nicht gefunden: " + datei);
+    const a = datei.endsWith("kern.js") ? ohneHilfe(alt) : alt;
+    const n = datei.endsWith("kern.js") ? ohneHilfe(ohneLichter(neu)) : ohneLichter(neu);
+    assert.equal(n, a, datei);
+  });
 });

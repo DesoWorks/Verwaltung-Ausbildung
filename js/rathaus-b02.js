@@ -405,7 +405,26 @@
   }
 
   function leereSicht(verworfen, eingaben) {
-    return { verworfen: verworfen, eingaben: eingaben, letzteAuswertung: null, abgeschlossen: false };
+    return { verworfen: verworfen, eingaben: eingaben, letzteAuswertung: null, abgeschlossen: false, lichtStand: {} };
+  }
+
+  function lichter() {
+    if (typeof require === 'function') {
+      try { return require('./rathaus-lichter.js'); } catch (err) { /* Browser: globales Modul */ }
+    }
+    return (typeof globalThis !== 'undefined' && globalThis.RATHAUS_LICHTER) || null;
+  }
+
+  // Frageblock-Daten für die Rückmeldelichter, abgeleitet aus dem fachlich geprüften Katalog. Freitext fehlt bewusst.
+  function lichtDaten(eingaben) {
+    var L = lichter();
+    return L ? L.ausKatalog(KATALOG, normalisiere(eingaben)) : { felder: {}, antworten: {} };
+  }
+  function lichtFelder() { return lichtDaten({}).felder; }
+  function lichtAntworten(eingaben) { return lichtDaten(eingaben).antworten; }
+  function filtereLichtStand(roh, eingaben) {
+    var L = lichter();
+    return L ? L.filtereStand(roh, lichtAntworten(eingaben)) : {};
   }
 
   function bereinigeGespeichert(roh) {
@@ -429,7 +448,8 @@
       verworfen: false,
       eingaben: eingaben,
       letzteAuswertung: neu,
-      abgeschlossen: obj.abgeschlossen === true && !!neu && neu.darfAbschliessen
+      abgeschlossen: obj.abgeschlossen === true && !!neu && neu.darfAbschliessen,
+      lichtStand: filtereLichtStand(obj.lichtStand, eingaben)
     };
   }
 
@@ -452,6 +472,8 @@
     lehrkraft: lehrkraft,
     nachschlagen: nachschlagen,
     bereinigeGespeichert: bereinigeGespeichert,
+    lichtFelder: lichtFelder,
+    lichtAntworten: lichtAntworten,
     resetText: resetText
   };
 }));

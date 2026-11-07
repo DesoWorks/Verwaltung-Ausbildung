@@ -441,7 +441,44 @@
   }
 
   function leereSicht(verworfen, eingaben) {
-    return { verworfen: verworfen, eingaben: eingaben, letzteAuswertung: null, abgeschlossen: false };
+    return { verworfen: verworfen, eingaben: eingaben, letzteAuswertung: null, abgeschlossen: false, lichtStand: {} };
+  }
+
+  function lichter() {
+    if (typeof require === 'function') {
+      try { return require('./rathaus-lichter.js'); } catch (err) { /* Browser: globales Modul */ }
+    }
+    return (typeof globalThis !== 'undefined' && globalThis.RATHAUS_LICHTER) || null;
+  }
+
+  // Antwortwerte je bewertbarem Frageblock (normalisiert; leer = ''). Freitext ist bewusst nicht enthalten.
+  function lichtAntworten(eingaben) {
+    var e = normalisiere(eingaben);
+    var aus = {};
+    ['anliegen', 'einzug', 'weitereWohnung', 'fallen', 'vorbereitung'].forEach(function (k) { aus[k] = e[k] || ''; });
+    ['regeln', 'bausteine'].forEach(function (k) { aus[k] = e[k].slice(); });
+    KATALOG.dokumente.optionen.forEach(function (d) {
+      var zeile = {};
+      zeile[d.id] = e.dokumente[d.id] || '';
+      aus['dokumente.' + d.id] = zeile;
+    });
+    return aus;
+  }
+
+  // Felddefinitionen aus dem fachlich geprüften Katalog, je Frageblock bzw. je Dokumentzeile.
+  function lichtFelder() {
+    var k = katalog();
+    var aus = {};
+    ['anliegen', 'einzug', 'weitereWohnung', 'fallen', 'vorbereitung', 'regeln', 'bausteine'].forEach(function (key) { aus[key] = k[key]; });
+    k.dokumente.optionen.forEach(function (d) {
+      aus['dokumente.' + d.id] = { art: 'status', status: k.dokumente.status, optionen: [d] };
+    });
+    return aus;
+  }
+
+  function filtereLichtStand(roh, eingaben) {
+    var L = lichter();
+    return L ? L.filtereStand(roh, lichtAntworten(eingaben)) : {};
   }
 
   function bereinigeGespeichert(roh) {
@@ -462,7 +499,8 @@
       verworfen: false,
       eingaben: eingaben,
       letzteAuswertung: neu,
-      abgeschlossen: obj.abgeschlossen === true && !!neu && neu.darfAbschliessen
+      abgeschlossen: obj.abgeschlossen === true && !!neu && neu.darfAbschliessen,
+      lichtStand: filtereLichtStand(obj.lichtStand, eingaben)
     };
   }
 
@@ -485,6 +523,8 @@
     lehrkraft: lehrkraft,
     nachschlagen: nachschlagen,
     bereinigeGespeichert: bereinigeGespeichert,
+    lichtAntworten: lichtAntworten,
+    lichtFelder: lichtFelder,
     resetText: resetText
   };
 }));

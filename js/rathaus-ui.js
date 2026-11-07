@@ -28,6 +28,8 @@
     gruende: [],
     antwort: "",
     letzteAuswertung: null,
+    // Antwortstand je Frageblock zum Zeitpunkt der ausdrücklichen Auswertung (Grundlage der Rückmeldelichter).
+    lichtStand: {},
     abgeschlossen: false,
     hilfeStufe: 0,
     lehrkraft: false,
@@ -74,6 +76,7 @@
     state.gruende = [];
     state.antwort = "";
     state.letzteAuswertung = null;
+    state.lichtStand = {};
     state.abgeschlossen = false;
     state.veraltetHinweis = false;
     state.eingabenGeaendert = false;
@@ -96,6 +99,7 @@
       });
       if (Array.isArray(bereinigt.gruende)) state.gruende = bereinigt.gruende.slice();
       state.letzteAuswertung = bereinigt.letzteAuswertung;
+      state.lichtStand = bereinigt.lichtStand || {};
       var hatteErgebnis = Boolean(daten.letzteAuswertung) || daten.abgeschlossen === true;
       state.veraltetHinweis = bereinigt.verworfen && hatteErgebnis;
     } catch (fehler) {
@@ -112,6 +116,7 @@
       gruende: state.gruende.slice(),
       antwort: state.antwort,
       letzteAuswertung: state.letzteAuswertung,
+      lichtStand: state.lichtStand || {},
       abgeschlossen: state.abgeschlossen,
       bewertungsstand: kern.BEWERTUNGSSTAND,
       hilfeStufe: state.hilfeStufe,
@@ -182,6 +187,13 @@
 
   // Nur nach einer Auswertung: Schritt 3 bis 5 gelten als "nicht richtig", wenn der geprüfte Teil falsch ist.
   function nichtRichtig(index) {
+    var key = index === 0 ? "entscheidung" : index === 1 ? "gruende" : "";
+    var L = window.RATHAUS_LICHTER;
+    if (key && L && typeof kern.lichtKatalog === "function") {
+      var licht = L.gruppenStand([key], kern.lichtKatalog(), kern.lichtAntworten(state), state.lichtStand);
+      if (licht === "fehler" || licht === "veraltet") return true;
+      if (licht === "richtig") return false;
+    }
     if (!state.letzteAuswertung) return false;
     var teil = teilbewertungen(state.letzteAuswertung)[index];
     return Boolean(teil) && teil.wert === false;
@@ -554,6 +566,20 @@
     host.appendChild(status);
   }
 
+  var lichtSets = [];
+
+  // Rückmeldelichter an Entscheidung und Gründen: nur mit gespeichertem, zur Antwort passendem Auswertungsstand.
+  function zeigeLichter() {
+    var L = window.RATHAUS_LICHTER;
+    if (!L || typeof kern.lichtKatalog !== "function") return;
+    var felder = kern.lichtKatalog();
+    var antworten = kern.lichtAntworten(state);
+    var stand = state.lichtStand || {};
+    lichtSets.forEach(function (eintrag) {
+      L.zeigeFeld(eintrag.set, felder[eintrag.key], antworten[eintrag.key], stand[eintrag.key]);
+    });
+  }
+
   var aktualisiereBewertung = function () {};
   var ansageTimer = null;
 
@@ -567,6 +593,7 @@
       state.eingabenGeaendert = true;
     }
     speichern();
+    zeigeLichter();
     fortschrittNur();
     // Nur die Bewertungsbereiche neu zeichnen, damit das Textfeld Fokus und Cursor behält.
     if (hatteErgebnis) {
@@ -623,8 +650,13 @@
     var form = el("form", "rathaus-form");
     form.addEventListener("submit", function (event) { event.preventDefault(); });
     // Eine Auswahl ist eine benannte Gruppe: Die Überschrift steckt in der Legende, der Hinweis hängt per aria-describedby daran.
-    function gruppe(titel, hilfeId, hilfeText) {
+    lichtSets = [];
+    function gruppe(titel, hilfeId, hilfeText, lichtKey) {
       var set = el("fieldset", "rathaus-gruppe");
+      if (lichtKey) {
+        set.setAttribute("data-licht-feld", lichtKey);
+        lichtSets.push({ set: set, key: lichtKey });
+      }
       var legende = el("legend", "");
       legende.appendChild(el("h3", "", titel));
       set.appendChild(legende);
@@ -635,7 +667,7 @@
       form.appendChild(set);
       return set;
     }
-    var entscheidungsGruppe = gruppe("3. Sachverhalt beurteilen", "entscheidung-hilfe", "Wähle genau eine Antwort.");
+    var entscheidungsGruppe = gruppe("3. Sachverhalt beurteilen", "entscheidung-hilfe", "Wähle genau eine Antwort.", "entscheidung");
     katalog.entscheidungen.forEach(function (option) {
       var label = el("label", "rathaus-option");
       var input = document.createElement("input");
@@ -652,7 +684,7 @@
       entscheidungsGruppe.appendChild(label);
     });
 
-    var gruendeGruppe = gruppe("4. Entscheidung begründen", "gruende-hilfe", "Du kannst mehrere Gründe ankreuzen.");
+    var gruendeGruppe = gruppe("4. Entscheidung begründen", "gruende-hilfe", "Du kannst mehrere Gründe ankreuzen.", "gruende");
     katalog.gruende.forEach(function (grund) {
       var label = el("label", "rathaus-option");
       var input = document.createElement("input");
@@ -709,6 +741,7 @@
       state.versuche = naechster.versuche;
       state.abgeschlossen = naechster.abgeschlossen;
       state.letzteAuswertung = naechster.letzteAuswertung;
+      if (state.letzteAuswertung) state.lichtStand = kern.lichtAntworten(state);
       state.veraltetHinweis = false;
       state.eingabenGeaendert = false;
       speichern();
@@ -718,6 +751,8 @@
     });
     form.appendChild(pruefen);
     ziel.appendChild(form);
+
+    zeigeLichter();
 
     var auswertung = el("section", "rathaus-auswertung");
     // Keine eigene Live-Region: Die Ansage kommt genau einmal über #rathaus-ansage.
@@ -793,6 +828,7 @@
     state.gruende = [];
     state.antwort = "";
     state.letzteAuswertung = null;
+    state.lichtStand = {};
     state.abgeschlossen = false;
     state.veraltetHinweis = false;
     state.eingabenGeaendert = false;
