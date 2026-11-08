@@ -113,3 +113,11 @@
   .overview-lessons { padding-left: 1.35rem; }
   .overview-field-count { flex-basis: 100%; padding-left: 1.4rem; }
 }
+
+/* Neu-Markierung: Text und Rahmen, nicht nur Farbe. Farben kommen aus den Anzeigemodi (hell, dunkel, Kontrast). */
+.lektion-neu {
+  flex: none; align-self: center;
+  padding: 0 0.45rem; border: 2px solid var(--farbe-akzent); border-radius: 999px;
+  color: var(--farbe-text); background: transparent;
+  font-size: 0.75rem; font-weight: 700; line-height: 1.5; white-space: nowrap;
+}

@@ -429,8 +429,19 @@
     box.append(h, p);
   }
 
+  var ZUSAMMENFASSUNGEN = [
+    { ids: A_IDS, box: "uebung-ergebnis", name: "Übung", erfolg: "Die Übung ist freigegeben." },
+    { ids: K_IDS, box: "kontrolle-ergebnis", name: "Lernkontrolle", erfolg: "Das Ziel der Lernkontrolle ist erreicht." }
+  ];
+
   function render() {
     FRAGEN.forEach(renderBlock);
+    /* Eine sichtbare Zusammenfassung wird mit dem aktuellen Stand neu berechnet, damit nach einer
+       Antwortänderung kein veraltetes „aktuell richtig“ stehen bleibt. */
+    ZUSAMMENFASSUNGEN.forEach(function (z) {
+      var box = $(z.box);
+      if (box && !box.hidden && box.textContent) zusammenfassung(z.ids, z.box, z.name, z.erfolg);
+    });
     var n = fortschritt(state);
     $("fortschritt-balken").style.width = n + "%";
     $("fortschritt-text").textContent = "Fortschritt: " + n + " %";
@@ -505,8 +516,8 @@
   doc.querySelectorAll("[data-weiter]").forEach(function (button) {
     button.addEventListener("click", function () { step(button.dataset.weiter); });
   });
-  $("uebung-pruefen").addEventListener("click", pruefen(A_IDS, "uebung-ergebnis", "Übung", "Die Übung ist freigegeben."));
-  $("kontrolle-pruefen").addEventListener("click", pruefen(K_IDS, "kontrolle-ergebnis", "Lernkontrolle", "Das Ziel der Lernkontrolle ist erreicht."));
+  $("uebung-pruefen").addEventListener("click", pruefen(ZUSAMMENFASSUNGEN[0].ids, ZUSAMMENFASSUNGEN[0].box, ZUSAMMENFASSUNGEN[0].name, ZUSAMMENFASSUNGEN[0].erfolg));
+  $("kontrolle-pruefen").addEventListener("click", pruefen(ZUSAMMENFASSUNGEN[1].ids, ZUSAMMENFASSUNGEN[1].box, ZUSAMMENFASSUNGEN[1].name, ZUSAMMENFASSUNGEN[1].erfolg));
   $("reset-alles").addEventListener("click", function () {
     if (!global.confirm("Gespeicherten Lernfortschritt dieser Lektion zurücksetzen?")) return;
     state = leer();

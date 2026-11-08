@@ -30,14 +30,14 @@
   <div id="rathaus-fortschritt" hidden></div>
   <div id="rathaus-ansage" class="nur-lesen" role="status" aria-live="polite" aria-atomic="true"></div>
   <main id="hauptinhalt" class="inhalt rathaus-inhalt" tabindex="-1"></main>
-  <aside id="rathaus-lehrkraftbereich" class="rathaus-lehrkraftbereich" aria-labelledby="lehrkraftbereich-titel">
-    <h2 id="lehrkraftbereich-titel">Lehrkraftbereich</h2>
+  <details id="rathaus-lehrkraftbereich" class="rathaus-lehrkraftbereich">
+    <summary id="lehrkraftbereich-titel">Lehrkraftbereich</summary>
     <p>Nur für Lehrkräfte. Der Schalter wirkt lokal in diesem Browser und ist keine echte Rollenprüfung.</p>
     <p class="rathaus-lehrkraft-zeile">
       <button type="button" class="knopf" id="lehrkraft-schalter" aria-pressed="false">Lehrkraftmodus lokal ein oder aus</button>
       <span id="lehrkraft-status" class="rathaus-lehrkraft-status">Lehrkraftmodus ist aus.</span>
     </p>
-  </aside>
+  </details>
   <footer class="fuss"><p>Virtuelles Rathaus · lokale Testfassung · Version <span data-version></span> · kein Cloud-Dienst</p></footer>
   <script src="../js/module-daten.js"></script>
   <script src="../js/fortschritt.js"></script>

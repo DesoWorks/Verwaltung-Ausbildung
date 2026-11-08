@@ -555,7 +555,21 @@ textarea.rathaus-freitext-gross {
   max-width: 960px; margin: 2rem auto 1rem; padding: 0.8rem 1rem; box-sizing: border-box;
   border: 2px dashed var(--farbe-warn); border-radius: var(--radius); background: var(--farbe-hinweis-flaeche);
 }
-.rathaus-lehrkraftbereich h2 { margin: 0 0 0.3rem; font-size: 1.05rem; }
+.rathaus-lehrkraftbereich > summary {
+  display: flex; align-items: center; gap: 0.5rem; min-height: 2.75rem; padding: 0.4rem 0.8rem;
+  font-size: 1.05rem; font-weight: 700; cursor: pointer; list-style: none;
+  border: 2px solid var(--farbe-rahmen); border-radius: 0.5rem; background: var(--farbe-flaeche, transparent); color: inherit;
+}
+.rathaus-lehrkraftbereich > summary::-webkit-details-marker { display: none; }
+.rathaus-lehrkraftbereich > summary::before { content: "▸"; }
+.rathaus-lehrkraftbereich[open] > summary::before { content: "▾"; }
+.rathaus-lehrkraftbereich > summary:focus-visible { outline: 3px solid var(--farbe-akzent); outline-offset: 2px; }
+.rathaus-lehrkraftbereich[open] > summary { margin-bottom: 0.6rem; }
+/* Nachschlagekarte im Bürgerbüro: Abstand zum Fallraster darüber. */
+.rathaus-karte-knopf { margin-top: 1.5rem; }
+/* Auswertungszeile: Schrittnummer, Name, Symbol, Status, dann die Aktion rechts abgesetzt. */
+.rathaus-teil-nr { font-size: 0.85rem; font-weight: 700; white-space: nowrap; }
+.rathaus-teil-aktion { margin-left: auto; }
 .rathaus-lehrkraftbereich p { margin: 0.3rem 0; }
 .rathaus-lehrkraft-zeile { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; }
 @media (max-width: 640px) {

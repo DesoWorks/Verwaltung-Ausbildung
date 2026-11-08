@@ -33,6 +33,7 @@
       a.classList.add("unterthema-link");
       var line = erzeuge("span", "modul-titelzeile");
       line.appendChild(erzeuge("span", "unterthema-titel", lesson.titel));
+      if (lesson.neu) line.appendChild(erzeuge("span", "lektion-neu", "Neu"));
       if (window.LERNFORTSCHRITT && window.LERNFORTSCHRITT.abgeschlossen(lesson.id)) line.appendChild(window.LERNFORTSCHRITT.abschlusszeichen());
       a.appendChild(line);
       if (lesson.beschreibung) a.appendChild(erzeuge("span", "modul-beschreibung", lesson.beschreibung));

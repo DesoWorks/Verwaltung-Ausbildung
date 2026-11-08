@@ -451,7 +451,7 @@ test("B01: Mehrfachauswahl-Rückmeldung erscheint erst nach der Auswertung und n
   fuelleGut(u);
   u.abwahl("bb-regeln", "bmg23");
   u.klick("Auswertung prüfen");
-  assert.ok(u.sicht().includes("Noch nicht richtig oder offen"), "Sprungliste aus der Auswertung fehlt");
+  assert.ok(u.sicht().includes("Offene oder zu prüfende Schritte"), "Sprungliste aus der Auswertung fehlt");
   u.klick("Zu Schritt 3");
   const t = u.sicht();
   ["Richtig ausgewählt", "Falsch ausgewählt", "Relevante Antwort fehlt"].forEach((s) => assert.ok(t.includes(s), s));

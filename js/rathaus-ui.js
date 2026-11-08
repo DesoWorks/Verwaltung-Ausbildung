@@ -316,20 +316,7 @@
     nachschlagen.addEventListener("click", function () { zeige("nachschlagen"); });
     reihe.appendChild(nachschlagen);
     if (kernHochbetrieb) {
-      ziel.appendChild(el("h3", "", "Vorgang wählen"));
-      ziel.appendChild(el("p", "rathaus-meta", "Jeder Vorgang hat einen eigenen Stand. Beim Wechsel geht nichts verloren."));
-      var wahl = el("div", "knopf-reihe");
-      wahl.setAttribute("role", "group");
-      wahl.setAttribute("aria-label", "Vorgang wählen");
-      [["luca", kernLuca], ["noelle", kernHochbetrieb]].forEach(function (paar, index) {
-        var daten = paar[1].fallDaten();
-        var knopf = el("button", "knopf" + (aktiverFall === paar[0] ? " knopf-haupt" : ""), "Vorgang " + (index + 1) + ": " + daten.person.name);
-        knopf.type = "button";
-        knopf.setAttribute("aria-pressed", aktiverFall === paar[0] ? "true" : "false");
-        knopf.addEventListener("click", function () { wechsleFall(paar[0]); });
-        wahl.appendChild(knopf);
-      });
-      ziel.appendChild(wahl);
+      // Die Vorgangsauswahl liegt nur noch im Aufklappmenü #rathaus-unterleiste.
       ziel.appendChild(el("p", "", "Aktueller Vorgang: " + fall.betreff));
     }
   }

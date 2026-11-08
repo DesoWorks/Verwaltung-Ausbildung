@@ -328,9 +328,16 @@
         var bereich = a.bereiche[b.key];
         var richtig = bereich.status === "richtig";
         var punkt = el("li", "rathaus-teil " + (richtig ? "ist-richtig" : "ist-falsch"));
-        punkt.appendChild(el("span", "rathaus-teil-name", b.name + ":"));
+        var nr = BEREICHE.indexOf(b);
+        punkt.appendChild(el("span", "rathaus-teil-nr", "Schritt " + (nr + 1)));
+        punkt.appendChild(el("span", "rathaus-teil-name", b.name));
         punkt.appendChild(el("span", "rathaus-teil-symbol", richtig ? "✓" : "✗"));
         punkt.appendChild(el("span", "rathaus-teil-wort", STATUSWORT[bereich.status] || bereich.status));
+        if (flussApi && typeof flussApi.gehe === "function") {
+          var oeffnen = knopf("Schritt öffnen", "knopf rathaus-teil-aktion", function () { flussApi.gehe(nr, true); });
+          oeffnen.setAttribute("aria-label", "Schritt " + (nr + 1) + " öffnen: " + b.name);
+          punkt.appendChild(oeffnen);
+        }
         ul.appendChild(punkt);
       });
       host.appendChild(ul);
@@ -560,7 +567,7 @@
       raster.appendChild(karte);
     });
     host.appendChild(raster);
-    host.appendChild(knopf("Nachschlagekarte Meldewesen öffnen", "knopf", function () { ctx.wechsle("buerger-karte", null); }));
+    host.appendChild(knopf("Nachschlagekarte Meldewesen öffnen", "knopf rathaus-karte-knopf", function () { ctx.wechsle("buerger-karte", null); }));
   }
 
   function zeichneKarte(host, ctx) {

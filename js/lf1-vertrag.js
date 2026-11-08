@@ -204,10 +204,14 @@
     doc.addEventListener('change', function (ev) {
       var t = ev.target;
       if (!t || t.type !== 'radio') return;
-      if (MAIN.indexOf(t.name) >= 0) setAntwort(s, t.name, t.value);
-      else if (LC.indexOf(t.name) >= 0) setKontrolle(s, t.name, t.value);
-      else return;
-      sagen('vertrag-ergebnis', '');
+      if (MAIN.indexOf(t.name) >= 0) {
+        setAntwort(s, t.name, t.value);
+        sagen('vertrag-ergebnis', '');
+      } else if (LC.indexOf(t.name) >= 0) {
+        setKontrolle(s, t.name, t.value);
+        // Nur die Kontrolle ist betroffen; das Ergebnis der Vertragsübung bleibt stehen.
+        sagen('kontrolle-ergebnis', 'Antwort geändert – bitte erneut auswerten.');
+      } else return;
       speichern(storage, s);
     });
 

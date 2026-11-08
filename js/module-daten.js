@@ -79,6 +79,7 @@
             {
               id: "lf1-dual",
               typ: "lektion",
+              neu: true,
               titel: "Zwei Lernorte",
               beschreibung: "Ausbildungsbetrieb und Berufsschule im dualen System unterscheiden und die Aufgaben von Ausbildungsordnung, Ausbildungsplan und Rahmenlehrplan einordnen.",
               page: "lf1-dual",
@@ -88,6 +89,7 @@
             {
               id: "lf1-vertrag",
               typ: "lektion",
+              neu: true,
               titel: "Der Ausbildungsvertrag",
               beschreibung: "Vertragsangaben, Probezeit und ausgewählte Pflichten an einem fiktiven Vertrag prüfen. Verkürzung und Kündigung sind hier nicht die Übung.",
               page: "lf1-vertrag",
@@ -97,6 +99,7 @@
             {
               id: "lf1-beendigung",
               typ: "lektion",
+              neu: true,
               titel: "Freistellung und Beendigung",
               beschreibung: "Freistellung für den Berufsschulunterricht, Kündigung in und nach der Probezeit und die Schriftform an einem fiktiven Fall prüfen.",
               page: "lf1-beendigung",

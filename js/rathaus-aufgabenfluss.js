@@ -322,7 +322,7 @@
       var imAuswertungsschritt = Boolean(schritt.immerSichtbar || schritt.auswertung || hinterBewerteten);
       sprung.hidden = !(offene.length && imAuswertungsschritt);
       if (offene.length && imAuswertungsschritt) {
-        sprung.appendChild(el("h4", "aufgabenfluss-sprung-titel", "Noch nicht richtig oder offen"));
+        sprung.appendChild(el("h4", "aufgabenfluss-sprung-titel", "Offene oder zu prüfende Schritte"));
         var sprungListe = el("ul", "aufgabenfluss-sprung-liste");
         offene.forEach(function (o) {
           var li = el("li", "");
