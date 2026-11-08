@@ -79,6 +79,7 @@ function start(speicher) {
     setTimeout(fn) { fn(); return 1; },
     addEventListener() {}
   };
+  vm.runInNewContext(fs.readFileSync(path.join(wurzel, "js/rathaus-schrittleiste.js"), "utf8"), { window, document });
   vm.runInNewContext(fs.readFileSync(path.join(wurzel, "js/rathaus-ui.js"), "utf8"), { window, document });
   const haupt = ids.hauptinhalt;
   const finde = (fn) => alle(haupt).find(fn) || null;
@@ -218,7 +219,7 @@ FAELLE.forEach((f) => {
       const t = text(box);
       assert.ok(t.includes("Aktiver Vorgang: " + name), ansicht);
       assert.equal(t.includes(andere), false, "der andere Vorgang erscheint nicht");
-      assert.ok(/\d von 7 Schritten erledigt/.test(t));
+      assert.ok(/\d von 7 Schritten bearbeitet/.test(t));
     });
     ["stadt", "personal", "post", "nachschlagen"].forEach((ansicht) => {
       const s = start(speicher(f, { ansicht }));
@@ -234,9 +235,10 @@ FAELLE.forEach((f) => {
     const punkte = alle(s.ids["rathaus-fortschritt"]).filter((k) => k.tag === "li");
     assert.equal(punkte.length, 7);
     punkte.forEach((p) => {
-      const stand = p.children.find((k) => k.className === "nur-lesen");
-      assert.ok(stand && /erledigt|offen/.test(stand.textContent));
-      assert.equal(/erledigt/.test(stand.textContent), /ist-fertig/.test(p.className));
+      const stand = text(p);
+      assert.match(stand, /noch offen|bearbeitet|richtig|noch nicht richtig|Bewertung veraltet|noch gesperrt/);
+      assert.equal(/noch nicht richtig|Bewertung veraltet/.test(stand), false);
+      assert.equal(/\brichtig\b/.test(stand), /ist-fertig/.test(p.className));
     });
   });
 });
@@ -344,4 +346,53 @@ test('Anzeige: Textgröße gilt auch auf kleinen Bildschirmen, Warnbanner nutzt 
   assert.doesNotMatch(banner, /#[0-9a-fA-F]{3,6}/);
   ['index.html', 'glossar.html'].concat(fs.readdirSync(path.join(__dirname, '..', 'module')).filter((f) => f.endsWith('.html')).map((f) => 'module/' + f))
     .forEach((f) => assert.match(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), /anzeige-lesen\.js/, f));
+});
+
+test("Schritt 5 öffnet das Antwortfeld, ohne die gespeicherte Antwort zu ändern", () => {
+  const f = FAELLE[0];
+  const s = start(speicher(f));
+  const vorher = JSON.parse(s.store[f.key]).antwort;
+  const knopf = alle(s.ids["rathaus-fortschritt"]).find((k) => k.tag === "button" && k.getAttribute("data-schritt") === "5");
+  assert.ok(knopf, "Schritt 5 ist ein Button");
+  assert.equal(knopf.disabled, undefined);
+  knopf.handlers.click();
+  assert.equal(s.fokusLog[s.fokusLog.length - 1], "antwort-text");
+  assert.equal(JSON.parse(s.store[f.key]).antwort, vorher);
+  const aktuell = alle(s.ids["rathaus-fortschritt"]).find((k) => k.getAttribute("aria-current") === "step");
+  assert.ok(aktuell && aktuell.getAttribute("data-schritt") === "5");
+});
+
+test("Vor dem Lesen bleiben die Vorgangsschritte gesperrt", () => {
+  const f = FAELLE[0];
+  const s = start(speicher(f, { ansicht: "vorgang", gelesen: false, entscheidung: "", gruende: [], antwort: "" }));
+  const knopf = alle(s.ids["rathaus-fortschritt"]).find((k) => k.tag === "button" && k.getAttribute("data-schritt") === "5");
+  assert.equal(knopf.disabled, true);
+  assert.equal(knopf.getAttribute("data-status"), "gesperrt");
+  assert.equal(alle(s.haupt).some((k) => k.id === "antwort-text"), false);
+});
+
+test("Nach einer Antwortänderung zeigt Schritt 5 Bewertung veraltet, nicht richtig", () => {
+  const f = FAELLE[0];
+  const s = start(speicher(f, { antwort: f.schlecht }));
+  s.auswerten();
+  const vorher = alle(s.ids["rathaus-fortschritt"]).find((k) => k.tag === "button" && k.getAttribute("data-schritt") === "5");
+  assert.equal(vorher.getAttribute("data-status"), "falsch");
+  s.feld().value = f.gut;
+  s.feld().handlers.input();
+  const nach = alle(s.ids["rathaus-fortschritt"]).find((k) => k.tag === "button" && k.getAttribute("data-schritt") === "5");
+  assert.equal(nach.getAttribute("data-status"), "veraltet");
+  assert.equal(JSON.parse(s.store[f.key]).antwort, f.gut);
+  assert.equal(JSON.parse(s.store[f.key]).letzteAuswertung, null);
+});
+
+test("Bürgerbüro-Statusworte werden nicht aus der Formulierung rot geraten", () => {
+  const fenster = {};
+  vm.runInNewContext(fs.readFileSync(path.join(wurzel, "js/rathaus-schrittleiste.js"), "utf8"), { window: fenster, document: { createElement() { return {}; } } });
+  const api = fenster.RATHAUS_SCHRITTLEISTE;
+  assert.equal(api.ausStand("Noch offen").status, "offen");
+  assert.equal(api.ausStand("Richtig").status, "richtig");
+  assert.equal(api.ausStand("Noch nicht richtig").status, "falsch");
+  assert.equal(api.ausStand("Bewertung veraltet").status, "veraltet");
+  assert.equal(api.ausStand("Noch nicht vollständig").status, "falsch");
+  assert.equal(api.ausStand("irgendetwas Unbekanntes").status, "offen");
 });

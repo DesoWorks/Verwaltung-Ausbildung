@@ -70,6 +70,7 @@
   }
 
   function neuerZustand() {
+    vorgangSchritt = 3;
     state.gelesen = false;
     state.akteGelesen = false;
     state.entscheidung = "";
@@ -212,22 +213,126 @@
   }
 
   // Die Sieben-Schritte-Anzeige gehört zum aktiven Vorgang und erscheint nur in dessen Ansichten.
+  // Position in der Schrittleiste innerhalb der Vorgangsansicht (3 bis 7). Reine Anzeige, wird nie gespeichert.
+  var vorgangSchritt = 3;
+
+  // Bewertungsstand eines der drei bewerteten Schritte (0 Entscheidung, 1 Gründe, 2 Antwort):
+  // "richtig", "falsch", "veraltet" oder null, wenn es kein Urteil gibt. Nichts wird aus Satzstellung geraten.
+  function bewertungSchritt(index) {
+    var key = index === 0 ? "entscheidung" : index === 1 ? "gruende" : "";
+    var L = window.RATHAUS_LICHTER;
+    if (key && L && typeof kern.lichtKatalog === "function") {
+      var licht = L.gruppenStand([key], kern.lichtKatalog(), kern.lichtAntworten(state), state.lichtStand);
+      if (licht === "veraltet") return "veraltet";
+      if (licht === "fehler") return "falsch";
+      if (licht === "richtig") return "richtig";
+    }
+    if (state.letzteAuswertung) {
+      var teil = teilbewertungen(state.letzteAuswertung)[index];
+      if (teil && teil.wert === true) return "richtig";
+      if (teil && teil.wert === false) return "falsch";
+      return null;
+    }
+    // Die Auswertung wurde durch eine Änderung ungültig oder beim Laden verworfen.
+    if (state.eingabenGeaendert || state.veraltetHinweis) return "veraltet";
+    return null;
+  }
+
+  // Status eines Schritts: offen, bearbeitet, richtig, falsch, veraltet oder gesperrt.
+  // Besuchte oder ausgefüllte Schritte gelten höchstens als "bearbeitet", nie von selbst als richtig.
+  function schrittStatus(schritt) {
+    var nr = schritt.nr;
+    if (nr >= 3 && !state.gelesen) return { status: "gesperrt" };
+    if (nr === 1 || nr === 2) return { status: schritt.done ? "bearbeitet" : "offen" };
+    if (nr <= 5) return { status: bewertungSchritt(nr - 3) || (schritt.done ? "bearbeitet" : "offen") };
+    var aus = state.letzteAuswertung;
+    if (nr === 6) {
+      // Die Auswertung ist kein eigener richtig/falsch-Bereich. Rot bleibt bei den falschen Schritten.
+      if (state.eingabenGeaendert || state.veraltetHinweis) return { status: "veraltet" };
+      if (aus) return { status: "bearbeitet", text: "ausgewertet" };
+      return { status: "offen" };
+    }
+    return state.abgeschlossen ? { status: "richtig", text: "abgeschlossen" } : { status: "offen" };
+  }
+
+  // Aus der Ansicht abgeleitet: Akte = 2, Vorgang = zuletzt gewählter Schritt 3 bis 7.
+  function aktuellerSchrittNr() {
+    if (state.ansicht === "akte") return 2;
+    if (state.ansicht === "vorgang") return state.gelesen ? vorgangSchritt : 3;
+    return 0;
+  }
+
+  // Öffnet den Arbeitsschritt direkt. Löst weder Auswertung noch Abschluss aus und ändert keine Eingabe.
+  function geheZuSchritt(nr) {
+    if (nr === 1) {
+      vorgangSchritt = 1;
+      oeffneNachricht(aktiverFall);
+      window.setTimeout(function () {
+        var knoten = document.getElementById("nachricht-abschnitt");
+        if (!knoten) return;
+        knoten.focus();
+        if (typeof knoten.scrollIntoView === "function") knoten.scrollIntoView({ block: "nearest" });
+      }, 0);
+      return;
+    }
+    if (nr === 2) { zeige("akte"); return; }
+    if (!state.gelesen) return;
+    vorgangSchritt = nr;
+    if (state.ansicht === "vorgang") zeichnen();
+    else zeige("vorgang");
+    // Nach dem von zeige geplanten Titelfokus.
+    window.setTimeout(function () {
+      var id = nr === 3 ? "entscheidung-abschnitt" : nr === 4 ? "gruende-abschnitt" : nr === 5 ? "antwort-text" : nr === 6 ? "auswertung-titel" : "abschluss-bereich";
+      var knoten = document.getElementById(id);
+      if (!knoten) return;
+      var feld = (nr === 3 || nr === 4) && typeof knoten.querySelector === "function" ? knoten.querySelector("input") : null;
+      (feld || knoten).focus();
+      if (typeof knoten.scrollIntoView === "function") knoten.scrollIntoView({ block: "nearest" });
+    }, 0);
+  }
+
   function fortschritt(ziel) {
     var liste = schritte();
-    var fertig = liste.filter(function (schritt) { return schritt.done; }).length;
+    var aktuell = aktuellerSchrittNr();
     var name = fall.person.name;
+    var bearbeitet = 0, richtig = 0, falsch = 0, veraltet = 0;
+    var punkte = liste.map(function (schritt) {
+      var s = schrittStatus(schritt);
+      if (s.status !== "offen" && s.status !== "gesperrt") bearbeitet += 1;
+      if (schritt.nr >= 3 && schritt.nr <= 5) {
+        if (s.status === "richtig") richtig += 1;
+        else if (s.status === "falsch") falsch += 1;
+        else if (s.status === "veraltet") veraltet += 1;
+      }
+      return { nr: schritt.nr, name: schritt.label, status: s.status, text: s.text, aktuell: schritt.nr === aktuell, gesperrt: s.status === "gesperrt" };
+    });
     var kopf = el("section", "rathaus-fortschritt");
     kopf.setAttribute("aria-label", "Fortschritt im Vorgang von " + name);
     kopf.appendChild(el("p", "rathaus-fortschritt-kopf", "Aktiver Vorgang: " + name));
-    var text = el("p", "rathaus-fortschritt-text", fertig + " von 7 Schritten erledigt");
-    kopf.appendChild(text);
-    var leiste = el("ol", "rathaus-schritte");
-    liste.forEach(function (schritt) {
-      var punkt = el("li", schritt.nichtRichtig ? "ist-nicht-richtig" : (schritt.done ? "ist-fertig" : ""), schritt.nr + ". " + schritt.label);
-      punkt.appendChild(el("span", schritt.nichtRichtig ? "" : "nur-lesen", schritt.nichtRichtig ? " – noch nicht richtig" : (schritt.done ? " – erledigt" : " – offen")));
-      leiste.appendChild(punkt);
-    });
-    kopf.appendChild(leiste);
+    // Bearbeitet heißt nicht richtig: Das Urteil steht nur im zweiten Teil und nur, wenn eines vorliegt.
+    var satz = bearbeitet + " von 7 Schritten bearbeitet.";
+    if (richtig + falsch + veraltet > 0) {
+      satz += " Richtig bewertet: " + richtig + ". Noch nicht richtig: " + falsch + "." + (veraltet ? " Bewertung veraltet: " + veraltet + "." : "");
+    }
+    kopf.appendChild(el("p", "rathaus-fortschritt-text", satz));
+    var S = window.RATHAUS_SCHRITTLEISTE;
+    if (S) {
+      kopf.appendChild(S.zeichne({
+        label: "Schritte im Vorgang von " + name,
+        schritte: punkte,
+        onWahl: function (schritt) { geheZuSchritt(schritt.nr); }
+      }));
+    } else {
+      // Ohne die gemeinsame Leiste (z. B. in einem Teil-Aufbau): dieselben Wörter, aber nicht anklickbar.
+      var leiste = el("ol", "rathaus-schritte");
+      punkte.forEach(function (p) {
+        var klasse = p.status === "richtig" ? "ist-fertig" : (p.status === "falsch" ? "ist-nicht-richtig" : (p.status === "veraltet" ? "ist-veraltet" : ""));
+        var punkt = el("li", klasse, p.nr + ". " + p.name);
+        punkt.appendChild(el("span", "", " – " + (p.text || (p.status === "falsch" ? "noch nicht richtig" : p.status === "veraltet" ? "Bewertung veraltet" : p.status === "gesperrt" ? "noch gesperrt" : p.status === "offen" ? "noch offen" : p.status === "richtig" ? "richtig" : "bearbeitet"))));
+        leiste.appendChild(punkt);
+      });
+      kopf.appendChild(leiste);
+    }
     ziel.appendChild(kopf);
   }
 
@@ -499,6 +604,7 @@
         sprung.type = "button";
         sprung.setAttribute("aria-label", teil.sprung);
         sprung.addEventListener("click", function () {
+          vorgangSchritt = teil.ziel === "entscheidung-abschnitt" ? 3 : (teil.ziel === "gruende-abschnitt" ? 4 : 5);
           zeige("vorgang");
           // Nach dem von zeige geplanten Titelfokus: keine Eingabe oder Neubewertung.
           setTimeout(function () {
@@ -629,6 +735,8 @@
       return;
     }
     var nachricht = el("article", "rathaus-sachlich");
+    nachricht.id = "nachricht-abschnitt";
+    nachricht.tabIndex = -1;
     nachricht.appendChild(el("h3", "", "1. Eingegangene Nachricht"));
     nachricht.appendChild(el("p", "", fall.nachricht));
     ziel.appendChild(nachricht);
@@ -762,6 +870,7 @@
       if (state.letzteAuswertung) state.lichtStand = kern.lichtAntworten(state);
       state.veraltetHinweis = false;
       state.eingabenGeaendert = false;
+      vorgangSchritt = 6;
       speichern();
       zeichnen();
       fokus("auswertung-titel");
@@ -816,6 +925,7 @@
     ziel.appendChild(hilfeBereich);
     var abschlussHost = el("div", "rathaus-abschluss");
     abschlussHost.id = "abschluss-bereich";
+    abschlussHost.tabIndex = -1;
     ziel.appendChild(abschlussHost);
     fuelleAbschluss(abschlussHost);
     // Die Eingabehandler zeichnen nur diese beiden Bereiche neu, nie das Textfeld.

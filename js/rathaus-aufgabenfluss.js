@@ -285,11 +285,23 @@
 
       leeren(nav);
       var offene = [];
+      // Dieselbe kompakte, anklickbare Leiste wie im Personalamt. Jeder Schritt bleibt wie bisher direkt erreichbar.
+      var leistenSchritte = [];
+      var leisteApi = window.RATHAUS_SCHRITTLEISTE;
       schritte.forEach(function (s, i) {
         var stand = "noch nicht geprüft";
         if (typeof cfg.bereichStatus === "function") stand = cfg.bereichStatus(s, i) || stand;
         var offen = istOffenStand(stand);
         if (offen) offene.push({ i: i, name: s.name, stand: stand });
+        if (leisteApi) {
+          var abgebildet = leisteApi.ausStand(stand);
+          // Gefüllt, aber nicht bewertet: nur wenn der Fall das ausdrücklich melden kann.
+          if (abgebildet.status === "offen" && !abgebildet.text && typeof cfg.bearbeitet === "function" && cfg.bearbeitet(s, i) === true) {
+            abgebildet = { status: "bearbeitet" };
+          }
+          leistenSchritte.push({ nr: i + 1, name: s.name, status: abgebildet.status, text: abgebildet.text, aktuell: i === index, index: i });
+          return;
+        }
         var chip = el("button", "knopf aufgabenfluss-chip" + (i === index ? " ist-aktiv" : "") + (offen ? " ist-offen" : ""));
         chip.type = "button";
         chip.textContent = (i + 1) + ". " + s.name;
@@ -302,6 +314,14 @@
         chip.addEventListener("click", function () { gehe(i, true); });
         nav.appendChild(chip);
       });
+      if (leisteApi) {
+        nav.appendChild(leisteApi.zeichne({
+          label: "Schritte von " + (cfg.fallId || "diesem Fall"),
+          knopfKlasse: "aufgabenfluss-chip",
+          schritte: leistenSchritte,
+          onWahl: function (s) { gehe(s.index, true); }
+        }));
+      }
 
       // Rückmeldung im geöffneten Schritt: nur nach einer Auswertung und nur aus vorhandenen Hinweisen.
       leeren(rueckmeldung);

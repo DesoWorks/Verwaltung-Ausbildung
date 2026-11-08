@@ -93,6 +93,40 @@
   border: 1px dashed currentColor;
 }
 
+/* Gemeinsame Schrittleiste (Personalamt und Bürgerbüro): die Pille ist der li, der Button füllt sie ohne eigenen Rahmen. */
+.rathaus-schritte li.ist-bearbeitet { border: 1px solid var(--farbe-rahmen); }
+.rathaus-schritte li.ist-veraltet {
+  border: 2px dotted currentColor;
+  background: var(--farbe-geplant-flaeche);
+  color: var(--farbe-text);
+}
+.rathaus-schritte li.ist-veraltet .schritt-status::before { content: "\21BB  "; }
+.rathaus-schritte li.ist-gesperrt { opacity: 0.8; border: 1px dashed var(--farbe-rahmen); }
+.rathaus-schritte li.ist-aktuell { font-weight: 700; }
+.rathaus-schritte li.ist-aktuell .schritt-name { text-decoration: underline; text-underline-offset: 0.2em; }
+.rathaus-schritte li.ist-aktuell { outline: 2px solid var(--farbe-akzent); outline-offset: 1px; }
+.rathaus-schritte .schritt-knopf,
+.rathaus-schritte .schritt-knopf.aufgabenfluss-chip {
+  min-height: 0;
+  margin: 0;
+  padding: 0.1rem 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.rathaus-schritte .schritt-knopf:disabled { cursor: not-allowed; }
+.rathaus-schritte .schritt-knopf:focus-visible {
+  outline: 3px solid var(--farbe-akzent);
+  outline-offset: 3px;
+}
+.rathaus-schritte .schritt-aktuell { font-weight: 700; }
+
 .rathaus-einleitung {
   font-size: 1.05rem;
 }
