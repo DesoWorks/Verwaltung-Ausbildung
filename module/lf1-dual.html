@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Zwei Lernorte: Ausbildungsbetrieb und Berufsschule im dualen System verstehen und unterscheiden.">
+  <title>Zwei Lernorte · Lernfeld 1</title>
+  <link rel="icon" href="../assets/desoworks/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../assets/desoworks/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="icon" href="../assets/desoworks/favicon.ico" sizes="any">
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .dual-block { margin:1.25rem 0; max-width:48rem; }
+    .dual-block fieldset { border:2px solid var(--farbe-rahmen); border-radius:.8rem; padding:.9rem 1rem; margin:0; min-width:0; background:var(--farbe-flaeche); }
+    .dual-block legend { padding:0 .35rem; font-weight:700; overflow-wrap:anywhere; }
+    .dual-block h3:focus { outline:3px solid var(--farbe-akzent); outline-offset:3px; }
+    .dual-block[data-status="richtig"] fieldset { border-color:var(--farbe-ok); border-style:solid; }
+    .dual-block[data-status="falsch"] fieldset { border-color:var(--farbe-fehler); border-style:dashed; }
+    .dual-block[data-status="veraltet"] fieldset { border-color:var(--farbe-warn); border-style:dotted; }
+    .dual-optionen { display:grid; grid-template-columns:minmax(0,1fr); gap:.6rem; }
+    .dual-option { display:flex; align-items:flex-start; gap:.7rem; width:100%; min-width:0; box-sizing:border-box; padding:.8rem 1rem; border:2px solid var(--farbe-rahmen); border-radius:.75rem; background:var(--farbe-flaeche); color:var(--farbe-text); font:inherit; line-height:1.5; cursor:pointer; overflow-wrap:anywhere; }
+    .dual-option input { flex:0 0 auto; margin:.3rem 0 0; }
+    .dual-option:hover { border-color:var(--farbe-akzent); }
+    .dual-option:focus-within { outline:3px solid var(--farbe-akzent); outline-offset:3px; }
+    .dual-status { margin:.5rem 0 0; font-weight:700; }
+    .dual-meldung { margin:.4rem 0 0; padding:.6rem 1rem; border-left:4px solid currentColor; background:var(--farbe-hinweis-flaeche); }
+    .dual-meldung p { margin:.25rem 0; }
+    .dual-meldung[hidden], .ergebnis-box[hidden], #speicher-status[hidden] { display:none; }
+    .dual-hilfe { margin-top:.6rem; }
+    .dual-hilfe > div { margin-top:.4rem; }
+    .dual-hilfe > div:focus { outline:3px solid var(--farbe-akzent); outline-offset:3px; }
+    .ergebnis-box { margin-top:1.25rem; padding:1rem; border:2px solid var(--farbe-akzent); border-radius:.75rem; }
+    .dual-tabelle { max-width:100%; overflow-x:auto; }
+    .dual-tabelle table { border-collapse:collapse; min-width:30rem; }
+    .dual-tabelle th, .dual-tabelle td { border:1px solid var(--farbe-rahmen); padding:.5rem .7rem; text-align:left; vertical-align:top; }
+    .dual-notiz textarea { width:100%; box-sizing:border-box; min-height:5rem; font:inherit; }
+    #speicher-status { padding:.6rem 1rem; border-left:4px solid var(--farbe-warn); }
+  </style>
+</head>
+<body data-page="lf1-dual" data-base="../">
+  <a class="skip-link" href="#hauptinhalt">Direkt zum Inhalt springen</a>
+  <header class="kopf">
+    <a class="kopf-logo" href="../index.html" aria-label="DesoWorks – zur Themenübersicht"><img src="../assets/desoworks/logo-orbital-werkstatt.svg" alt=""></a>
+    <div class="kopf-inhalt">
+      <p class="kopf-marke">Verwaltung-Ausbildung · Lernfeld 1</p>
+      <h1>Zwei Lernorte</h1>
+      <p class="kopf-dauer">Vertiefung zu „Deine Rolle im Betrieb“ · 45 bis 60 Minuten · kein Zeitdruck</p>
+    </div>
+  </header>
+  <nav class="schritte" aria-label="Lernschritte">
+    <ol id="schritt-liste">
+      <li><button type="button" class="schritt-knopf" data-ziel="start" aria-current="true">1 · Einführung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="erklaerung">2 · Erklärung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="beispiel">3 · Beispiel</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="uebung">4 · Übung</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="kontrolle">5 · Lernkontrolle</button></li>
+      <li><button type="button" class="schritt-knopf" data-ziel="abschluss">6 · Abschluss</button></li>
+    </ol>
+    <div class="fortschritt"><div class="fortschritt-leiste"><div class="fortschritt-balken" id="fortschritt-balken" style="width:0%"></div></div><p class="fortschritt-text" id="fortschritt-text" aria-live="polite">Fortschritt: 0 %</p></div>
+  </nav>
+  <main id="hauptinhalt" tabindex="-1">
+    <p id="speicher-status" role="status" hidden></p>
+    <section id="start" class="abschnitt" aria-labelledby="start-titel">
+      <h2 id="start-titel">Warum lernst du an zwei Orten?</h2>
+      <p>Du bist neu im Ausbildungsbetrieb. Am Montag lernst du im Büro, wie eine Anfrage aufgenommen wird. Am nächsten Schultag beschäftigst du dich damit, welche Informationen eine Anfrage enthalten muss und wie du verständlich nachfragst. Warum lernst du an beiden Orten?</p>
+      <p>Eine Ausbildung soll dich dazu befähigen, berufliche Aufgaben zu verstehen, zu planen, auszuführen und zu prüfen. Dafür brauchst du praktische Erfahrung und fachliches Wissen. In der dualen Ausbildung arbeiten Ausbildungsbetrieb und Berufsschule an diesem gemeinsamen Ziel.</p>
+      <p>Diese Einheit vertieft „Deine Rolle im Betrieb“. Sie ersetzt keine andere Lektion.</p>
+      <h3>Das kannst du nach der Einheit</h3>
+      <ul>
+        <li>Ausbildungsbetrieb und Berufsschule als zwei zentrale Lernorte nennen und ihre Beiträge unterscheiden.</li>
+        <li>An einer Büroaufgabe erklären, wie praktische Anwendung und fachliches Verstehen zusammenwirken.</li>
+        <li>Ausbildungsordnung, betrieblichen Ausbildungsplan und schulischen Rahmenlehrplan nach ihrer Funktion unterscheiden.</li>
+        <li>Berufliche Handlungsfähigkeit von bloßem Abarbeiten einzelner Handgriffe unterscheiden.</li>
+        <li>Bei einer unklaren Ausbildungsaufgabe eine passende erste Klärung wählen und begründen.</li>
+      </ul>
+      <p class="klein">Du brauchst keine Gesetzeskenntnisse. Begriffe werden auf dieser Seite erklärt.</p>
+      <div class="dual-notiz">
+        <h3><label for="notiz-start">Startfrage, unbewertet</label></h3>
+        <p id="notiz-start-hilfe">Stell dir vor, du kannst eine Vorlage ausfüllen, weißt aber nicht, ob die Angaben vollständig sind. Was müsstest du zusätzlich lernen? Notiere einen Gedanken. Deine Notiz wird nicht als richtig oder falsch beurteilt und ist keine Pflichtangabe.</p>
+        <textarea id="notiz-start" aria-describedby="notiz-start-hilfe notiz-speicher-hinweis" maxlength="2000"></textarea>
+        <p class="klein" id="notiz-speicher-hinweis">Notizen werden standardmäßig nicht gespeichert und sind beim Neuladen der Seite weg. <label><input type="checkbox" id="notizen-speichern"> Notizen auf diesem Gerät im Browser speichern</label></p>
+      </div>
+      <div class="knopf-reihe"><button type="button" class="knopf knopf-haupt" data-weiter="erklaerung">Weiter: Erklärung</button></div>
+    </section>
+    <section id="erklaerung" class="abschnitt" aria-labelledby="erklaerung-titel" hidden>
+      <h2 id="erklaerung-titel">Zwei Lernorte, ein Ausbildungsziel</h2>
+      <p><strong>Im Ausbildungsbetrieb</strong> lernst du an beruflichen Aufgaben und Abläufen. Eine zuständige Ausbildungsperson erklärt dir Arbeitsschritte, begleitet dein Üben und bespricht Ergebnisse. Der Betrieb darf Ausbildung nicht auf beliebige Hilfsarbeiten reduzieren: Aufgaben müssen dem Ausbildungszweck dienen. Die Ausbildung soll planmäßig sowie zeitlich und sachlich gegliedert stattfinden.</p>
+      <p><strong>In der Berufsschule</strong> erarbeitest du berufliche Zusammenhänge, Fachbegriffe und allgemeinbildende Inhalte. Du übst beispielsweise, Informationen zu prüfen und Entscheidungen zu begründen. Auch die Schule arbeitet mit praktischen Aufgaben; auch im Betrieb wird Theorie erklärt. Die Kurzform „Betrieb nur Praxis, Schule nur Theorie“ ist deshalb zu grob. Diese Beschreibung der Lernorte ist eine didaktische Zusammenfassung und kein Beleg aus den unten genannten Rechtsquellen.</p>
+      <p><strong>Gemeinsames Ziel:</strong> berufliche Handlungsfähigkeit. Du sollst nicht nur einen einzelnen Klick nachmachen, sondern berufliche Aufgaben mit den nötigen Fertigkeiten, Kenntnissen und Fähigkeiten bewältigen und Berufserfahrung erwerben. Das Ausbildungsziel beschreibt § 1 Absatz 3 BBiG (Quelle Q1).</p>
+      <p>Ausbildende müssen zum Besuch der Berufsschule anhalten (§ 14 Absatz 1 Nummer 4 BBiG, Quelle Q2). Diese Vorschrift allein belegt nicht sämtliche Regeln zu Schulpflicht, Freistellung oder Anrechnung von Unterrichtszeit. Solche Einzelfragen behandelt diese Einheit nicht.</p>
+      <h3>Drei Grundlagen auseinanderhalten</h3>
+      <p>Die Spalte „Wofür sie hier steht“ ist eine Funktionsorientierung zum Lernen. Gelesen und belegt sind nur die in den Quellen genannten Stellen (siehe Quellen). Insbesondere regeln die gelesenen §§ 1 und 14 BBiG nicht selbst den Inhalt einer Ausbildungsordnung.</p>
+      <div class="dual-tabelle" role="region" aria-label="Tabelle: drei Grundlagen" tabindex="0">
+        <table>
+          <caption>Funktion der drei Grundlagen</caption>
+          <thead><tr><th scope="col">Grundlage</th><th scope="col">Wofür sie hier steht</th><th scope="col">Nicht verwechseln mit</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Ausbildungsordnung</th><td>Bundesweite Grundlage für den anerkannten Ausbildungsberuf; enthält unter anderem Vorgaben für die betriebliche Ausbildung.</td><td>Dem Wochenplan eines einzelnen Betriebs.</td></tr>
+            <tr><th scope="row">Betrieblicher Ausbildungsplan</th><td>Übertragung der Ausbildungsvorgaben auf die Ausbildung im konkreten Betrieb: welche Inhalte wann und wo vermittelt werden sollen.</td><td>Einer bloßen Liste aller gerade anfallenden Büroarbeiten.</td></tr>
+            <tr><th scope="row">Schulischer Rahmenlehrplan</th><td>Inhaltliche Grundlage für den berufsbezogenen schulischen Unterricht; die konkrete schulische Umsetzung ist zusätzlich zu beachten.</td><td>Einer betrieblichen Dienstanweisung.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Merksatz</p>
+        <p>Zwei Lernorte ergänzen sich. Die Ausbildungsordnung ist kein dritter Lernort. Der betriebliche Ausbildungsplan macht Ausbildung im Betrieb planbar.</p>
+      </aside>
+      <h3 id="quellen-titel">Quellen und Stand</h3>
+      <ul>
+        <li><strong>Q1:</strong> Berufsbildungsgesetz (BBiG), § 1 Absatz 3. Am 08.11.2026 in der nichtamtlichen Wiedergabe auf gesetze-im-internet.de gelesen: <a href="https://www.gesetze-im-internet.de/bbig_2005/__1.html">gesetze-im-internet.de/bbig_2005/__1.html</a>. Belegt das Ziel beruflicher Handlungsfähigkeit und erforderlicher Berufserfahrungen, nicht die gesamte Organisation des dualen Systems.</li>
+        <li><strong>Q2:</strong> BBiG, § 14 Absatz 1 Nummern 1, 2 und 4 sowie Absatz 3. Am 08.11.2026 in der nichtamtlichen Wiedergabe gelesen: <a href="https://www.gesetze-im-internet.de/bbig_2005/__14.html">gesetze-im-internet.de/bbig_2005/__14.html</a>. Belegt planmäßige Ausbildung, die ausdrückliche Beauftragung einer Ausbildungsperson, das Anhalten zum Berufsschulbesuch und ausbildungszweckgerechte Aufgaben.</li>
+        <li><strong>Q3:</strong> Verordnung über die Berufsausbildung zum Kaufmann für Büromanagement und zur Kauffrau für Büromanagement (BüroMKfAusbV) vom 25.02.2025, BGBl. 2025 I Nr. 62, nach dem Textnachweis in der nichtamtlichen Wiedergabe ab 01.08.2025; sie ersetzt die frühere Verordnung. Am 08.11.2026 gelesen: <a href="https://www.gesetze-im-internet.de/b_romkfausbv_2025/BJNR03E0A0025.html">gesetze-im-internet.de/b_romkfausbv_2025</a>. Sie ist eine Ausbildungsordnung im Sinne des § 4 BBiG. Nach § 3 Absatz 1 sind mindestens die im Ausbildungsrahmenplan genannten Fertigkeiten, Kenntnisse und Fähigkeiten Gegenstand der Berufsausbildung. Nach § 6 erstellen Ausbildende spätestens zu Beginn auf Grundlage des Ausbildungsrahmenplans einen Ausbildungsplan (<a href="https://www.gesetze-im-internet.de/b_romkfausbv_2025/__6.html">§ 6</a>).</li>
+        <li><strong>Nicht gelesen:</strong> der schulische Rahmenlehrplan. Nach dem gelesenen Hinweis wird der abgestimmte KMK-Rahmenlehrplan demnächst im Bundesanzeiger veröffentlicht; diese Veröffentlichung wurde nicht gelesen. Aussagen zum Rahmenlehrplan in dieser Einheit sind daher reine Funktionsorientierung.</li>
+      </ul>
+      <p class="klein">Eigenmaterial, keine Rechtsberatung. Die Wiedergabe auf gesetze-im-internet.de ist nichtamtlich.</p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="start">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="beispiel">Weiter: Beispiel</button></div>
+    </section>
+    <section id="beispiel" class="abschnitt" aria-labelledby="beispiel-titel" hidden>
+      <h2 id="beispiel-titel">Beispiel: Büroservice Sonnenthal</h2>
+      <aside class="hinweis-box">
+        <p class="hinweis-titel">Ein Lernbeispiel, keine Betriebsregel</p>
+        <p>Alle Namen, Zeiten und Abläufe sind erfunden. „Büroservice Sonnenthal“ ist ein fiktiver Ausbildungsbetrieb für Büromanagement, keine reale Behörde. Dein Betrieb kann anders arbeiten.</p>
+      </aside>
+      <p>Du begleitest die auszubildende Person Alex. Sonnenthal organisiert Termine und bearbeitet Anfragen für kleine Vereine. Alex soll eine Anfrage für einen Besprechungsraum vorbereiten. Es fehlen das Datum und die Zahl der Teilnehmenden.</p>
+      <ul>
+        <li><strong>Im Betrieb</strong> zeigt die Ausbilderin Alex, wie Anfragen im Übungssystem erfasst werden. Alex prüft die Angaben und entwirft unter Anleitung eine Rückfrage. Die Ausbilderin bespricht den Entwurf, bevor etwas versendet wird.</li>
+        <li><strong>In der Berufsschule</strong> übt Alex an einem anderen Fall, fehlende Angaben zu erkennen und Rückfragen verständlich zu formulieren.</li>
+        <li><strong>Im betrieblichen Ausbildungsplan</strong> ist für diesen Abschnitt die begleitete Bearbeitung von Anfragen vorgesehen. Der Plan ersetzt weder die Erklärung noch die Rückmeldung.</li>
+        <li><strong>Beim nächsten Übungsfall</strong> erkennt Alex selbst, welche Informationen fehlen, und erklärt den nächsten Arbeitsschritt. Das zeigt mehr Handlungsfähigkeit als bloßes Abschreiben einer fertigen Rückfrage.</li>
+      </ul>
+      <p><strong>Auswertung des Beispiels:</strong> Der Betrieb bietet konkrete Abläufe, Anwendung und Rückmeldung. Die Schule unterstützt das Verständnis und den Transfer auf andere Fälle. Beides greift ineinander. Ein echter Versand ist nicht Teil dieser Lernübung.</p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="erklaerung">Zurück</button><button type="button" class="knopf knopf-haupt" data-weiter="uebung">Weiter zur Übung</button></div>
+    </section>
+    <section id="uebung" class="abschnitt" aria-labelledby="uebung-titel" hidden>
+      <h2 id="uebung-titel">Übung: Alex bereitet den nächsten Ausbildungstag vor</h2>
+      <p>Lies die fünf Aufgaben. Wähle jeweils genau eine Antwort. Erst „Übung auswerten“ zeigt die Bewertung. Hilfen sind freiwillig und werden nicht als Fehler gezählt. Du kannst Antworten ändern und erneut auswerten.</p>
+      <div id="uebung-fragen"></div>
+      <div class="dual-notiz">
+        <h3><label for="notiz-transfer">Optionale Transfernotiz</label></h3>
+        <p id="notiz-transfer-hilfe">Erkläre in zwei Sätzen, was Alex an beiden Orten lernt. Ergänze einen Grund, warum Alex vor einem unbekannten Versand nachfragen sollte. Die Notiz wird nicht automatisch bewertet und standardmäßig nicht gespeichert.</p>
+        <textarea id="notiz-transfer" aria-describedby="notiz-transfer-hilfe" maxlength="2000"></textarea>
+        <fieldset>
+          <legend>Selbstcheck (nur für dich, keine automatische Bewertung)</legend>
+          <p><label><input type="checkbox" id="check-lernorte"> Beide Lernorte genannt</label></p>
+          <p><label><input type="checkbox" id="check-zusammenhang"> Zusammenhang erklärt</label></p>
+          <p><label><input type="checkbox" id="check-klaerung"> Klärung vor Versand begründet</label></p>
+        </fieldset>
+      </div>
+      <button type="button" class="knopf knopf-haupt" id="uebung-pruefen">Übung auswerten</button>
+      <section id="uebung-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="beispiel">Zurück zum Beispiel</button><button type="button" class="knopf knopf-haupt" data-weiter="kontrolle">Weiter zur Lernkontrolle</button></div>
+    </section>
+    <section id="kontrolle" class="abschnitt" aria-labelledby="kontrolle-titel" hidden>
+      <h2 id="kontrolle-titel">Lernkontrolle: ein neuer Fall</h2>
+      <p>Neuer fiktiver Anlass: Alex soll für Sonnenthal die Rückmeldung zu einer Raumanfrage vorbereiten. In der Berufsschule wurde geübt, Aussagen sachlich zu begründen. Im Betrieb wird die Rückmeldung vor dem Versand gemeinsam geprüft.</p>
+      <p>Hier gibt es keine Hilfen und keine Zeitbegrenzung. Nach der Auswertung siehst du die Auflösung deines Versuchs. Du kannst jederzeit zum Lerntext zurückgehen.</p>
+      <div id="kontrolle-fragen"></div>
+      <button type="button" class="knopf knopf-haupt" id="kontrolle-pruefen">Lernkontrolle auswerten</button>
+      <section id="kontrolle-ergebnis" class="ergebnis-box" aria-live="polite" aria-atomic="true" hidden></section>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="uebung">Zurück zur Übung</button><button type="button" class="knopf knopf-haupt" data-weiter="abschluss">Zum Abschluss</button></div>
+    </section>
+    <section id="abschluss" class="abschnitt" aria-labelledby="abschluss-titel" hidden>
+      <h2 id="abschluss-titel">Das nimmst du mit</h2>
+      <ul>
+        <li>Ausbildungsbetrieb und Berufsschule sind die zwei zentralen Lernorte und ergänzen sich.</li>
+        <li>Ziel ist berufliche Handlungsfähigkeit, nicht das Nachmachen einzelner Handgriffe.</li>
+        <li>Ausbildungsordnung, betrieblicher Ausbildungsplan und Rahmenlehrplan haben unterschiedliche Aufgaben.</li>
+        <li>Bei einer unklaren Aufgabe klärst du Ziel, Anleitung und Prüfung vor dem Versand mit der zuständigen Ausbildungsperson.</li>
+      </ul>
+      <p id="abschluss-status" class="rueckmeldung" aria-live="polite"></p>
+      <div class="knopf-reihe"><button type="button" class="knopf" data-weiter="kontrolle">Zur Lernkontrolle</button><button type="button" class="knopf knopf-warn" id="reset-alles">Fortschritt zurücksetzen</button><a class="knopf" href="../index.html">Zur Themenübersicht</a></div>
+    </section>
+  </main>
+  <footer class="fuss"><p>Lernfeld 1 · Zwei Lernorte · Version <span data-version></span> · Läuft lokal in deinem Browser.</p></footer>
+  <script src="../js/module-daten.js"></script>
+  <script src="../js/fortschritt.js"></script>
+  <script src="../js/plattform-navigation.js"></script>
+  <script src="../js/navigation.js"></script>
+  <script src="../js/anzeige-lesen.js"></script>
+  <script src="../js/nach-oben.js"></script>
+  <script src="../js/glossar-daten.js"></script>
+  <script src="../js/version.js"></script>
+  <script src="../js/lf1-dual.js"></script>
+</body>
+</html>

@@ -244,12 +244,29 @@ test("rathaus.html bindet die Karte vor der Oberfläche ein", () => {
   assert.ok(html.indexOf("rathaus-nachschlagen.js") < html.indexOf("rathaus-ui.js"));
 });
 
-test("Katalog und Fortschritt sind gegenüber 85e0e3c unverändert", () => {
-  // Navigation, Startseite und Plattformmodell wurden im NAVIGATION REBUILD bewusst umgebaut
-  // (siehe tests/navigation-rebuild.test.js). Katalog-IDs und Fortschrittsspeicher bleiben geschützt.
-  const dateien = ["js/module-daten.js", "js/fortschritt.js"];
-  const diff = execFileSync("git", ["diff", "--name-only", "85e0e3cc694bd0574c7f5fc1f6b4145e5165abbd", "--"].concat(dateien), { cwd: wurzel }).toString().trim();
-  assert.equal(diff, "");
+test("Katalog und Fortschritt ändern sich gegenüber 85e0e3c nur um lf1-dual", () => {
+  // Die Rathaus-Nachschlagekarte darf den Katalog nicht still mitändern.
+  // Erlaubt ist nur der dokumentierte LF1-A-Eintrag.
+  const basis = "85e0e3cc694bd0574c7f5fc1f6b4145e5165abbd";
+  const dualBlock = [
+    "            {",
+    "              id: \"lf1-dual\",",
+    "              typ: \"lektion\",",
+    "              titel: \"Zwei Lernorte\",",
+    "              beschreibung: \"Ausbildungsbetrieb und Berufsschule im dualen System unterscheiden und die Aufgaben von Ausbildungsordnung, Ausbildungsplan und Rahmenlehrplan einordnen.\",",
+    "              page: \"lf1-dual\",",
+    "              status: \"verfuegbar\",",
+    "              datei: \"module/lf1-dual.html\"",
+    "            },\n"
+  ].join("\n");
+  const modulNeu = fs.readFileSync(path.join(wurzel, "js/module-daten.js"), "utf8").replace(dualBlock, "");
+  const modulAlt = execFileSync("git", ["show", basis + ":js/module-daten.js"], { cwd: wurzel }).toString();
+  assert.equal(modulNeu, modulAlt, "module-daten.js");
+  const fortNeu = fs.readFileSync(path.join(wurzel, "js/fortschritt.js"), "utf8")
+    .replace("    \"lf1-dual\": \"verwaltung-ausbildung.lf1-dual.v1\",\n", "")
+    .replace("    \"lf1-dual\": { a1: \"a\", a2: \"b\", a3: \"c\", a4: \"a\", a5: \"c\", k1: \"b\", k2: \"a\", k3: \"c\", k4: \"b\" },\n", "");
+  const fortAlt = execFileSync("git", ["show", basis + ":js/fortschritt.js"], { cwd: wurzel }).toString();
+  assert.equal(fortNeu, fortAlt, "fortschritt.js");
 });
 
 test("Fall- und Bewertungsdateien sind gegenüber 85e0e3c unverändert (außer Hilfe und Rückmeldelichter)", () => {

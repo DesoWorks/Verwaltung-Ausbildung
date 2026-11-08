@@ -77,6 +77,15 @@
               datei: "module/lf1-rolle.html"
             },
             {
+              id: "lf1-dual",
+              typ: "lektion",
+              titel: "Zwei Lernorte",
+              beschreibung: "Ausbildungsbetrieb und Berufsschule im dualen System unterscheiden und die Aufgaben von Ausbildungsordnung, Ausbildungsplan und Rahmenlehrplan einordnen.",
+              page: "lf1-dual",
+              status: "verfuegbar",
+              datei: "module/lf1-dual.html"
+            },
+            {
               id: "lf1-rechte",
               typ: "lektion",
               titel: "Rechte und Pflichten im Ausbildungsverhältnis",
