@@ -272,7 +272,8 @@ test("Navigation: lf1-dual steht direkt nach lf1-rolle und verweist auf eine vor
   const ids = feld.unterthemen.map((u) => u.id);
   assert.strictEqual(ids.indexOf("lf1-dual"), ids.indexOf("lf1-rolle") + 1);
   assert.strictEqual(ids.indexOf("lf1-vertrag"), ids.indexOf("lf1-dual") + 1);
-  assert.strictEqual(ids.length, 10);
+  assert.strictEqual(ids.indexOf("lf1-beendigung"), ids.indexOf("lf1-vertrag") + 1);
+  assert.strictEqual(ids.length, 11);
   const eintrag = feld.unterthemen[ids.indexOf("lf1-dual")];
   assert.strictEqual(eintrag.page, "lf1-dual");
   assert.strictEqual(eintrag.typ, "lektion");

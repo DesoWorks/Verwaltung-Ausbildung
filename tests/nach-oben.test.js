@@ -50,7 +50,7 @@ test("Knopf bleibt verborgen, solange der Inhaltsanfang noch nicht hinter dem Fe
 
 test("Jede Seite mit navigation.js lädt nach-oben.js direkt nach anzeige-lesen.js, genau einmal", () => {
   const seiten = htmlDateien(wurzel, []).filter((d) => /js\/navigation\.js"/.test(fs.readFileSync(d, "utf8")));
-  assert.equal(seiten.length, 47, "erwartet: 47 Seiten mit Navigation");
+  assert.equal(seiten.length, 48, "erwartet: 48 Seiten mit Navigation");
   seiten.forEach((datei) => {
     const zeilen = fs.readFileSync(datei, "utf8").split("\n");
     const i = zeilen.findIndex((z) => z.includes("anzeige-lesen.js"));

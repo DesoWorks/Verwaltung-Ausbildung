@@ -95,6 +95,15 @@
               datei: "module/lf1-vertrag.html"
             },
             {
+              id: "lf1-beendigung",
+              typ: "lektion",
+              titel: "Freistellung und Beendigung",
+              beschreibung: "Freistellung für den Berufsschulunterricht, Kündigung in und nach der Probezeit und die Schriftform an einem fiktiven Fall prüfen.",
+              page: "lf1-beendigung",
+              status: "verfuegbar",
+              datei: "module/lf1-beendigung.html"
+            },
+            {
               id: "lf1-rechte",
               typ: "lektion",
               titel: "Rechte und Pflichten im Ausbildungsverhältnis",

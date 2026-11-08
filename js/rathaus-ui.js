@@ -450,9 +450,9 @@
       return (teil && typeof teil === "object" && typeof teil[feld] === "boolean") ? teil[feld] : null;
     }
     return [
-      { name: "Entscheidung", wert: lies(auswertung.entscheidung, "richtig"), ueberarbeiten: "deine Entscheidung" },
-      { name: "Begründung", wert: lies(auswertung.begruendung, "reicht"), ueberarbeiten: "deine Begründung" },
-      { name: "Antwortbrief", wert: lies(auswertung.antwort, "ok"), ueberarbeiten: "deinen Antwortbrief" }
+      { name: "Entscheidung", wert: lies(auswertung.entscheidung, "richtig"), ueberarbeiten: "deine Entscheidung", ziel: "entscheidung-abschnitt", sprung: "Zu Schritt 3: Entscheiden" },
+      { name: "Begründung", wert: lies(auswertung.begruendung, "reicht"), ueberarbeiten: "deine Begründung", ziel: "gruende-abschnitt", sprung: "Zu Schritt 4: Begründen" },
+      { name: "Antwortbrief", wert: lies(auswertung.antwort, "ok"), ueberarbeiten: "deinen Antwortbrief", ziel: "antwort-abschnitt", sprung: "Zu Schritt 5: Antwort schreiben" }
     ];
   }
 
@@ -507,6 +507,23 @@
       punkt.appendChild(el("span", "rathaus-teil-name", teil.name + ":"));
       punkt.appendChild(el("span", "rathaus-teil-symbol", symbol));
       punkt.appendChild(el("span", "rathaus-teil-wort", wort));
+      if (teil.wert === false) {
+        var sprung = el("button", "knopf", teil.sprung);
+        sprung.type = "button";
+        sprung.setAttribute("aria-label", teil.sprung);
+        sprung.addEventListener("click", function () {
+          zeige("vorgang");
+          // Nach dem von zeige geplanten Titelfokus: keine Eingabe oder Neubewertung.
+          setTimeout(function () {
+            var abschnitt = document.getElementById(teil.ziel);
+            if (!abschnitt) return;
+            var feld = teil.ziel === "antwort-abschnitt" ? document.getElementById("antwort-text") : abschnitt.querySelector("input");
+            (feld || abschnitt).focus();
+            abschnitt.scrollIntoView({ block: "nearest" });
+          }, 0);
+        });
+        punkt.appendChild(sprung);
+      }
       liste.appendChild(punkt);
     });
     auswertung.appendChild(liste);
@@ -523,6 +540,13 @@
     hinweisBlock("Das kannst du verbessern", ergebnis.naechsterBlick);
     auswertung.appendChild(el("h4", "", "Dein nächster Schritt"));
     auswertung.appendChild(el("p", "", naechsterSchritt(teile, ergebnis)));
+    if (!state.akteGelesen) {
+      var aktenSprung = el("button", "knopf", "Zu Schritt 2: Akte öffnen");
+      aktenSprung.type = "button";
+      aktenSprung.setAttribute("aria-label", "Zu Schritt 2: Akte öffnen");
+      aktenSprung.addEventListener("click", function () { zeige("akte"); });
+      auswertung.appendChild(aktenSprung);
+    }
     hinweisBlock("Weitere Hinweise", ergebnis.hinweise);
   }
 
@@ -668,6 +692,8 @@
       return set;
     }
     var entscheidungsGruppe = gruppe("3. Sachverhalt beurteilen", "entscheidung-hilfe", "Wähle genau eine Antwort.", "entscheidung");
+    entscheidungsGruppe.id = "entscheidung-abschnitt";
+    entscheidungsGruppe.tabIndex = -1;
     katalog.entscheidungen.forEach(function (option) {
       var label = el("label", "rathaus-option");
       var input = document.createElement("input");
@@ -685,6 +711,8 @@
     });
 
     var gruendeGruppe = gruppe("4. Entscheidung begründen", "gruende-hilfe", "Du kannst mehrere Gründe ankreuzen.", "gruende");
+    gruendeGruppe.id = "gruende-abschnitt";
+    gruendeGruppe.tabIndex = -1;
     katalog.gruende.forEach(function (grund) {
       var label = el("label", "rathaus-option");
       var input = document.createElement("input");
@@ -715,7 +743,10 @@
     form.appendChild(erklaerDetails);
 
     var empfaenger = fall.antwortAn || "Sven Holm";
-    form.appendChild(el("h3", "", "5. Sachliche Antwort an " + empfaenger));
+    var antwortTitel = el("h3", "", "5. Sachliche Antwort an " + empfaenger);
+    antwortTitel.id = "antwort-abschnitt";
+    antwortTitel.tabIndex = -1;
+    form.appendChild(antwortTitel);
     var feldName = el("label", "rathaus-feldname", "Dein Antwortbrief an " + empfaenger);
     feldName.setAttribute("for", "antwort-text");
     form.appendChild(feldName);
