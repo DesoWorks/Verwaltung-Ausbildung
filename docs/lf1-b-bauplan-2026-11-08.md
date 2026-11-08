@@ -2,7 +2,7 @@
 
 Stand: 08.11.2026. Fachlich-didaktischer Implementierungsplan, keine implementierte oder getestete Unterrichtseinheit.
 
-**readyForImplementation: true** – bezogen ausschließlich auf den unten festgelegten Inhalt und die im Lead-Kontext wiedergegebenen Rechtsstellen. Keine eigenständige Webprüfung in diesem Arbeitspaket. Die Freigabe behauptet weder eine vollständige Rechtsprüfung noch eine KMK-Lehrplankonformität.
+**readyForImplementation: true, nach Quellenprüfung vom 08.11.2026.** Die zitierten Stellen R10, R11, R13, R14, R20, R21 und RV2 wurden an diesem Tag auf gesetze-im-internet.de gelesen, nichtamtliche Fassung. Die Antwortschlüssel bleiben. Vor dem Einbau müssen zwei Sätze in den Lerntext: Bestehende Ausbildungsverhältnisse folgen § 4 Absatz 5 BBiG, sofern die neue Verordnung nichts anderes bestimmt; der gelesene § 19 enthält keine solche Umstellung. Verkürzung und Verlängerung nach § 8 BBiG sind nicht Gegenstand der Übung. Drei Jahre sind die Regelausbildungsdauer der Verordnung von 2025, nicht jede denkbare Dauer.
 
 ## 1. Ergebnis und Umfang
 

@@ -251,6 +251,9 @@ test("Rechtsgrenzen: gelesene Quellen benannt, Rahmenlehrplan als nicht gelesen 
   assert.ok(html.includes("BGBl. 2025 I Nr. 62"));
   assert.ok(html.includes("Funktionsorientierung"));
   assert.ok(/Nicht gelesen:<\/strong> der schulische Rahmenlehrplan/.test(html));
+  assert.ok(html.includes("§ 2 BBiG") && html.includes("sonstige Berufsbildungseinrichtungen"));
+  assert.ok(html.includes("§ 4 Absatz 5 BBiG"));
+  assert.ok(html.includes("https://www.gesetze-im-internet.de/bbig_2005/__2.html"));
   assert.ok(html.includes("Keine Rechtsberatung") || html.includes("keine Rechtsberatung"));
 });
 
