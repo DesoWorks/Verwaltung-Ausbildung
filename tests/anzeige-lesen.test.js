@@ -21,7 +21,7 @@ function htmlDateien(ordner, liste) {
 
 test("Jede Seite mit navigation.js lädt anzeige-lesen.js direkt danach, mit passendem Pfad", () => {
   const seiten = htmlDateien(wurzel, []).filter((d) => /js\/navigation\.js"/.test(fs.readFileSync(d, "utf8")));
-  assert.equal(seiten.length, 46, "erwartet: 46 Seiten mit Navigation");
+  assert.equal(seiten.length, 47, "erwartet: 47 Seiten mit Navigation");
   seiten.forEach((datei) => {
     const zeilen = fs.readFileSync(datei, "utf8").split("\n");
     const i = zeilen.findIndex((z) => /js\/navigation\.js"/.test(z));

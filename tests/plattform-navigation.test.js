@@ -55,11 +55,11 @@ test("Der Lernfeld-1-Verweis auf das Rathaus ist in keinem Bereich mehr vorhande
   assert.ok(!JSON.stringify(global.MODULE_EINSTIEG).includes("lf1-rathaus"));
 });
 
-test("Lernfeld 1 hat genau die neun Lektionen in fester Reihenfolge", () => {
+test("Lernfeld 1 hat genau die zehn Lektionen in fester Reihenfolge", () => {
   const feld = findeFeld(global.MODULE_DATEN, "lf1");
   assert.ok(feld);
   assert.deepStrictEqual(feld.unterthemen.map((u) => u.id), [
-    "lf1-rolle", "lf1-dual", "lf1-rechte", "lf1-betrieb", "lf1-ziele",
+    "lf1-rolle", "lf1-dual", "lf1-vertrag", "lf1-rechte", "lf1-betrieb", "lf1-ziele",
     "lf1-aufbau", "lf1-fortbildung", "lf1-praesentation", "lf1-lernziel"
   ]);
 });

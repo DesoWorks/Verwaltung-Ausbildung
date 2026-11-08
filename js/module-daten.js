@@ -86,6 +86,15 @@
               datei: "module/lf1-dual.html"
             },
             {
+              id: "lf1-vertrag",
+              typ: "lektion",
+              titel: "Der Ausbildungsvertrag",
+              beschreibung: "Vertragsangaben, Probezeit und ausgewählte Pflichten an einem fiktiven Vertrag prüfen. Verkürzung und Kündigung sind hier nicht die Übung.",
+              page: "lf1-vertrag",
+              status: "verfuegbar",
+              datei: "module/lf1-vertrag.html"
+            },
+            {
               id: "lf1-rechte",
               typ: "lektion",
               titel: "Rechte und Pflichten im Ausbildungsverhältnis",

@@ -244,9 +244,9 @@ test("rathaus.html bindet die Karte vor der Oberfläche ein", () => {
   assert.ok(html.indexOf("rathaus-nachschlagen.js") < html.indexOf("rathaus-ui.js"));
 });
 
-test("Katalog und Fortschritt ändern sich gegenüber 85e0e3c nur um lf1-dual", () => {
+test("Katalog und Fortschritt ändern sich gegenüber 85e0e3c nur um lf1-dual und lf1-vertrag", () => {
   // Die Rathaus-Nachschlagekarte darf den Katalog nicht still mitändern.
-  // Erlaubt ist nur der dokumentierte LF1-A-Eintrag.
+  // Erlaubt sind nur die dokumentierten Einträge LF1-A und LF1-B.
   const basis = "85e0e3cc694bd0574c7f5fc1f6b4145e5165abbd";
   const dualBlock = [
     "            {",
@@ -259,12 +259,25 @@ test("Katalog und Fortschritt ändern sich gegenüber 85e0e3c nur um lf1-dual", 
     "              datei: \"module/lf1-dual.html\"",
     "            },\n"
   ].join("\n");
-  const modulNeu = fs.readFileSync(path.join(wurzel, "js/module-daten.js"), "utf8").replace(dualBlock, "");
+  const vertragBlock = [
+    "            {",
+    "              id: \"lf1-vertrag\",",
+    "              typ: \"lektion\",",
+    "              titel: \"Der Ausbildungsvertrag\",",
+    "              beschreibung: \"Vertragsangaben, Probezeit und ausgewählte Pflichten an einem fiktiven Vertrag prüfen. Verkürzung und Kündigung sind hier nicht die Übung.\",",
+    "              page: \"lf1-vertrag\",",
+    "              status: \"verfuegbar\",",
+    "              datei: \"module/lf1-vertrag.html\"",
+    "            },\n"
+  ].join("\n");
+  const modulNeu = fs.readFileSync(path.join(wurzel, "js/module-daten.js"), "utf8").replace(dualBlock, "").replace(vertragBlock, "");
   const modulAlt = execFileSync("git", ["show", basis + ":js/module-daten.js"], { cwd: wurzel }).toString();
   assert.equal(modulNeu, modulAlt, "module-daten.js");
   const fortNeu = fs.readFileSync(path.join(wurzel, "js/fortschritt.js"), "utf8")
     .replace("    \"lf1-dual\": \"verwaltung-ausbildung.lf1-dual.v1\",\n", "")
-    .replace("    \"lf1-dual\": { a1: \"a\", a2: \"b\", a3: \"c\", a4: \"a\", a5: \"c\", k1: \"b\", k2: \"a\", k3: \"c\", k4: \"b\" },\n", "");
+    .replace("    \"lf1-vertrag\": \"verwaltung-ausbildung.lf1-vertrag.v1\",\n", "")
+    .replace("    \"lf1-dual\": { a1: \"a\", a2: \"b\", a3: \"c\", a4: \"a\", a5: \"c\", k1: \"b\", k2: \"a\", k3: \"c\", k4: \"b\" },\n", "")
+    .replace("    \"lf1-vertrag\": { duration: \"fits\", probation: \"clarify\", pay_details: \"clarify\", record_owner: \"clarify\", materials: \"clarify\", record_support: \"fits\" },\n", "");
   const fortAlt = execFileSync("git", ["show", basis + ":js/fortschritt.js"], { cwd: wurzel }).toString();
   assert.equal(fortNeu, fortAlt, "fortschritt.js");
 });
