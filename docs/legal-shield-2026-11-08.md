@@ -2,7 +2,9 @@
 
 Entwicklungsfassung. Keine Rechtsberatung. Keine Fachfreigabe für ungelesene Normen.
 
-Prüfer: Rick, weil die Crew-Delegation in diesem Lauf gesperrt war. Geprüft wurde nur gesetze-im-internet.de. Die dortigen Texte sind die nichtamtliche konsolidierte Fassung, nicht das Bundesgesetzblatt.
+Prüfer dieses ersten Berichts: Rick, weil die Crew-Delegation in jenem Lauf gesperrt war. Geprüft wurde nur gesetze-im-internet.de. Die dortigen Texte sind die nichtamtliche konsolidierte Fassung, nicht das Bundesgesetzblatt.
+
+Diese erste Prüfung ist Vorarbeit, keine unabhängige Fachfreigabe. Die nachträgliche Crew-Prüfung steht unten im Abschnitt „Unabhängige Prüfung“. Sie hebt die historischen Sätze nicht auf und macht sie nicht rückwirkend zu einer Abnahme.
 
 ## Regel ab jetzt
 
@@ -12,10 +14,10 @@ Neue rechtlich relevante Unterrichtsinhalte brauchen vor der fachlichen Freigabe
 
 | Einheit | Ergebnis | Freigabe |
 |---|---|---|
-| `lf1-dual` | Zwei wesentliche Lücken korrigiert. Antwortschlüssel A1–A5 und K1–K4 bleiben. | Begrenzt: nur die am 08.11.2026 gelesenen Bundesnormen. Rahmenlehrplan nicht freigegeben. |
-| LF1-B-Bauplan | Schlüssel passen zu den gelesenen Normen. Zwei Pflichtsätze vor dem Bau. | Fachlich freigegeben für die Implementierung, noch nicht gebaut. |
+| `lf1-dual` | Zwei wesentliche Lücken korrigiert. Antwortschlüssel A1–A5 und K1–K4 bleiben. | Technisch zuvor getestet. Rechtlich durch Rick vorgeprüft. Unabhängige Fachfreigabe: nein. Rahmenlehrplan nicht freigegeben. |
+| LF1-B-Bauplan | Schlüssel passen zu Ricks gelesenen Normen. Zwei Pflichtsätze vor dem Bau. | Bauplan vorhanden, nicht implementiert. Die frühere Zeile „fachlich freigegeben“ gilt nicht als unabhängige Abnahme. |
 | LF1-C | Nur Planungsnotiz aus § 22 BBiG. | Nicht freigegeben, nicht gebaut. |
-| B01–B04, Luca, Noelle | Kein kritischer falscher Schlüssel in den geprüften Aussagen. | Keine neue Vollfreigabe. Geprüfte Punkte unten. |
+| B01–B04, Luca, Noelle | Rick fand keinen kritischen falschen Schlüssel in den geprüften Aussagen. | Dokumentierte Vorprüfung. Unabhängige Fachprüfung der Falldateien: offen. |
 
 ## Quellen, gelesen am 08.11.2026
 
@@ -78,3 +80,65 @@ Gelesen, nicht als Lektion gebaut:
 ## Technische Prüfung
 
 `node --test tests/*.test.js` am 08.11.2026: 475 bestanden, 0 fehlgeschlagen. Browser, Windows, Firefox und NVDA wurden in diesem Lauf nicht geprüft.
+
+
+## Unabhängige Prüfung
+
+Stand dieser Ergänzung: 08.11.2026. Koordination: Rick. Die Prüfer haben eigene Berichte geschrieben. Unterschiedliche Einschätzungen sind nicht vereinheitlicht.
+
+### Hat QA Reviewer gearbeitet?
+
+Ja. Agent `auditor`, Modell gpt-6-luna. Das Dossier ist Sicherheitsprüfung, nicht Rechtsprüfung. Der Auftrag hat ihn trotzdem eingesetzt. Dispatchte Prüfer haben Web und Dateien, keine Shell.
+
+Der erste Lauf ist am Werkzeuglimit nach drei Aufrufen ohne Datei geendet. Er hat nur den Vorbericht und [§ 2 BBiG](https://www.gesetze-im-internet.de/bbig_2005/__2.html) selbst gelesen. Die Drei-Lernorte-Aussage passt zu dem von ihm gelesenen Absatz. Lauf `2ef04968`.
+
+Ein zweiter Lauf mit vier Seiten ist nach 45 Sekunden abgerissen. Die Datei fehlt. Der abgeschnittene Text zählt nicht als abgeschlossene Prüfung von § 20. Lauf `40390ae2`.
+
+Danach hat derselbe Prüfer Einzelseiten gelesen und Dateien geschrieben. Die Berichte liegen in `docs/legal-shield-unabhaengig/`.
+
+Selbst gelesen, nichtamtliche Fassung:
+
+- § 2: drei Durchführungsorte, sie wirken zusammen. Keine Datei, nur der erste Lauf.
+- § 4 Absatz 5: bisherige Vorschriften für bestehende Ausbildungsverhältnisse, sofern die ändernde Verordnung nichts anderes bestimmt. `qa-p4-2026-11-08.md`
+- § 8: Verkürzung und Verlängerung passen im Kern. Die Kurzfassung lässt aus, dass die zuständige Stelle entscheidet und die Ausbildenden vor einer Verlängerung anzuhören sind. `qa-p8-2026-11-08.md`
+- § 11 Absatz 1: die genannten Sachpunkte stehen im Text. „Vertragspartner“ ist kein wörtlicher Sammelbegriff. `qa-p11-2026-11-08.md`
+- § 15: Freistellung für den Berufsschulunterricht steht im Text. Keine Hochbetrieb-Ausnahme in den sichtbaren Absätzen. Keine Altersgrenze für die Freistellung. Absatz 3 verweist für unter 18-Jährige auf das Jugendarbeitsschutzgesetz. `qa-p15-2026-11-08.md`
+- § 19 der Verordnung über die Abschnittsadresse: Inkrafttreten 1. August 2025, Verordnung von 2013 tritt gleichzeitig außer Kraft, kein Umstellungssatz für bestehende Verträge in diesem Paragraphen. `qa-p19-2026-11-08.md`
+- Die Gesamtseite der Verordnung kam nur bis § 4 Absatz 2 zurück. § 2 „drei Jahre“ stand in diesem Ausschnitt. § 19 stand dort nicht. `qa-verordnung-2026-11-08.md`
+- § 20: Probezeit mindestens ein Monat, höchstens vier Monate. `qa-p20-2026-11-08.md`
+- § 21: die drei Beendigungssätze passen. Absatz 2 nennt die Bekanntgabe durch den Prüfungsausschuss. `qa-p21-2026-11-08.md`
+- § 22: der Kern passt. Eine vom Auftrag gekürzte Behauptung ließ die Angabe der Kündigungsgründe in den Fällen des Absatzes 2 aus. Der Vorbericht oben nennt diese Pflicht bereits. Das ist kein neuer Fehler der Lektion. `qa-p22-2026-11-08.md`
+- § 25: nichtig ist eine Vereinbarung, die zuungunsten Auszubildender von den Vorschriften dieses Teils abweicht. Der Paragraph zählt keine einzelnen Vorschriften auf und sagt nicht „Schutzvorschriften“. Die Anwendung auf § 15 ist deshalb eine Schlussfolgerung von Rick, nicht ein von QA bestätigter Einzelsatz. `qa-p25-2026-11-08.md`
+
+Die Lektion und der LF1-B-Bauplan wurden in einem eigenen Lauf gelesen. `qa-lektion-2026-11-08.md`. Kein kritischer Fehler an den zwei Korrekturstellen im HTML. Das Skript `js/lf1-dual.js` hat QA Reviewer nicht gelesen. Rahmenlehrplan nicht gelesen. Keine Freigabe.
+
+### Hat GLaDOS gearbeitet?
+
+Ja. Agent `apptester`, Modell gpt-6-luna. Bericht: `docs/legal-shield-unabhaengig/glados-2026-11-08.md`.
+
+Werkzeuge: Dateilesen und Schreiben. Keine Shell, kein Browser, keine Rechtsseiten. Das war der Auftrag, kein Ausfall.
+
+Sie hat `module/lf1-dual.html`, `js/lf1-dual.js`, `tests/lf1-dual.test.js` und den LF1-B-Bauplan gelesen. Alle neun LF1-A-Aufgaben und die geplanten LF1-B-Entscheidungen sind für sie im Text konsistent. Keine vertretbare Alternativantwort, die der Schlüssel ablehnt. Keine vorzeitige Musterlösung im gelesenen Quelltext. Das sind codebasierte Einschätzungen, keine beobachteten Nutzerfehler.
+
+Wesentlich bei ihr, nicht bei QA Reviewer: die Regressionstests prüfen Zustand und Textvorkommen, nicht die semantische Kopplung von Rechtsaussage, Frage und Schlüssel. LF1-B ist nicht getestet, weil es nicht gebaut ist. Tests wurden nicht ausgeführt.
+
+### Abgeleitete Änderungen
+
+Keine. Es gibt keinen bestätigten falschen Schlüssel und keine falsche Musterlösung, die eine Korrektur vor dieser Dokumentation verlangt.
+
+Nicht umgesetzt, weil es Präzisierung und keine nachgewiesene Falschaussage ist:
+
+- Bekanntgabe des Prüfungsergebnisses durch den Prüfungsausschuss, § 21 Absatz 2.
+- Entscheidung der zuständigen Stelle und Anhörung vor einer Verlängerung, § 8.
+- § 25 nennt keine einzelne Vorschrift.
+
+Terminus und Jarvis wurden dafür nicht beauftragt. GLaDOS hat keine Änderung nachzuprüfen, weil keine entstanden ist.
+
+### Offen
+
+- Unabhängige Fachfreigabe: nein, für LF1-A, LF1-B und die Rathausfälle.
+- QA Reviewer hat die Rathaus-Falldateien nicht gelesen.
+- QA Reviewer hat `js/lf1-dual.js` nicht gelesen. GLaDOS hat die Normen nicht gelesen. Das sind zwei Achsen, keine gemeinsame Abnahme.
+- Rahmenlehrplan, Bundesanzeiger und Landesrecht bleiben ungelesen.
+- Browser, Windows, Firefox und NVDA bleiben ungeprüft.
+- Die frühere Suite von 475 bestandenen Tests ist der Stand vor dieser Prüfung. In diesem Lauf wurde sie nicht erneut ausgeführt.

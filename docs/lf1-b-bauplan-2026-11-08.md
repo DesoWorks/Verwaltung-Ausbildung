@@ -2,7 +2,9 @@
 
 Stand: 08.11.2026. Fachlich-didaktischer Implementierungsplan, keine implementierte oder getestete Unterrichtseinheit.
 
-**readyForImplementation: true, nach Quellenprüfung vom 08.11.2026.** Die zitierten Stellen R10, R11, R13, R14, R20, R21 und RV2 wurden an diesem Tag auf gesetze-im-internet.de gelesen, nichtamtliche Fassung. Die Antwortschlüssel bleiben. Vor dem Einbau müssen zwei Sätze in den Lerntext: Bestehende Ausbildungsverhältnisse folgen § 4 Absatz 5 BBiG, sofern die neue Verordnung nichts anderes bestimmt; der gelesene § 19 enthält keine solche Umstellung. Verkürzung und Verlängerung nach § 8 BBiG sind nicht Gegenstand der Übung. Drei Jahre sind die Regelausbildungsdauer der Verordnung von 2025, nicht jede denkbare Dauer.
+**readyForImplementation: nicht als unabhängige Freigabe.** Die Zeile darunter ist die historische Planung vom 08.11.2026. QA Reviewer hat am selben Tag keine Freigabe erteilt. Siehe `docs/legal-shield-2026-11-08.md`, Abschnitt „Unabhängige Prüfung“.
+
+Historisch: readyForImplementation war nach Ricks Vorprüfung auf true gesetzt. Die zitierten Stellen R10, R11, R13, R14, R20, R21 und RV2 wurden an diesem Tag auf gesetze-im-internet.de gelesen, nichtamtliche Fassung. Die Antwortschlüssel bleiben. Vor einem späteren Einbau müssen zwei Sätze in den Lerntext: Bestehende Ausbildungsverhältnisse folgen § 4 Absatz 5 BBiG, sofern die neue Verordnung nichts anderes bestimmt; der gelesene § 19 enthält keine solche Umstellung. Verkürzung und Verlängerung nach § 8 BBiG sind nicht Gegenstand der Übung. Drei Jahre sind die Regelausbildungsdauer der Verordnung von 2025, nicht jede denkbare Dauer. QA Reviewer ergänzt dazu, ohne den Plan umzuschreiben: § 21 Absatz 2 nennt die Bekanntgabe durch den Prüfungsausschuss. § 8 lässt die zuständige Stelle entscheiden und verlangt vor einer Verlängerung die Anhörung der Ausbildenden.
 
 ## 1. Ergebnis und Umfang
 
